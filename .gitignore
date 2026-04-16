@@ -11,3 +11,7 @@ venv/
 settings.ini
 .DS_Store
 Thumbs.db
+
+db_local.sqlite3
+config/settings.ini
+*.sqlite3

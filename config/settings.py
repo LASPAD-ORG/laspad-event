@@ -9,13 +9,16 @@ from decouple import config
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-laspad-change-in-production')
-DEBUG = config('DEBUG', default=True, cast=bool)
+DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
-# Après ALLOWED_HOSTS
+
+# Sécurité proxy
 CSRF_TRUSTED_ORIGINS = ['https://events.laspad.org', 'http://events.laspad.org']
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -24,17 +27,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Third-party
     'widget_tweaks',
     'django_celery_beat',
-    # Local apps
     'events',
     'registrations',
     'notifications',
     'dashboard',
 ]
-
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -46,6 +45,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
@@ -67,9 +67,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# ── Base de données ──
-import os
-# ── Base de données ──
+# Base de données
 if os.environ.get('USE_SQLITE'):
     DATABASES = {
         'default': {
@@ -88,6 +86,7 @@ else:
             'PORT':     config('DB_PORT',     default='5432'),
         }
     }
+
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -96,54 +95,54 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# Internationalization
+# Internationalisation
 LANGUAGE_CODE = 'fr-fr'
 TIME_ZONE = 'Africa/Dakar'
 USE_I18N = True
 USE_TZ = True
 
-# Static & Media files
+# Static & Media
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Email — Brevo SMTP
+# Email Brevo SMTP
 EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST          = config('EMAIL_HOST',     default='smtp-relay.brevo.com')
-EMAIL_PORT          = config('EMAIL_PORT',     default=587, cast=int)
-EMAIL_USE_TLS       = config('EMAIL_USE_TLS',  default=True, cast=bool)
-EMAIL_HOST_USER     = config('EMAIL_HOST_USER',     default='a77c5e001@smtp-brevo.com')  # votre login Brevo
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='x7P5sGv4YqfmVWrh')  # votre password Brevo
-DEFAULT_FROM_EMAIL  = config('DEFAULT_FROM_EMAIL', default='LASPAD Event <communication@laspad.org>')
+EMAIL_HOST          = config('EMAIL_HOST',          default='smtp-relay.brevo.com')
+EMAIL_PORT          = config('EMAIL_PORT',          default=587, cast=int)
+EMAIL_USE_TLS       = config('EMAIL_USE_TLS',       default=True, cast=bool)
+EMAIL_HOST_USER     = config('EMAIL_HOST_USER',     default='a77c5e001@smtp-brevo.com')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='x7P5sGv4YqfmVWrh')
+DEFAULT_FROM_EMAIL  = config('DEFAULT_FROM_EMAIL',  default='LASPAD Event <communication@laspad.org>')
 
 # Celery
-CELERY_BROKER_URL = config('REDIS_URL', default='redis://localhost:6379/0')
-CELERY_RESULT_BACKEND = config('REDIS_URL', default='redis://localhost:6379/0')
-CELERY_ACCEPT_CONTENT = ['json']
+CELERY_BROKER_URL     = config('CELERY_BROKER_URL',     default='redis://localhost:6379/0')
+CELERY_RESULT_BACKEND = config('CELERY_RESULT_BACKEND', default='redis://localhost:6379/0')
+CELERY_ACCEPT_CONTENT  = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
 # Google Calendar API
-GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID', default='')
+GOOGLE_CLIENT_ID     = config('GOOGLE_CLIENT_ID',     default='')
 GOOGLE_CLIENT_SECRET = config('GOOGLE_CLIENT_SECRET', default='')
-GOOGLE_REDIRECT_URI = config('GOOGLE_REDIRECT_URI', default='http://localhost:8000/auth/callback/')
+GOOGLE_REDIRECT_URI  = config('GOOGLE_REDIRECT_URI',  default='http://localhost:8000/auth/callback/')
 GOOGLE_SCOPES = [
     'https://www.googleapis.com/auth/calendar.events',
     'https://www.googleapis.com/auth/calendar',
 ]
 
-# Site config
-SITE_URL = config('SITE_URL', default='http://localhost:8000')
+# Site
+SITE_URL  = config('SITE_URL',  default='http://localhost:8000')
 SITE_NAME = config('SITE_NAME', default='LASPAD Event')
 
 # Auth
-LOGIN_URL = '/dashboard/login/'
-LOGIN_REDIRECT_URL = '/dashboard/'
+LOGIN_URL           = '/dashboard/login/'
+LOGIN_REDIRECT_URL  = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/'

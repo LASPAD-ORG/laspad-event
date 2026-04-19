@@ -11,7 +11,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-laspad-change-in-production')
 DEBUG = config('DEBUG', default=True, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
-# ---- EMAIL EN DEV : affiche dans le terminal, pas besoin de SMTP ----
+# Après ALLOWED_HOSTS
+CSRF_TRUSTED_ORIGINS = ['https://events.laspad.org', 'http://events.laspad.org']
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # Application definition
 INSTALLED_APPS = [

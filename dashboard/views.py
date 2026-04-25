@@ -947,3 +947,16 @@ def event_delete(request, pk):
         messages.success(request, f"Événement « {title} » supprimé définitivement.")
         return redirect('dashboard:event_list')
     return render(request, 'dashboard/events/delete_confirm.html', {'event': event})
+
+
+@login_required
+@user_passes_test(is_staff)
+def event_recording(request, pk):
+    event = get_object_or_404(Event, pk=pk)
+    if request.method == 'POST':
+        url = request.POST.get('recording_url', '').strip()
+        event.recording_url = url if url else None
+        event.save(update_fields=['recording_url'])
+        messages.success(request, "Lien d'enregistrement mis à jour.")
+        return redirect('dashboard:event_detail', pk=event.pk)
+    return redirect('dashboard:event_detail', pk=event.pk)

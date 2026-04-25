@@ -197,6 +197,11 @@ class Event(models.Model):
         upload_to='events/qrcodes/', null=True, blank=True,
         verbose_name='QR code inscription',
     )
+    recording_url = models.URLField(
+    null=True, blank=True,
+    verbose_name='Lien enregistrement (YouTube/Zoom)',
+    help_text='URL YouTube, Zoom ou autre plateforme vidéo',
+    )
 
     # ── Google Calendar ──
     google_calendar_event_id = models.CharField(max_length=500, blank=True, null=True)
@@ -363,3 +368,5 @@ class Session(models.Model):
         verbose_name        = 'Session'
         verbose_name_plural = 'Sessions'
         ordering            = ['day__date', 'start_time', 'order']
+        
+        

@@ -98,6 +98,37 @@
 </div>
 {% endif %}
 
+<!-- Enregistrement vidéo -->
+<div class="bg-white rounded-2xl border border-gray-200 p-6 mt-4">
+  <div class="flex items-center justify-between mb-4">
+    <h3 class="font-bold text-gray-900" style="font-family:'Sora',sans-serif;">
+      🎬 Enregistrement vidéo
+    </h3>
+    {% if event.recording_url %}
+    <a href="{{ event.recording_url }}" target="_blank"
+       class="text-xs text-blue-600 hover:underline">Voir la vidéo →</a>
+    {% endif %}
+  </div>
+  <form method="post" action="{% url 'dashboard:event_recording' pk=event.pk %}">
+    {% csrf_token %}
+    <div class="flex gap-2">
+      <input type="url" name="recording_url"
+             value="{{ event.recording_url|default:'' }}"
+             placeholder="https://www.youtube.com/watch?v=..."
+             class="form-input flex-1 text-sm">
+      <button type="submit" class="btn-sm btn-primary-sm whitespace-nowrap">
+        {% if event.recording_url %}Mettre à jour{% else %}Ajouter{% endif %}
+      </button>
+    </div>
+    {% if event.recording_url %}
+    <button type="submit" name="recording_url" value=""
+            class="text-xs text-red-500 hover:underline mt-2">
+      Supprimer le lien
+    </button>
+    {% endif %}
+  </form>
+</div>
+
 <!-- ── Programme PDF ── -->
 {% if event.program_pdf %}
 <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-4 mb-6 flex items-center gap-4">

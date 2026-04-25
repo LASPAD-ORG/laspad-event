@@ -21,6 +21,9 @@
         <a href="{% url 'events:list' %}" class="text-sm font-medium text-gray-600 hover:text-green-700 transition-colors">
           Événements
         </a>
+        <a href="{% url 'events:recordings' %}" class="text-sm font-medium text-gray-600 hover:text-green-700 transition-colors">
+          Enregistrements
+        </a>
         {% if user.is_authenticated and user.is_staff %}
           <a href="{% url 'dashboard:home' %}" class="text-sm font-medium text-gray-600 hover:text-green-700 transition-colors">
             Dashboard
@@ -49,6 +52,7 @@
     <!-- Mobile menu -->
     <div class="md:hidden hidden pb-3 space-y-1 border-t border-gray-100 pt-2" id="mobile-menu">
       <a href="{% url 'events:list' %}" class="block px-3 py-2 rounded-lg text-gray-700 hover:bg-green-50 text-sm font-medium">Événements</a>
+      <a href="{% url 'events:recordings' %}" class="block px-3 py-2 rounded-lg text-gray-700 hover:bg-green-50 text-sm font-medium">Enregistrements</a>
       {% if user.is_authenticated and user.is_staff %}
         <a href="{% url 'dashboard:home' %}" class="block px-3 py-2 rounded-lg text-gray-700 hover:bg-green-50 text-sm">Dashboard</a>
         <a href="{% url 'dashboard:logout' %}" class="block px-3 py-2 rounded-lg text-red-600 hover:bg-red-50 text-sm">Déconnexion</a>

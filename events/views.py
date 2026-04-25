@@ -50,3 +50,27 @@ def event_detail(request, slug):
         'participation_mode': mode,
     }
     return render(request, 'events/detail.html', context)
+
+
+def recordings_list(request):
+    from django.core.paginator import Paginator
+    events = Event.objects.filter(
+        recording_url__isnull=False,
+        status=Event.STATUS_PUBLISHED,
+    ).exclude(recording_url='').order_by('-start_datetime')
+    
+    # Filtre par type
+    event_type = request.GET.get('type', '')
+    if event_type:
+        events = events.filter(event_type=event_type)
+    
+    paginator = Paginator(events, 9)
+    page = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page)
+    
+    context = {
+        'page_obj': page_obj,
+        'event_types': Event.TYPE_CHOICES,
+        'current_type': event_type,
+    }
+    return render(request, 'events/recordings.html', context)

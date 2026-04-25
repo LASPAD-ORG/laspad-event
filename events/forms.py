@@ -29,7 +29,7 @@ class EventForm(forms.ModelForm):
             'max_online', 'access_online', 'auto_accept_online',
             # Legacy
             'is_capacity_limited', 'max_participants', 'access_mode',
-            'speakers', 'banner',
+            'speakers', 'banner','recording_url',
         ]
         widgets = {
             'title':              forms.TextInput(attrs={'class': 'form-input', 'placeholder': "Titre de l'événement"}),
@@ -49,6 +49,7 @@ class EventForm(forms.ModelForm):
             'max_participants':   forms.NumberInput(attrs={'class': 'form-input', 'min': 1}),
             'access_mode':        forms.Select(attrs={'class': 'form-select'}),
             'speakers':           forms.CheckboxSelectMultiple(),
+            'recording_url': forms.URLInput(attrs={'class': 'form-input','placeholder': 'https://www.youtube.com/watch?v=...'}),
         }
 
     def clean(self):

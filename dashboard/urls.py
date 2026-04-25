@@ -47,4 +47,5 @@ urlpatterns = [
     path('scan/lookup/', views.scan_lookup, name='scan_lookup'),
     path('evenements/<uuid:pk>/export-presences/', views.export_presence_csv, name='export_presence_csv'),
     path('evenements/<uuid:pk>/enregistrement/', views.event_recording, name='event_recording'),
+    path('evenements/<uuid:pk>/supprimer/', views.event_delete, name='event_delete'),
 ]

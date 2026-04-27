@@ -98,29 +98,35 @@ def register(request, slug):
 # ──────────────────────────────────────────────────────────────────
 
 def _determine_status(event, participation_type):
-    """Détermine le statut initial selon le mode d'accès configuré."""
     mode = getattr(event, 'participation_mode', 'online_only')
 
     if mode == 'onsite_only':
-        access = getattr(event, 'access_onsite', event.access_mode)
+        access = getattr(event, 'access_onsite', None) or event.access_mode
+        # Si access_onsite est direct mais access_mode est validation, validation gagne
+        if event.access_mode == 'validation':
+            access = 'validation'
     elif mode == 'online_only':
-        access = getattr(event, 'access_online', event.access_mode)
+        access = getattr(event, 'access_online', None) or event.access_mode
+        if event.access_mode == 'validation':
+            access = 'validation'
     else:  # hybrid
         if participation_type == Registration.PARTICIPATION_ONSITE:
             access = getattr(event, 'access_onsite', 'direct')
         elif participation_type == Registration.PARTICIPATION_ONLINE:
             access = getattr(event, 'access_online', 'direct')
-        else:  # both — le plus restrictif l'emporte
+        else:
             access_onsite = getattr(event, 'access_onsite', 'direct')
             access_online = getattr(event, 'access_online', 'direct')
             access = 'validation' if 'validation' in [access_onsite, access_online] else 'direct'
+        # access_mode global l'emporte
+        if event.access_mode == 'validation':
+            access = 'validation'
 
     return (
         Registration.STATUS_ACCEPTED
         if access == Event.ACCESS_DIRECT
         else Registration.STATUS_PENDING
     )
-
 
 def _check_auto_accept(event, registration):
     """

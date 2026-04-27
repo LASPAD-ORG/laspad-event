@@ -223,7 +223,7 @@
 <script>
 const PER_PAGE   = 10;
 let currentPage  = 1;
-let activeStatus = 'all';
+let activeStatus = 'upcoming';
 let activeMode   = 'all';
 
 function setFilter(type, val) {
@@ -348,7 +348,7 @@ function renderPagination(totalPages, total) {
 
 function resetFilters() {
   document.getElementById('ev-search').value = '';
-  activeStatus = 'all'; activeMode = 'all'; currentPage = 1;
+  activeStatus = 'upcoming'; activeMode = 'all'; currentPage = 1;
   document.querySelectorAll('.ev-status-btn').forEach(b => { b.style.background='#f3f4f6'; b.style.color='#4b5563'; });
   document.querySelectorAll('.ev-mode-btn').forEach(b => { b.style.background='#f3f4f6'; b.style.color='#4b5563'; });
   const fs = document.getElementById('fs-all');

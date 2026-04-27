@@ -91,7 +91,12 @@ def event_create(request):
             event.location = location
             event.organizer= request.user
             event.save()
+            
             form.save_m2m()
+            if event.access_mode == 'validation':
+                event.access_onsite = 'validation'
+                event.access_online = 'validation'
+                event.save(update_fields=['access_onsite', 'access_online'])
 
             # ── Programme PDF ──
             if request.FILES.get('program_pdf'):
@@ -198,6 +203,10 @@ def event_edit(request, pk):
         if form.is_valid() and location_form.is_valid():
             location_form.save()
             event = form.save()
+            if event.access_mode == 'validation':
+                event.access_onsite = 'validation'
+                event.access_online = 'validation'
+                event.save(update_fields=['access_onsite', 'access_online'])
 
             if request.FILES.get('program_pdf'):
                 event.program_pdf = request.FILES['program_pdf']

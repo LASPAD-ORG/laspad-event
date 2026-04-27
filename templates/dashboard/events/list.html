@@ -33,6 +33,9 @@
 
     <!-- Filtre statut -->
     <div class="flex gap-1 flex-wrap">
+      <button onclick="setFilter('status','upcoming')" id="fs-upcoming"
+              class="ev-status-btn text-xs px-3 py-1.5 rounded-lg font-semibold bg-gray-100 text-gray-600 hover:bg-green-50 hover:text-green-700 transition-all">
+        À venir</button>
       <button onclick="setFilter('status','all')" id="fs-all"
               class="ev-status-btn text-xs px-3 py-1.5 rounded-lg font-semibold transition-all"
               style="background:#1a6b3a;color:#fff;">Tous</button>
@@ -42,9 +45,7 @@
       <button onclick="setFilter('status','brouillon')" id="fs-brouillon"
               class="ev-status-btn text-xs px-3 py-1.5 rounded-lg font-semibold bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all">
         Brouillon</button>
-      <button onclick="setFilter('status','upcoming')" id="fs-upcoming"
-              class="ev-status-btn text-xs px-3 py-1.5 rounded-lg font-semibold bg-gray-100 text-gray-600 hover:bg-green-50 hover:text-green-700 transition-all">
-        À venir</button>
+
       <button onclick="setFilter('status','past')" id="fs-past"
               class="ev-status-btn text-xs px-3 py-1.5 rounded-lg font-semibold bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all">
         Passé</button>

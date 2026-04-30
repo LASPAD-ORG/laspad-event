@@ -5,7 +5,22 @@
 
 {% block extra_head %}
   <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
+
+  <!-- ══ Open Graph page d'accueil ══ -->
+  {% with site_url=SITE_URL %}
+  <meta property="og:type"        content="website">
+  <meta property="og:site_name"   content="LASPAD Event">
+  <meta property="og:title"       content="LASPAD Event — Événements scientifiques">
+  <meta property="og:description" content="Webinaires, conférences, ateliers — rejoignez la communauté de recherche du LASPAD.">
+  <meta property="og:url"         content="{{ site_url }}">
+  <meta property="og:image"       content="{{ site_url }}{% static 'img/logo.png' %}">
+  <meta name="twitter:card"       content="summary_large_image">
+  <meta name="twitter:title"      content="LASPAD Event — Événements scientifiques">
+  <meta name="twitter:image"      content="{{ site_url }}{% static 'img/logo.png' %}">
+  <meta name="description"        content="Webinaires, conférences, ateliers — rejoignez la communauté de recherche du LASPAD.">
+  {% endwith %}
   <style>
+    /* ... le reste du CSS existant ... */
     /* ── Cards ── */
     .event-card {
       transition: transform .2s, box-shadow .2s;

@@ -5,6 +5,35 @@
 
 {% block extra_head %}
   <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
+
+  <!-- ══ Open Graph (WhatsApp, LinkedIn, Twitter) ══ -->
+  {% with site_url=SITE_URL %}
+  <meta property="og:type"        content="website">
+  <meta property="og:site_name"   content="LASPAD Event">
+  <meta property="og:title"       content="{{ event.title }}">
+  <meta property="og:description" content="{{ event.description|truncatewords:30|striptags }}">
+  <meta property="og:url"         content="{{ site_url }}{{ event.get_absolute_url }}">
+  {% if event.banner %}
+  <meta property="og:image"       content="{{ site_url }}{{ event.banner.url }}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  {% else %}
+  <meta property="og:image"       content="{{ site_url }}{% static 'img/logo.png' %}">
+  {% endif %}
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:title"       content="{{ event.title }}">
+  <meta name="twitter:description" content="{{ event.description|truncatewords:30|striptags }}">
+  {% if event.banner %}
+  <meta name="twitter:image"       content="{{ site_url }}{{ event.banner.url }}">
+  {% else %}
+  <meta name="twitter:image"       content="{{ site_url }}{% static 'img/logo.png' %}">
+  {% endif %}
+
+  <!-- Description standard -->
+  <meta name="description" content="{{ event.description|truncatewords:30|striptags }}">
+  {% endwith %}
 {% endblock %}
 
 {% block content %}

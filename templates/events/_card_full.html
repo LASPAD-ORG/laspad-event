@@ -1,17 +1,26 @@
-﻿{% load static %}
+{% load static %}
 <div class="event-card bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md">
+
+  <!-- Bannière -->
   {% if event.banner %}
-  <div class="aspect-video overflow-hidden">
-    <img src="{{ event.banner.url }}" alt="{{ event.title }}" class="w-full h-full object-cover">
+  <div class="overflow-hidden" style="height:180px;">
+    <img src="{{ event.banner.url }}" alt="{{ event.title }}"
+         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
   </div>
   {% else %}
-  <div class="aspect-video flex items-center justify-center" style="background:linear-gradient(135deg,#0f1f15,#1a6b3a);">
-    <img src="{% static 'img/logo.png' %}" alt="LASPAD" class="h-16 w-auto opacity-40" style="filter:brightness(0) invert(1);">
+  <div class="flex items-center justify-center" style="height:180px;background:linear-gradient(135deg,#0f1f15,#1a6b3a);">
+    <img src="{% static 'img/favicon.png' %}" alt="LASPAD" class="h-16 w-16 object-contain opacity-60">
   </div>
   {% endif %}
+
+  <!-- Contenu -->
   <div class="p-5 flex flex-col flex-1">
+
+    <!-- Badges -->
     <div class="flex items-center gap-2 mb-3">
-      <span class="type-badge text-xs" style="background:#f0fdf4;color:#1a6b3a;">{{ event.get_event_type_display }}</span>
+      <span class="type-badge text-xs" style="background:#f0fdf4;color:#1a6b3a;">
+        {{ event.get_event_type_display }}
+      </span>
       {% if event.participation_mode == 'hybrid' %}
         <span class="type-badge text-xs" style="background:#fffbeb;color:#92400e;">🔀 Hybride</span>
       {% elif event.participation_mode == 'onsite_only' %}
@@ -20,23 +29,44 @@
         <span class="type-badge text-xs" style="background:#eff6ff;color:#1d4ed8;">🌐 En ligne</span>
       {% endif %}
     </div>
-    <h3 class="font-bold text-gray-900 text-base leading-snug mb-2" style="font-family:'Sora',sans-serif;">
+
+    <!-- Titre -->
+    <h3 class="font-bold text-gray-900 text-base leading-snug mb-2"
+        style="font-family:'Sora',sans-serif;">
       {{ event.title|truncatechars:70 }}
     </h3>
-    <p class="text-xs text-gray-500 leading-relaxed mb-4">{{ event.description|truncatechars:100 }}</p>
+
+    <!-- Description -->
+    <p class="text-xs text-gray-500 leading-relaxed mb-4">
+      {{ event.description|truncatechars:100 }}
+    </p>
+
+    <!-- Date -->
     <div class="flex items-center gap-2 text-xs text-gray-500 mb-4">
       <svg class="w-3.5 h-3.5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
       </svg>
       {{ event.start_datetime|date:"d F Y" }} à {{ event.start_datetime|date:"H:i" }}
     </div>
+
+    <!-- CTA -->
     <div class="flex gap-2 mt-auto">
-      <a href="{{ event.get_absolute_url }}" class="flex-1 text-center text-xs font-semibold py-2 px-3 rounded-lg border border-gray-200 text-gray-600 hover:border-green-600 hover:text-green-700 transition-all">Détails</a>
+      <a href="{{ event.get_absolute_url }}"
+         class="flex-1 text-center text-xs font-semibold py-2 px-3 rounded-lg border border-gray-200 text-gray-600 hover:border-green-600 hover:text-green-700 transition-all">
+        Détails
+      </a>
       {% if event.is_upcoming %}
-      <a href="{{ event.get_registration_url }}" class="btn-primary flex-1 text-xs py-2 text-center">S inscrire</a>
+      <a href="{{ event.get_registration_url }}"
+         class="btn-primary flex-1 text-xs py-2 text-center">
+        S'inscrire
+      </a>
       {% else %}
-      <span class="flex-1 text-center text-xs font-semibold py-2 px-3 rounded-lg bg-gray-100 text-gray-400">Terminé</span>
+      <span class="flex-1 text-center text-xs font-semibold py-2 px-3 rounded-lg bg-gray-100 text-gray-400">
+        Terminé
+      </span>
       {% endif %}
     </div>
+
   </div>
 </div>

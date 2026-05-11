@@ -6,7 +6,6 @@
 {% block extra_head %}
   <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
 
-  <!-- ══ Open Graph page d'accueil ══ -->
   {% with site_url=SITE_URL %}
   <meta property="og:type"        content="website">
   <meta property="og:site_name"   content="LASPAD Event">
@@ -19,122 +18,181 @@
   <meta name="twitter:image"      content="{{ site_url }}{% static 'img/logo.png' %}">
   <meta name="description"        content="Webinaires, conférences, ateliers — rejoignez la communauté de recherche du LASPAD.">
   {% endwith %}
+
   <style>
+    /* ── Palette ── */
+    :root {
+      --green:  #1a6b3a;
+      --green2: #2d8a52;
+      --gold:   #c9a227;
+      --dark:   #0f1f15;
+      --light:  #f3f7f4;
+    }
+
     /* ── Cards ── */
     .event-card {
-      transition: transform .2s, box-shadow .2s;
       display: flex;
       flex-direction: column;
+      transition: transform .25s ease, box-shadow .25s ease;
     }
     .event-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 16px 32px rgba(0,0,0,.1);
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(26,107,58,.13);
     }
 
-    /* ── Carrousel ── */
-    .carousel-wrapper { overflow: hidden; cursor: grab; user-select: none; }
-    .carousel-wrapper:active { cursor: grabbing; }
-    .carousel-track {
-      display: flex;
-      gap: 1.5rem;
-      transition: transform .45s cubic-bezier(.4,0,.2,1);
-      will-change: transform;
-    }
-    .carousel-track .event-card { flex-shrink: 0; }
-
-    /* ── Boutons nav ── */
-    .c-btn {
-      width: 2.5rem; height: 2.5rem;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      background: #fff;
-      border: 1.5px solid #e5e7eb;
-      box-shadow: 0 2px 8px rgba(0,0,0,.08);
-      cursor: pointer;
-      transition: all .15s;
-      flex-shrink: 0;
-    }
-    .c-btn:hover { background: #1a6b3a; border-color: #1a6b3a; }
-    .c-btn:hover svg { stroke: #fff; }
-    .c-btn:disabled { opacity: .3; cursor: not-allowed; pointer-events: none; }
-
-    /* ── Dots ── */
-    .c-dot {
-      width: 6px; height: 6px;
-      border-radius: 3px;
-      background: #d1d5db;
-      transition: all .2s;
-      cursor: pointer;
-      border: none;
-      padding: 0;
-    }
-    .c-dot.active { width: 20px; background: #1a6b3a; }
-
-    /* ── Filtre tabs ── */
+    /* ── Filter tabs ── */
     .filter-tab {
-      padding: 6px 16px;
+      padding: 6px 18px;
       border-radius: 999px;
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
-      transition: all .15s;
+      transition: all .18s;
       border: 1.5px solid transparent;
       white-space: nowrap;
-    }
-    .filter-tab.active {
-      background: #1a6b3a;
-      color: #fff;
-      border-color: #1a6b3a;
-    }
-    .filter-tab:not(.active) {
       background: #fff;
       color: #6b7280;
       border-color: #e5e7eb;
     }
-    .filter-tab:not(.active):hover { border-color: #1a6b3a; color: #1a6b3a; }
+    .filter-tab.active  { background: var(--green); color: #fff; border-color: var(--green); }
+    .filter-tab:not(.active):hover { border-color: var(--green); color: var(--green); }
 
-    /* ── Badge type ── */
+    /* ── Type badge ── */
     .type-badge {
       font-size: 11px; font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 999px;
-      text-transform: uppercase;
-      letter-spacing: .04em;
+      padding: 3px 10px; border-radius: 999px;
+      text-transform: uppercase; letter-spacing: .04em;
     }
 
-    /* ── Barre de progression ── */
-    .progress-bar { height: 4px; border-radius: 2px; background: #e5e7eb; overflow: hidden; }
-    .progress-fill { height: 100%; border-radius: 2px; background: #1a6b3a; }
+    /* ── Progress bar ── */
+    .progress-bar  { height: 4px; border-radius: 2px; background: #e5e7eb; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 2px; background: var(--green); }
 
-    /* btn-gold & btn-white */
+    /* ── Buttons ── */
     .btn-gold {
       display: inline-flex; align-items: center; gap: 8px;
-      background: #c9a227; color: #fff;
-      padding: 10px 22px; border-radius: 10px;
-      font-weight: 700; font-size: 14px;
-      text-decoration: none;
-      transition: all .15s;
+      background: var(--gold); color: #fff;
+      padding: 11px 24px; border-radius: 12px;
+      font-weight: 700; font-size: 14px; text-decoration: none;
+      transition: all .18s;
     }
-    .btn-gold:hover { background: #a8841f; transform: translateY(-1px); }
+    .btn-gold:hover { background: #a8841f; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(201,162,39,.35); }
+
     .btn-primary {
       display: inline-flex; align-items: center; gap: 6px;
-      background: linear-gradient(135deg,#1a6b3a,#2d8a52);
-      color: #fff;
-      padding: 10px 20px; border-radius: 10px;
-      font-weight: 700; font-size: 13px;
-      text-decoration: none;
-      transition: all .15s;
-      justify-content: center;
+      background: linear-gradient(135deg, var(--green), var(--green2));
+      color: #fff; padding: 10px 20px; border-radius: 10px;
+      font-weight: 700; font-size: 13px; text-decoration: none;
+      transition: all .18s; justify-content: center;
     }
-    .btn-primary:hover { opacity: .92; transform: translateY(-1px); }
+    .btn-primary:hover { opacity: .9; transform: translateY(-1px); }
+
+    /* ══════════════════════════════════════════
+       GRILLE 4+ : layout magazine
+    ══════════════════════════════════════════ */
+    .events-magazine {
+      display: grid;
+      gap: 1.25rem;
+    }
+    /* Mobile : 1 colonne */
+    @media (max-width: 639px) {
+      .events-magazine { grid-template-columns: 1fr; }
+      .mag-featured    { grid-column: 1; }
+    }
+    /* Tablet : 2 colonnes */
+    @media (min-width: 640px) and (max-width: 1023px) {
+      .events-magazine { grid-template-columns: repeat(2, 1fr); }
+      .mag-featured    { grid-column: 1 / -1; }
+    }
+    /* Desktop : 3 colonnes avec featured sur 2 cols */
+    @media (min-width: 1024px) {
+      .events-magazine { grid-template-columns: repeat(3, 1fr); }
+      .mag-featured    { grid-column: span 2; }
+    }
+
+    /* Card featured (grande) */
+    .card-featured {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      min-height: 340px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      cursor: pointer;
+      transition: transform .25s, box-shadow .25s;
+    }
+    .card-featured:hover { transform: translateY(-4px); box-shadow: 0 24px 48px rgba(0,0,0,.18); }
+    .card-featured .cf-bg {
+      position: absolute; inset: 0;
+      background-size: cover; background-position: center;
+      transition: transform .5s ease;
+    }
+    .card-featured:hover .cf-bg { transform: scale(1.04); }
+    .card-featured .cf-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(10,25,15,.92) 40%, rgba(10,25,15,.2) 100%);
+    }
+    .card-featured .cf-body {
+      position: relative; z-index: 2;
+      padding: 1.75rem;
+    }
+
+    /* Card compacte (petite) */
+    .card-compact {
+      background: #fff;
+      border: 1.5px solid #e8ede9;
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform .22s, box-shadow .22s, border-color .22s;
+      cursor: pointer;
+    }
+    .card-compact:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 36px rgba(26,107,58,.11);
+      border-color: #b5d4be;
+    }
+    .card-compact .cc-img {
+      height: 160px;
+      overflow: hidden;
+      position: relative;
+    }
+    .card-compact .cc-img img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform .4s ease;
+    }
+    .card-compact:hover .cc-img img { transform: scale(1.06); }
+    .card-compact .cc-body { padding: 1.1rem 1.25rem 1.25rem; flex: 1; display: flex; flex-direction: column; }
+
+    /* Pagination dots */
+    .pg-dot {
+      width: 8px; height: 8px; border-radius: 4px;
+      background: #d1d5db; border: none; padding: 0; cursor: pointer;
+      transition: all .2s;
+    }
+    .pg-dot.active { width: 24px; background: var(--green); }
+
+    /* Show more button */
+    .show-more-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 12px 28px; border-radius: 12px;
+      border: 2px solid #e5e7eb; color: #4b5563;
+      font-weight: 600; font-size: 14px; cursor: pointer;
+      background: #fff; transition: all .18s; width: 100%;
+    }
+    .show-more-btn:hover { border-color: var(--green); color: var(--green); background: #f0fdf4; }
+
+    /* Hidden cards */
+    .event-card-wrapper.hidden-card { display: none !important; }
   </style>
 {% endblock %}
 
 {% block content %}
 
 <!-- ══ HERO ══ -->
-<section class="relative overflow-hidden" style="background:#0f1f15;">
-  <!-- Grille déco -->
+<section class="relative overflow-hidden" style="background:var(--dark);">
   <div class="absolute inset-0" style="opacity:.06;">
     <svg width="100%" height="100%">
       <defs>
@@ -155,13 +213,13 @@
       <div>
         <div class="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-6 border"
              style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);">
-          <span class="w-2 h-2 rounded-full animate-pulse" style="background:#c9a227;"></span>
+          <span class="w-2 h-2 rounded-full animate-pulse" style="background:var(--gold);"></span>
           <span class="text-sm font-medium" style="color:rgba(255,255,255,.7);">Plateforme officielle LASPAD</span>
         </div>
         <h1 class="text-4xl sm:text-5xl font-bold leading-tight mb-5"
             style="font-family:'Sora',sans-serif;color:#fff;">
           Les événements<br>
-          <span style="color:#c9a227;">scientifiques</span><br>
+          <span style="color:var(--gold);">scientifiques</span><br>
           du LASPAD
         </h1>
         <p class="text-base leading-relaxed mb-7" style="color:rgba(255,255,255,.55);">
@@ -177,8 +235,8 @@
             Voir les événements
           </a>
           <a href="{% url 'events:recordings' %}"
-            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm"
-            style="background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.15);">
+             class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm"
+             style="background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.15);">
             🎬 Enregistrements
           </a>
           <a href="{% url 'dashboard:login' %}"
@@ -206,19 +264,15 @@
     <!-- Stats -->
     <div class="mt-14 grid grid-cols-3 gap-px rounded-2xl overflow-hidden" style="background:rgba(255,255,255,.07);">
       <div class="px-6 py-5 text-center" style="background:rgba(255,255,255,.04);">
-        <p class="text-2xl font-bold" style="font-family:'Sora',sans-serif;color:#c9a227;">
-          {{ upcoming_events.count }}
-        </p>
+        <p class="text-2xl font-bold" style="font-family:'Sora',sans-serif;color:var(--gold);">{{ upcoming_events.count }}</p>
         <p class="text-xs mt-0.5" style="color:rgba(255,255,255,.45);">À venir</p>
       </div>
       <div class="px-6 py-5 text-center" style="background:rgba(255,255,255,.04);">
-        <p class="text-2xl font-bold" style="font-family:'Sora',sans-serif;color:#c9a227;">
-          {{ past_events.count }}
-        </p>
+        <p class="text-2xl font-bold" style="font-family:'Sora',sans-serif;color:var(--gold);">{{ past_events.count }}</p>
         <p class="text-xs mt-0.5" style="color:rgba(255,255,255,.45);">Éditions passées</p>
       </div>
       <div class="px-6 py-5 text-center" style="background:rgba(255,255,255,.04);">
-        <p class="text-2xl font-bold" style="font-family:'Sora',sans-serif;color:#c9a227;">100%</p>
+        <p class="text-2xl font-bold" style="font-family:'Sora',sans-serif;color:var(--gold);">100%</p>
         <p class="text-xs mt-0.5" style="color:rgba(255,255,255,.45);">Gratuit</p>
       </div>
     </div>
@@ -231,22 +285,22 @@
   {% if upcoming_events %}
   <section class="mb-16">
 
-    <!-- En-tête section -->
-    <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+    <!-- En-tête -->
+    <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
       <div class="flex items-center gap-4">
-        <div class="w-1 h-9 rounded-full" style="background:linear-gradient(to bottom,#1a6b3a,#c9a227);"></div>
+        <div class="w-1 h-9 rounded-full" style="background:linear-gradient(to bottom,var(--green),var(--gold));"></div>
         <div>
-          <h2 class="text-2xl font-bold" style="font-family:'Sora',sans-serif;color:#0f1f15;">
+          <h2 class="text-2xl font-bold" style="font-family:'Sora',sans-serif;color:var(--dark);">
             Événements à venir
           </h2>
           <p class="text-sm text-gray-400 mt-0.5">Inscrivez-vous dès maintenant</p>
         </div>
-        <span class="text-xs font-bold px-2.5 py-1 rounded-full text-white" style="background:#1a6b3a;">
+        <span class="text-xs font-bold px-2.5 py-1 rounded-full text-white" style="background:var(--green);">
           {{ upcoming_events.count }}
         </span>
       </div>
 
-      <!-- Filtres par type -->
+      <!-- Filtres -->
       <div class="flex gap-2 flex-wrap" id="type-filters">
         <button class="filter-tab active" onclick="filterType('all', this)">Tous</button>
         <button class="filter-tab" onclick="filterType('webinaire', this)">Webinaires</button>
@@ -256,8 +310,8 @@
       </div>
     </div>
 
+    <!-- ══ 1 événement ══ -->
     {% if upcoming_events.count == 1 %}
-    <!-- ── 1 événement : centré ── -->
     <div class="flex justify-center" id="events-grid">
       {% for event in upcoming_events %}
       <div class="event-card-wrapper w-full max-w-sm" data-type="{{ event.event_type }}">
@@ -266,8 +320,8 @@
       {% endfor %}
     </div>
 
+    <!-- ══ 2-3 événements : grille simple ══ -->
     {% elif upcoming_events.count <= 3 %}
-    <!-- ── 2-3 événements : grille ── -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="events-grid">
       {% for event in upcoming_events %}
       <div class="event-card-wrapper" data-type="{{ event.event_type }}">
@@ -276,54 +330,160 @@
       {% endfor %}
     </div>
 
+    <!-- ══ 4+ événements : layout magazine ══ -->
     {% else %}
-    <!-- ── 4+ événements : carrousel ── -->
-    <div class="relative" id="carousel-root">
-      <!-- Contrôles -->
-      <div class="flex items-center justify-between mb-4">
-        <div class="flex gap-2 overflow-x-auto pb-1" id="type-filters-carousel"
-             style="scrollbar-width:none;">
-        </div>
-        <div class="flex items-center gap-2 flex-shrink-0 ml-3">
-          <button class="c-btn" id="c-prev" onclick="carouselSlide(-1)" aria-label="Précédent">
-            <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-            </svg>
-          </button>
-          <button class="c-btn" id="c-next" onclick="carouselSlide(1)" aria-label="Suivant">
-            <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-            </svg>
-          </button>
-        </div>
-      </div>
+    <div class="events-magazine" id="events-grid">
+      {% for event in upcoming_events %}
 
-      <!-- Wrapper -->
-      <div class="carousel-wrapper" id="c-wrapper">
-        <div class="carousel-track" id="c-track">
-          {% for event in upcoming_events %}
-          <div class="event-card-wrapper" data-type="{{ event.event_type }}"
-               style="width: calc((100% - 3rem) / 3);">
-            {% include 'events/_card_full.html' %}
+      {% if forloop.counter == 1 %}
+      <!-- ── Card featured (1ère) ── -->
+      <div class="mag-featured event-card-wrapper" data-type="{{ event.event_type }}">
+        <a href="{{ event.get_absolute_url }}" class="card-featured block">
+          <!-- Fond image ou dégradé -->
+          {% if event.banner %}
+          <div class="cf-bg" style="background-image:url('{{ event.banner.url }}');"></div>
+          {% else %}
+          <div class="cf-bg" style="background:linear-gradient(135deg,#0f1f15,#1a6b3a);"></div>
+          {% endif %}
+          <div class="cf-overlay"></div>
+
+          <!-- Badge "À la une" -->
+          <div style="position:absolute;top:1.25rem;left:1.25rem;z-index:3;">
+            <span class="text-xs font-bold px-3 py-1 rounded-full"
+                  style="background:var(--gold);color:#fff;letter-spacing:.05em;">
+              ★ À la une
+            </span>
           </div>
-          {% endfor %}
-        </div>
+
+          <!-- Contenu -->
+          <div class="cf-body">
+            <div class="flex flex-wrap gap-2 mb-3">
+              <span class="type-badge" style="background:rgba(255,255,255,.15);color:#fff;backdrop-filter:blur(4px);">
+                {{ event.get_event_type_display }}
+              </span>
+              {% if event.participation_mode == 'hybrid' %}
+                <span class="type-badge" style="background:rgba(201,162,39,.25);color:#fde68a;">🔀 Hybride</span>
+              {% elif event.participation_mode == 'onsite_only' %}
+                <span class="type-badge" style="background:rgba(139,92,246,.25);color:#ddd6fe;">🏛️ Présentiel</span>
+              {% else %}
+                <span class="type-badge" style="background:rgba(59,130,246,.25);color:#bfdbfe;">🌐 En ligne</span>
+              {% endif %}
+            </div>
+
+            <h3 class="text-xl sm:text-2xl font-bold text-white mb-2 leading-snug"
+                style="font-family:'Sora',sans-serif;">
+              {{ event.title|truncatechars:80 }}
+            </h3>
+            <p class="text-sm mb-4" style="color:rgba(255,255,255,.65);">
+              {{ event.description|truncatechars:120 }}
+            </p>
+
+            <div class="flex items-center justify-between flex-wrap gap-3">
+              <div class="flex items-center gap-4">
+                <div class="flex items-center gap-1.5 text-xs" style="color:rgba(255,255,255,.7);">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                  </svg>
+                  {{ event.start_datetime|date:"d F Y" }} à {{ event.start_datetime|date:"H:i" }}
+                </div>
+              </div>
+              <span class="inline-flex items-center gap-1.5 text-xs font-bold px-4 py-2 rounded-xl"
+                    style="background:var(--gold);color:#fff;">
+                S'inscrire →
+              </span>
+            </div>
+          </div>
+        </a>
       </div>
 
-      <!-- Dégradés bords -->
-      <div class="absolute left-0 top-0 bottom-0 w-6 pointer-events-none"
-           style="background:linear-gradient(to right,#f3f4f2,transparent);z-index:2;"></div>
-      <div class="absolute right-0 top-0 bottom-0 w-6 pointer-events-none"
-           style="background:linear-gradient(to left,#f3f4f2,transparent);z-index:2;"></div>
+      {% else %}
+      <!-- ── Cards compactes (2e, 3e, etc.) ── -->
+      <div class="event-card-wrapper" data-type="{{ event.event_type }}">
+        <a href="{{ event.get_absolute_url }}" class="card-compact h-full block">
+          <!-- Image -->
+          <div class="cc-img">
+            {% if event.banner %}
+            <img src="{{ event.banner.url }}" alt="{{ event.title }}">
+            {% else %}
+            <div class="w-full h-full flex items-center justify-center"
+                 style="background:linear-gradient(135deg,#0f1f15,#1a6b3a);">
+              <img src="{% static 'img/favicon.png' %}" alt="LASPAD"
+                   class="h-14 w-14 object-contain opacity-50">
+            </div>
+            {% endif %}
+            <!-- Badge type -->
+            <div style="position:absolute;top:.75rem;left:.75rem;">
+              <span class="type-badge text-white"
+                    style="background:rgba(0,0,0,.55);backdrop-filter:blur(4px);font-size:10px;">
+                {{ event.get_event_type_display }}
+              </span>
+            </div>
+          </div>
 
-      <!-- Dots + compteur -->
-      <div class="flex items-center justify-center gap-3 mt-5">
-        <div class="flex gap-1.5" id="c-dots"></div>
+          <!-- Body -->
+          <div class="cc-body">
+            <div class="flex gap-1.5 mb-2">
+              {% if event.participation_mode == 'hybrid' %}
+                <span class="type-badge" style="background:#fffbeb;color:#92400e;font-size:10px;">🔀 Hybride</span>
+              {% elif event.participation_mode == 'onsite_only' %}
+                <span class="type-badge" style="background:#f5f3ff;color:#5b21b6;font-size:10px;">🏛️ Présentiel</span>
+              {% else %}
+                <span class="type-badge" style="background:#eff6ff;color:#1d4ed8;font-size:10px;">🌐 En ligne</span>
+              {% endif %}
+            </div>
+
+            <h3 class="font-bold text-gray-900 text-sm leading-snug mb-2 flex-1"
+                style="font-family:'Sora',sans-serif;">
+              {{ event.title|truncatechars:65 }}
+            </h3>
+
+            <p class="text-xs text-gray-400 leading-relaxed mb-3">
+              {{ event.description|truncatechars:80 }}
+            </p>
+
+            <div class="flex items-center gap-1.5 text-xs text-gray-400 mb-4">
+              <svg class="w-3.5 h-3.5 flex-shrink-0" style="color:var(--green);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+              {{ event.start_datetime|date:"d F Y" }} · {{ event.start_datetime|date:"H:i" }}
+            </div>
+
+            <div class="flex gap-2 mt-auto">
+              <span class="flex-1 text-center text-xs font-semibold py-2 px-3 rounded-lg border border-gray-200 text-gray-600 hover:border-green-600 hover:text-green-700 transition-all">
+                Détails
+              </span>
+              {% if event.is_upcoming %}
+              <span class="btn-primary flex-1 text-xs py-2">S'inscrire</span>
+              {% else %}
+              <span class="flex-1 text-center text-xs font-semibold py-2 px-3 rounded-lg bg-gray-100 text-gray-400">Terminé</span>
+              {% endif %}
+            </div>
+          </div>
+        </a>
       </div>
+      {% endif %}
+
+      {% endfor %}
+    </div>
+
+    <!-- Bouton "Voir plus" si plus de 6 événements -->
+    {% if upcoming_events.count > 6 %}
+    <div class="mt-8 text-center">
+      <button class="show-more-btn" id="show-more-btn" onclick="showMore()">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+        </svg>
+        Voir plus d'événements
+        <span class="text-xs font-normal text-gray-400" id="remaining-count"></span>
+      </button>
     </div>
     {% endif %}
 
-    <!-- Message aucun résultat filtre -->
+    {% endif %}
+
+    <!-- Aucun résultat filtre -->
     <div id="no-filter-msg" class="hidden text-center py-12 text-gray-400">
       <p class="text-sm">Aucun événement de ce type pour le moment.</p>
       <button onclick="filterType('all', document.querySelector('.filter-tab'))"
@@ -337,7 +497,7 @@
   {% if not upcoming_events %}
   <div class="text-center py-24">
     <div class="w-20 h-20 rounded-full mx-auto mb-5 flex items-center justify-center" style="background:#f0fdf4;">
-      <svg class="w-10 h-10" style="color:#1a6b3a;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg class="w-10 h-10" style="color:var(--green);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
               d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
       </svg>
@@ -353,7 +513,7 @@
 
   <!-- ── Événements passés ── -->
   {% if past_events %}
-  <section>
+  <section class="mt-4">
     <div class="flex items-center gap-4 mb-6">
       <div class="w-1 h-8 rounded-full bg-gray-200"></div>
       <div>
@@ -361,8 +521,6 @@
         <p class="text-xs text-gray-300 mt-0.5">{{ past_events.count }} événement{{ past_events.count|pluralize }}</p>
       </div>
     </div>
-
-    <!-- Grille passés : compacte -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {% for event in past_events %}
       <a href="{{ event.get_absolute_url }}"
@@ -394,11 +552,11 @@
 </div>
 
 <!-- ══ BANDEAU LASPAD ══ -->
-<section style="background:#0f1f15;" class="mt-8">
+<section style="background:var(--dark);" class="mt-8">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
       <div>
-        <p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#c9a227;">À propos</p>
+        <p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:var(--gold);">À propos</p>
         <h2 class="text-3xl font-bold text-white mb-4" style="font-family:'Sora',sans-serif;">
           Le LASPAD, acteur de la recherche africaine
         </h2>
@@ -418,11 +576,16 @@
 </section>
 
 <script>
-// ═══════════════════════════════════════════════════
+// ═══════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════
+const INITIAL_SHOW = 6; // Nombre de cards visibles initialement (4+)
+let showAll = false;
+
+// ═══════════════════════════════════════
 // FILTRE PAR TYPE
-// ═══════════════════════════════════════════════════
+// ═══════════════════════════════════════
 function filterType(type, btn) {
-  // Mettre à jour les boutons actifs
   document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
 
@@ -430,155 +593,63 @@ function filterType(type, btn) {
   let visible = 0;
   wrappers.forEach(w => {
     const match = type === 'all' || w.dataset.type === type;
-    w.style.display = match ? '' : 'none';
-    if (match) visible++;
+    if (match) {
+      w.classList.remove('hidden-card');
+      visible++;
+    } else {
+      w.classList.add('hidden-card');
+    }
   });
+
+  // Réappliquer la limite si pas show all
+  if (!showAll) applyLimit();
 
   const noMsg = document.getElementById('no-filter-msg');
   if (noMsg) noMsg.classList.toggle('hidden', visible > 0);
-
-  // Si carrousel, recalculer
-  if (typeof carouselGoTo === 'function') carouselGoTo(0);
 }
 
-// ═══════════════════════════════════════════════════
-// CARROUSEL (4+ événements)
-// ═══════════════════════════════════════════════════
-(function() {
-  const track   = document.getElementById('c-track');
-  const wrapper = document.getElementById('c-wrapper');
-  const dotsEl  = document.getElementById('c-dots');
-  const btnPrev = document.getElementById('c-prev');
-  const btnNext = document.getElementById('c-next');
+// ═══════════════════════════════════════
+// SHOW MORE
+// ═══════════════════════════════════════
+function applyLimit() {
+  const wrappers = [...document.querySelectorAll('#events-grid .event-card-wrapper')];
+  const visible  = wrappers.filter(w => !w.classList.contains('hidden-card'));
+  const btn      = document.getElementById('show-more-btn');
+  const remaining = document.getElementById('remaining-count');
 
-  if (!track || !wrapper) return;
-
-  const GAP     = 24;
-  const AUTO_MS = 4000;
-
-  let current   = 0;
-  let autoTimer = null;
-  let isDrag    = false;
-  let dragStart = 0;
-  let dragDelta = 0;
-
-  function visibleCount() {
-    const w = wrapper.offsetWidth;
-    if (w >= 1024) return 3;
-    if (w >= 640)  return 2;
-    return 1;
-  }
-
-  function getCards() {
-    return [...track.querySelectorAll('.event-card-wrapper')]
-      .filter(c => c.style.display !== 'none');
-  }
-
-  function cardW() {
-    const cards = getCards();
-    if (!cards.length) return wrapper.offsetWidth;
-    return (wrapper.offsetWidth - GAP * (visibleCount() - 1)) / visibleCount() + GAP;
-  }
-
-  function maxIdx() {
-    return Math.max(0, getCards().length - visibleCount());
-  }
-
-  function buildDots() {
-    if (!dotsEl) return;
-    dotsEl.innerHTML = '';
-    const total = maxIdx() + 1;
-    for (let i = 0; i < total; i++) {
-      const d = document.createElement('button');
-      d.className = 'c-dot' + (i === current ? ' active' : '');
-      d.onclick   = () => { carouselGoTo(i); resetAuto(); };
-      dotsEl.appendChild(d);
+  visible.forEach((w, i) => {
+    if (i >= INITIAL_SHOW) {
+      w.style.display = 'none';
+    } else {
+      w.style.display = '';
     }
+  });
+
+  const hidden = visible.filter((w, i) => i >= INITIAL_SHOW).length;
+  if (btn) {
+    btn.style.display = hidden > 0 ? 'flex' : 'none';
+    if (remaining) remaining.textContent = hidden > 0 ? `(${hidden} de plus)` : '';
   }
+}
 
-  function updateDots() {
-    dotsEl?.querySelectorAll('.c-dot').forEach((d, i) => d.classList.toggle('active', i === current));
+function showMore() {
+  showAll = true;
+  const wrappers = [...document.querySelectorAll('#events-grid .event-card-wrapper')];
+  wrappers.forEach(w => {
+    if (!w.classList.contains('hidden-card')) w.style.display = '';
+  });
+  const btn = document.getElementById('show-more-btn');
+  if (btn) btn.style.display = 'none';
+}
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+  const grid = document.getElementById('events-grid');
+  if (grid) {
+    const total = grid.querySelectorAll('.event-card-wrapper').length;
+    if (total > INITIAL_SHOW) applyLimit();
   }
-
-  function updateBtns() {
-    if (btnPrev) btnPrev.disabled = current === 0;
-    if (btnNext) btnNext.disabled = current >= maxIdx();
-  }
-
-  window.carouselGoTo = function(idx) {
-    current = Math.max(0, Math.min(idx, maxIdx()));
-    track.style.transform = `translateX(-${current * cardW()}px)`;
-    updateDots();
-    updateBtns();
-  };
-
-  window.carouselSlide = function(dir) {
-    carouselGoTo(current + dir);
-    resetAuto();
-  };
-
-  function startAuto() {
-    autoTimer = setInterval(() => {
-      carouselGoTo(current < maxIdx() ? current + 1 : 0);
-    }, AUTO_MS);
-  }
-  function resetAuto() { clearInterval(autoTimer); startAuto(); }
-  function stopAuto()  { clearInterval(autoTimer); }
-
-  // ── Drag souris ──
-  wrapper.addEventListener('mousedown', e => {
-    isDrag = true; dragStart = e.clientX; dragDelta = 0;
-    track.style.transition = 'none'; stopAuto();
-  });
-  window.addEventListener('mousemove', e => {
-    if (!isDrag) return;
-    dragDelta = e.clientX - dragStart;
-    track.style.transform = `translateX(${-current * cardW() + dragDelta}px)`;
-  });
-  window.addEventListener('mouseup', () => {
-    if (!isDrag) return;
-    isDrag = false;
-    track.style.transition = 'transform .45s cubic-bezier(.4,0,.2,1)';
-    const thr = cardW() * .25;
-    if (dragDelta < -thr) carouselGoTo(current + 1);
-    else if (dragDelta > thr) carouselGoTo(current - 1);
-    else carouselGoTo(current);
-    resetAuto();
-  });
-
-  // ── Touch ──
-  wrapper.addEventListener('touchstart', e => {
-    dragStart = e.touches[0].clientX; dragDelta = 0;
-    track.style.transition = 'none'; stopAuto();
-  }, { passive: true });
-  wrapper.addEventListener('touchmove', e => {
-    dragDelta = e.touches[0].clientX - dragStart;
-    track.style.transform = `translateX(${-current * cardW() + dragDelta}px)`;
-  }, { passive: true });
-  wrapper.addEventListener('touchend', () => {
-    track.style.transition = 'transform .45s cubic-bezier(.4,0,.2,1)';
-    const thr = cardW() * .25;
-    if (dragDelta < -thr) carouselGoTo(current + 1);
-    else if (dragDelta > thr) carouselGoTo(current - 1);
-    else carouselGoTo(current);
-    resetAuto();
-  });
-
-  // ── Resize ──
-  let resizeTimer;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      buildDots();
-      carouselGoTo(Math.min(current, maxIdx()));
-    }, 150);
-  });
-
-  // Init
-  buildDots();
-  carouselGoTo(0);
-  startAuto();
-})();
+});
 </script>
 
 {% endblock %}

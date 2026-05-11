@@ -1,363 +1,655 @@
-{% extends 'dashboard/base_dashboard.html' %}
+{% extends 'base/base.html' %}
+{% load static %}
 
-{% block title %}Événements{% endblock %}
-{% block page_title %}Événements{% endblock %}
-{% block page_subtitle %}{{ events.count }} événement{{ events.count|pluralize }} au total{% endblock %}
+{% block title %}LASPAD Event — Événements scientifiques{% endblock %}
 
-{% block header_actions %}
-  <a href="{% url 'dashboard:event_create' %}" class="btn-sm btn-primary-sm">
-    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-    </svg>
-    Nouvel événement
-  </a>
+{% block extra_head %}
+  <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
+
+  {% with site_url=SITE_URL %}
+  <meta property="og:type"        content="website">
+  <meta property="og:site_name"   content="LASPAD Event">
+  <meta property="og:title"       content="LASPAD Event — Événements scientifiques">
+  <meta property="og:description" content="Webinaires, conférences, ateliers — rejoignez la communauté de recherche du LASPAD.">
+  <meta property="og:url"         content="{{ site_url }}">
+  <meta property="og:image"       content="{{ site_url }}{% static 'img/logo.png' %}">
+  <meta name="twitter:card"       content="summary_large_image">
+  <meta name="twitter:title"      content="LASPAD Event — Événements scientifiques">
+  <meta name="twitter:image"      content="{{ site_url }}{% static 'img/logo.png' %}">
+  <meta name="description"        content="Webinaires, conférences, ateliers — rejoignez la communauté de recherche du LASPAD.">
+  {% endwith %}
+
+  <style>
+    /* ── Palette ── */
+    :root {
+      --green:  #1a6b3a;
+      --green2: #2d8a52;
+      --gold:   #c9a227;
+      --dark:   #0f1f15;
+      --light:  #f3f7f4;
+    }
+
+    /* ── Cards ── */
+    .event-card {
+      display: flex;
+      flex-direction: column;
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+    .event-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(26,107,58,.13);
+    }
+
+    /* ── Filter tabs ── */
+    .filter-tab {
+      padding: 6px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .18s;
+      border: 1.5px solid transparent;
+      white-space: nowrap;
+      background: #fff;
+      color: #6b7280;
+      border-color: #e5e7eb;
+    }
+    .filter-tab.active  { background: var(--green); color: #fff; border-color: var(--green); }
+    .filter-tab:not(.active):hover { border-color: var(--green); color: var(--green); }
+
+    /* ── Type badge ── */
+    .type-badge {
+      font-size: 11px; font-weight: 700;
+      padding: 3px 10px; border-radius: 999px;
+      text-transform: uppercase; letter-spacing: .04em;
+    }
+
+    /* ── Progress bar ── */
+    .progress-bar  { height: 4px; border-radius: 2px; background: #e5e7eb; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 2px; background: var(--green); }
+
+    /* ── Buttons ── */
+    .btn-gold {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--gold); color: #fff;
+      padding: 11px 24px; border-radius: 12px;
+      font-weight: 700; font-size: 14px; text-decoration: none;
+      transition: all .18s;
+    }
+    .btn-gold:hover { background: #a8841f; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(201,162,39,.35); }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: linear-gradient(135deg, var(--green), var(--green2));
+      color: #fff; padding: 10px 20px; border-radius: 10px;
+      font-weight: 700; font-size: 13px; text-decoration: none;
+      transition: all .18s; justify-content: center;
+    }
+    .btn-primary:hover { opacity: .9; transform: translateY(-1px); }
+
+    /* ══════════════════════════════════════════
+       GRILLE 4+ : layout magazine
+    ══════════════════════════════════════════ */
+    .events-magazine {
+      display: grid;
+      gap: 1.25rem;
+    }
+    /* Mobile : 1 colonne */
+    @media (max-width: 639px) {
+      .events-magazine { grid-template-columns: 1fr; }
+      .mag-featured    { grid-column: 1; }
+    }
+    /* Tablet : 2 colonnes */
+    @media (min-width: 640px) and (max-width: 1023px) {
+      .events-magazine { grid-template-columns: repeat(2, 1fr); }
+      .mag-featured    { grid-column: 1 / -1; }
+    }
+    /* Desktop : 3 colonnes avec featured sur 2 cols */
+    @media (min-width: 1024px) {
+      .events-magazine { grid-template-columns: repeat(3, 1fr); }
+      .mag-featured    { grid-column: span 2; }
+    }
+
+    /* Card featured (grande) */
+    .card-featured {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      min-height: 340px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      cursor: pointer;
+      transition: transform .25s, box-shadow .25s;
+    }
+    .card-featured:hover { transform: translateY(-4px); box-shadow: 0 24px 48px rgba(0,0,0,.18); }
+    .card-featured .cf-bg {
+      position: absolute; inset: 0;
+      background-size: cover; background-position: center;
+      transition: transform .5s ease;
+    }
+    .card-featured:hover .cf-bg { transform: scale(1.04); }
+    .card-featured .cf-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(10,25,15,.92) 40%, rgba(10,25,15,.2) 100%);
+    }
+    .card-featured .cf-body {
+      position: relative; z-index: 2;
+      padding: 1.75rem;
+    }
+
+    /* Card compacte (petite) */
+    .card-compact {
+      background: #fff;
+      border: 1.5px solid #e8ede9;
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform .22s, box-shadow .22s, border-color .22s;
+      cursor: pointer;
+    }
+    .card-compact:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 36px rgba(26,107,58,.11);
+      border-color: #b5d4be;
+    }
+    .card-compact .cc-img {
+      height: 160px;
+      overflow: hidden;
+      position: relative;
+    }
+    .card-compact .cc-img img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform .4s ease;
+    }
+    .card-compact:hover .cc-img img { transform: scale(1.06); }
+    .card-compact .cc-body { padding: 1.1rem 1.25rem 1.25rem; flex: 1; display: flex; flex-direction: column; }
+
+    /* Pagination dots */
+    .pg-dot {
+      width: 8px; height: 8px; border-radius: 4px;
+      background: #d1d5db; border: none; padding: 0; cursor: pointer;
+      transition: all .2s;
+    }
+    .pg-dot.active { width: 24px; background: var(--green); }
+
+    /* Show more button */
+    .show-more-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 12px 28px; border-radius: 12px;
+      border: 2px solid #e5e7eb; color: #4b5563;
+      font-weight: 600; font-size: 14px; cursor: pointer;
+      background: #fff; transition: all .18s; width: 100%;
+    }
+    .show-more-btn:hover { border-color: var(--green); color: var(--green); background: #f0fdf4; }
+
+    /* Hidden cards */
+    .event-card-wrapper.hidden-card { display: none !important; }
+  </style>
 {% endblock %}
 
 {% block content %}
 
-<!-- ── Filtres + Recherche ── -->
-<div class="bg-white rounded-2xl border border-gray-200 overflow-hidden mb-4">
-  <div class="px-6 py-4 flex flex-wrap items-center gap-3">
+<!-- ══ HERO ══ -->
+<section class="relative overflow-hidden" style="background:var(--dark);">
+  <div class="absolute inset-0" style="opacity:.06;">
+    <svg width="100%" height="100%">
+      <defs>
+        <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+          <path d="M60 0L0 0 0 60" fill="none" stroke="white" stroke-width=".8"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#grid)"/>
+    </svg>
+  </div>
+  <div class="absolute top-0 right-0 w-96 h-96 rounded-full pointer-events-none"
+       style="background:radial-gradient(circle,rgba(201,162,39,.15),transparent 70%);transform:translate(30%,-30%)"></div>
+  <div class="absolute bottom-0 left-0 w-80 h-80 rounded-full pointer-events-none"
+       style="background:radial-gradient(circle,rgba(26,107,58,.25),transparent 70%);transform:translate(-30%,30%)"></div>
 
-    <!-- Recherche -->
-    <div class="flex-1 min-w-48">
-      <div class="relative">
-        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-        </svg>
-        <input type="text" id="ev-search" placeholder="Rechercher un événement..."
-               class="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-green-400"
-               oninput="applyFilters()">
+  <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div>
+        <div class="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-6 border"
+             style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);">
+          <span class="w-2 h-2 rounded-full animate-pulse" style="background:var(--gold);"></span>
+          <span class="text-sm font-medium" style="color:rgba(255,255,255,.7);">Plateforme officielle LASPAD</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-bold leading-tight mb-5"
+            style="font-family:'Sora',sans-serif;color:#fff;">
+          Les événements<br>
+          <span style="color:var(--gold);">scientifiques</span><br>
+          du LASPAD
+        </h1>
+        <p class="text-base leading-relaxed mb-7" style="color:rgba(255,255,255,.55);">
+          Webinaires, conférences, ateliers — rejoignez la communauté de recherche du
+          Laboratoire d'Analyse des Sociétés et Pouvoirs / Afrique – Diasporas.
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <a href="#evenements" class="btn-gold">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            Voir les événements
+          </a>
+          <a href="{% url 'events:recordings' %}"
+             class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm"
+             style="background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.15);">
+            🎬 Enregistrements
+          </a>
+          <a href="{% url 'dashboard:login' %}"
+             class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm"
+             style="background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.15);">
+            Espace admin →
+          </a>
+        </div>
+      </div>
+
+      <!-- Logo desktop -->
+      <div class="hidden lg:flex justify-center">
+        <div class="relative">
+          <div class="absolute inset-0 rounded-2xl"
+               style="background:radial-gradient(circle,rgba(201,162,39,.15),transparent 65%);transform:scale(1.4);"></div>
+          <div class="relative rounded-2xl p-8 flex items-center justify-center"
+               style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(8px);">
+            <img src="{% static 'img/logo.png' %}" alt="LASPAD" class="w-64 h-auto object-contain"
+                 style="filter:brightness(0) invert(1);">
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Filtre statut -->
-    <div class="flex gap-1 flex-wrap">
-            <button onclick="setFilter('status','all')" id="fs-all"
-              class="ev-status-btn text-xs px-3 py-1.5 rounded-lg font-semibold bg-gray-100 text-gray-600 hover:bg-green-50 hover:text-green-700 transition-all">
-        Tous</button>
-
-      <!-- Bouton À venir : vert actif par défaut -->
-      <button onclick="setFilter('status','upcoming')" id="fs-upcoming"
-              class="ev-status-btn text-xs px-3 py-1.5 rounded-lg font-semibold transition-all"
-              style="background:#1a6b3a;color:#fff;">
-        À venir</button>
-      <button onclick="setFilter('status','publie')" id="fs-publie"
-              class="ev-status-btn text-xs px-3 py-1.5 rounded-lg font-semibold bg-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-700 transition-all">
-        Publié</button>
-      <button onclick="setFilter('status','brouillon')" id="fs-brouillon"
-              class="ev-status-btn text-xs px-3 py-1.5 rounded-lg font-semibold bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all">
-        Brouillon</button>
-
-      <button onclick="setFilter('status','past')" id="fs-past"
-              class="ev-status-btn text-xs px-3 py-1.5 rounded-lg font-semibold bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all">
-        Passé</button>
+    <!-- Stats -->
+    <div class="mt-14 grid grid-cols-3 gap-px rounded-2xl overflow-hidden" style="background:rgba(255,255,255,.07);">
+      <div class="px-6 py-5 text-center" style="background:rgba(255,255,255,.04);">
+        <p class="text-2xl font-bold" style="font-family:'Sora',sans-serif;color:var(--gold);">{{ upcoming_events.count }}</p>
+        <p class="text-xs mt-0.5" style="color:rgba(255,255,255,.45);">À venir</p>
+      </div>
+      <div class="px-6 py-5 text-center" style="background:rgba(255,255,255,.04);">
+        <p class="text-2xl font-bold" style="font-family:'Sora',sans-serif;color:var(--gold);">{{ past_events.count }}</p>
+        <p class="text-xs mt-0.5" style="color:rgba(255,255,255,.45);">Éditions passées</p>
+      </div>
+      <div class="px-6 py-5 text-center" style="background:rgba(255,255,255,.04);">
+        <p class="text-2xl font-bold" style="font-family:'Sora',sans-serif;color:var(--gold);">100%</p>
+        <p class="text-xs mt-0.5" style="color:rgba(255,255,255,.45);">Gratuit</p>
+      </div>
     </div>
-
-    <!-- Filtre mode -->
-    <div class="flex gap-1">
-      <button onclick="setFilter('mode','all')" id="fm-all"
-              class="ev-mode-btn text-xs px-3 py-1.5 rounded-lg font-semibold transition-all"
-              style="background:#1f2937;color:#fff;">Tous modes</button>
-      <button onclick="setFilter('mode','online_only')" id="fm-online_only"
-              class="ev-mode-btn text-xs px-3 py-1.5 rounded-lg font-semibold bg-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-700 transition-all">
-        🌐 En ligne</button>
-      <button onclick="setFilter('mode','onsite_only')" id="fm-onsite_only"
-              class="ev-mode-btn text-xs px-3 py-1.5 rounded-lg font-semibold bg-gray-100 text-gray-600 hover:bg-purple-50 hover:text-purple-700 transition-all">
-        🏛️ Présentiel</button>
-      <button onclick="setFilter('mode','hybrid')" id="fm-hybrid"
-              class="ev-mode-btn text-xs px-3 py-1.5 rounded-lg font-semibold bg-gray-100 text-gray-600 hover:bg-amber-50 hover:text-amber-700 transition-all">
-        🔀 Hybride</button>
-    </div>
-
   </div>
-</div>
+</section>
 
-<!-- ── Table ── -->
-<div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-  <div class="overflow-x-auto">
-    <table class="table w-full" id="ev-table">
-      <thead>
-        <tr>
-          <th class="text-left">Titre</th>
-          <th class="text-left">Type / Mode</th>
-          <th class="text-left">Date</th>
-          <th class="text-left">Statut</th>
-          <th class="text-left">Inscriptions</th>
-          <th class="text-left">Actions</th>
-        </tr>
-      </thead>
-      <tbody id="ev-tbody">
-        {% for event in events %}
-        <tr class="ev-row"
-            data-status="{{ event.status }}"
-            data-upcoming="{% if event.is_upcoming %}1{% else %}0{% endif %}"
-            data-past="{% if event.is_finished %}1{% else %}0{% endif %}"
-            data-mode="{{ event.participation_mode|default:'online_only' }}"
-            data-search="{{ event.title|lower }} {{ event.get_event_type_display|lower }}">
+<!-- ══ SECTION ÉVÉNEMENTS ══ -->
+<div id="evenements" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
 
-          <td>
-            <a href="{% url 'dashboard:event_detail' pk=event.pk %}"
-               class="font-semibold text-gray-900 hover:text-green-700 transition-colors">
-              {{ event.title|truncatechars:45 }}
-            </a>
-            <div class="flex flex-wrap gap-1 mt-1">
-              {% if event.access_mode == 'validation' %}
-                <span class="text-xs text-yellow-600 bg-yellow-50 px-1.5 py-0.5 rounded">validation</span>
-              {% endif %}
+  {% if upcoming_events %}
+  <section class="mb-16">
+
+    <!-- En-tête -->
+    <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+      <div class="flex items-center gap-4">
+        <div class="w-1 h-9 rounded-full" style="background:linear-gradient(to bottom,var(--green),var(--gold));"></div>
+        <div>
+          <h2 class="text-2xl font-bold" style="font-family:'Sora',sans-serif;color:var(--dark);">
+            Événements à venir
+          </h2>
+          <p class="text-sm text-gray-400 mt-0.5">Inscrivez-vous dès maintenant</p>
+        </div>
+        <span class="text-xs font-bold px-2.5 py-1 rounded-full text-white" style="background:var(--green);">
+          {{ upcoming_events.count }}
+        </span>
+      </div>
+
+      <!-- Filtres -->
+      <div class="flex gap-2 flex-wrap" id="type-filters">
+        <button class="filter-tab active" onclick="filterType('all', this)">Tous</button>
+        <button class="filter-tab" onclick="filterType('webinaire', this)">Webinaires</button>
+        <button class="filter-tab" onclick="filterType('conference', this)">Conférences</button>
+        <button class="filter-tab" onclick="filterType('atelier', this)">Ateliers</button>
+        <button class="filter-tab" onclick="filterType('seminaire', this)">Séminaires</button>
+      </div>
+    </div>
+
+    <!-- ══ 1 événement ══ -->
+    {% if upcoming_events.count == 1 %}
+    <div class="flex justify-center" id="events-grid">
+      {% for event in upcoming_events %}
+      <div class="event-card-wrapper w-full max-w-sm" data-type="{{ event.event_type }}">
+        {% include 'events/_card.html' %}
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- ══ 2-3 événements : grille simple ══ -->
+    {% elif upcoming_events.count <= 3 %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="events-grid">
+      {% for event in upcoming_events %}
+      <div class="event-card-wrapper" data-type="{{ event.event_type }}">
+        {% include 'events/_card_full.html' %}
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- ══ 4+ événements : layout magazine ══ -->
+    {% else %}
+    <div class="events-magazine" id="events-grid">
+      {% for event in upcoming_events %}
+
+      {% if forloop.counter == 1 %}
+      <!-- ── Card featured (1ère) ── -->
+      <div class="mag-featured event-card-wrapper" data-type="{{ event.event_type }}">
+        <a href="{{ event.get_absolute_url }}" class="card-featured block">
+          <!-- Fond image ou dégradé -->
+          {% if event.banner %}
+          <div class="cf-bg" style="background-image:url('{{ event.banner.url }}');"></div>
+          {% else %}
+          <div class="cf-bg" style="background:linear-gradient(135deg,#0f1f15,#1a6b3a);"></div>
+          {% endif %}
+          <div class="cf-overlay"></div>
+
+          <!-- Badge "À la une" -->
+          <div style="position:absolute;top:1.25rem;left:1.25rem;z-index:3;">
+            <span class="text-xs font-bold px-3 py-1 rounded-full"
+                  style="background:var(--gold);color:#fff;letter-spacing:.05em;">
+              ★ À la une
+            </span>
+          </div>
+
+          <!-- Contenu -->
+          <div class="cf-body">
+            <div class="flex flex-wrap gap-2 mb-3">
+              <span class="type-badge" style="background:rgba(255,255,255,.15);color:#fff;backdrop-filter:blur(4px);">
+                {{ event.get_event_type_display }}
+              </span>
               {% if event.participation_mode == 'hybrid' %}
-                <span class="text-xs bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded font-semibold">🔀 Hybride</span>
+                <span class="type-badge" style="background:rgba(201,162,39,.25);color:#fde68a;">🔀 Hybride</span>
               {% elif event.participation_mode == 'onsite_only' %}
-                <span class="text-xs bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded font-semibold">🏛️ Présentiel</span>
+                <span class="type-badge" style="background:rgba(139,92,246,.25);color:#ddd6fe;">🏛️ Présentiel</span>
               {% else %}
-                <span class="text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded font-semibold">🌐 En ligne</span>
+                <span class="type-badge" style="background:rgba(59,130,246,.25);color:#bfdbfe;">🌐 En ligne</span>
               {% endif %}
             </div>
-          </td>
 
-          <td>
-            <span class="text-sm text-gray-600">{{ event.get_event_type_display }}</span>
-          </td>
+            <h3 class="text-xl sm:text-2xl font-bold text-white mb-2 leading-snug"
+                style="font-family:'Sora',sans-serif;">
+              {{ event.title|truncatechars:80 }}
+            </h3>
+            <p class="text-sm mb-4" style="color:rgba(255,255,255,.65);">
+              {{ event.description|truncatechars:120 }}
+            </p>
 
-          <td class="text-sm text-gray-600 whitespace-nowrap">
-            {{ event.start_datetime|date:"d/m/Y" }}
-            <p class="text-xs text-gray-400">{{ event.start_datetime|date:"H:i" }}</p>
-          </td>
-
-          <td>
-            {% if event.status == 'publie' %}<span class="badge-published">Publié</span>
-            {% elif event.status == 'brouillon' %}<span class="badge-draft">Brouillon</span>
-            {% elif event.status == 'annule' %}<span class="badge-refused">Annulé</span>
-            {% else %}<span class="badge-draft">Terminé</span>{% endif %}
-            {% if event.is_upcoming %}
-              <p class="text-xs text-green-600 font-semibold mt-0.5">À venir</p>
-            {% elif event.is_finished %}
-              <p class="text-xs text-gray-400 mt-0.5">Terminé</p>
-            {% endif %}
-          </td>
-
-          <td>
-            <div class="flex items-center gap-2">
-              <span class="font-semibold text-gray-900">{{ event.reg_count }}</span>
-              {% if event.pending_count > 0 %}
-                <span class="badge-pending text-xs">{{ event.pending_count }} att.</span>
-              {% endif %}
-            </div>
-            {% if event.participation_mode == 'hybrid' %}
-              <div class="flex gap-1 mt-1">
-                <span class="text-xs text-purple-600">🏛️ {{ event.accepted_onsite.count }}</span>
-                <span class="text-xs text-gray-300">|</span>
-                <span class="text-xs text-blue-600">🌐 {{ event.accepted_online.count }}</span>
+            <div class="flex items-center justify-between flex-wrap gap-3">
+              <div class="flex items-center gap-4">
+                <div class="flex items-center gap-1.5 text-xs" style="color:rgba(255,255,255,.7);">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                  </svg>
+                  {{ event.start_datetime|date:"d F Y" }} à {{ event.start_datetime|date:"H:i" }}
+                </div>
               </div>
-            {% endif %}
-          </td>
+              <span class="inline-flex items-center gap-1.5 text-xs font-bold px-4 py-2 rounded-xl"
+                    style="background:var(--gold);color:#fff;">
+                S'inscrire →
+              </span>
+            </div>
+          </div>
+        </a>
+      </div>
 
-          <td>
-            <div class="flex flex-wrap items-center gap-1.5">
-              <a href="{% url 'dashboard:event_detail' pk=event.pk %}"
-                class="btn-sm bg-gray-100 text-gray-700 hover:bg-gray-200 text-xs">
-                Gérer
-              </a>
-              <a href="{% url 'dashboard:event_edit' pk=event.pk %}"
-                class="btn-sm bg-blue-50 text-blue-700 hover:bg-blue-100 text-xs">
-                Modifier
-              </a>
-              <a href="{% url 'dashboard:schedule_manage' pk=event.pk %}"
-                class="btn-sm bg-green-50 text-green-700 hover:bg-green-100 text-xs">
-                📅
-              </a>
-              <a href="{% url 'dashboard:contact_participants' pk=event.pk %}"
-                class="btn-sm bg-purple-50 text-purple-700 hover:bg-purple-100 text-xs">
-                ✉
-              </a>
-              <a href="{% url 'dashboard:export_csv' pk=event.pk %}"
-                class="btn-sm bg-gray-50 text-gray-600 hover:bg-gray-100 text-xs">
-                CSV
-              </a>
-              {% if request.user.is_superuser %}
-              <a href="{% url 'dashboard:event_delete' pk=event.pk %}"
-                class="btn-sm bg-red-50 text-red-600 hover:bg-red-100 text-xs">
-                🗑️
-              </a>
+      {% else %}
+      <!-- ── Cards compactes (2e, 3e, etc.) ── -->
+      <div class="event-card-wrapper" data-type="{{ event.event_type }}">
+        <a href="{{ event.get_absolute_url }}" class="card-compact h-full block">
+          <!-- Image -->
+          <div class="cc-img">
+            {% if event.banner %}
+            <img src="{{ event.banner.url }}" alt="{{ event.title }}">
+            {% else %}
+            <div class="w-full h-full flex items-center justify-center"
+                 style="background:linear-gradient(135deg,#0f1f15,#1a6b3a);">
+              <img src="{% static 'img/favicon.png' %}" alt="LASPAD"
+                   class="h-14 w-14 object-contain opacity-50">
+            </div>
+            {% endif %}
+            <!-- Badge type -->
+            <div style="position:absolute;top:.75rem;left:.75rem;">
+              <span class="type-badge text-white"
+                    style="background:rgba(0,0,0,.55);backdrop-filter:blur(4px);font-size:10px;">
+                {{ event.get_event_type_display }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Body -->
+          <div class="cc-body">
+            <div class="flex gap-1.5 mb-2">
+              {% if event.participation_mode == 'hybrid' %}
+                <span class="type-badge" style="background:#fffbeb;color:#92400e;font-size:10px;">🔀 Hybride</span>
+              {% elif event.participation_mode == 'onsite_only' %}
+                <span class="type-badge" style="background:#f5f3ff;color:#5b21b6;font-size:10px;">🏛️ Présentiel</span>
+              {% else %}
+                <span class="type-badge" style="background:#eff6ff;color:#1d4ed8;font-size:10px;">🌐 En ligne</span>
               {% endif %}
             </div>
-          </td>
-        </tr>
-        {% empty %}
-        <tr id="empty-row">
-          <td colspan="6" class="text-center py-16 text-gray-400">
-            <svg class="w-12 h-12 mx-auto mb-3 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-            </svg>
-            <p class="font-medium">Aucun événement créé.</p>
-            <a href="{% url 'dashboard:event_create' %}" class="text-green-700 hover:underline text-sm mt-1 inline-block">
-              Créer le premier événement →
-            </a>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
 
-  <!-- Message aucun résultat -->
-  <div id="no-result-msg" class="hidden text-center py-12 text-gray-400 border-t border-gray-100">
-    <svg class="w-10 h-10 mx-auto mb-3 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-    </svg>
-    <p class="font-medium">Aucun événement ne correspond à votre recherche.</p>
-    <button onclick="resetFilters()" class="text-green-700 hover:underline text-sm mt-1">Réinitialiser les filtres</button>
-  </div>
+            <h3 class="font-bold text-gray-900 text-sm leading-snug mb-2 flex-1"
+                style="font-family:'Sora',sans-serif;">
+              {{ event.title|truncatechars:65 }}
+            </h3>
 
-  <!-- Pagination -->
-  <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-    <p class="text-xs text-gray-500" id="ev-pagination-info"></p>
-    <div class="flex gap-1" id="ev-pagination-btns"></div>
+            <p class="text-xs text-gray-400 leading-relaxed mb-3">
+              {{ event.description|truncatechars:80 }}
+            </p>
+
+            <div class="flex items-center gap-1.5 text-xs text-gray-400 mb-4">
+              <svg class="w-3.5 h-3.5 flex-shrink-0" style="color:var(--green);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+              {{ event.start_datetime|date:"d F Y" }} · {{ event.start_datetime|date:"H:i" }}
+            </div>
+
+            <div class="flex gap-2 mt-auto">
+              <span class="flex-1 text-center text-xs font-semibold py-2 px-3 rounded-lg border border-gray-200 text-gray-600 hover:border-green-600 hover:text-green-700 transition-all">
+                Détails
+              </span>
+              {% if event.is_upcoming %}
+              <span class="btn-primary flex-1 text-xs py-2">S'inscrire</span>
+              {% else %}
+              <span class="flex-1 text-center text-xs font-semibold py-2 px-3 rounded-lg bg-gray-100 text-gray-400">Terminé</span>
+              {% endif %}
+            </div>
+          </div>
+        </a>
+      </div>
+      {% endif %}
+
+      {% endfor %}
+    </div>
+
+    <!-- Bouton "Voir plus" si plus de 6 événements -->
+    {% if upcoming_events.count > 6 %}
+    <div class="mt-8 text-center">
+      <button class="show-more-btn" id="show-more-btn" onclick="showMore()">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+        </svg>
+        Voir plus d'événements
+        <span class="text-xs font-normal text-gray-400" id="remaining-count"></span>
+      </button>
+    </div>
+    {% endif %}
+
+    {% endif %}
+
+    <!-- Aucun résultat filtre -->
+    <div id="no-filter-msg" class="hidden text-center py-12 text-gray-400">
+      <p class="text-sm">Aucun événement de ce type pour le moment.</p>
+      <button onclick="filterType('all', document.querySelector('.filter-tab'))"
+              class="text-green-700 hover:underline text-xs mt-1">Voir tous les événements</button>
+    </div>
+
+  </section>
+  {% endif %}
+
+  <!-- ── Aucun événement ── -->
+  {% if not upcoming_events %}
+  <div class="text-center py-24">
+    <div class="w-20 h-20 rounded-full mx-auto mb-5 flex items-center justify-center" style="background:#f0fdf4;">
+      <svg class="w-10 h-10" style="color:var(--green);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+      </svg>
+    </div>
+    <h3 class="text-xl font-bold text-gray-800 mb-2" style="font-family:'Sora',sans-serif;">
+      Aucun événement à venir
+    </h3>
+    <p class="text-gray-400 text-sm max-w-xs mx-auto">
+      Revenez bientôt — de nouveaux événements seront annoncés prochainement.
+    </p>
   </div>
+  {% endif %}
+
+  <!-- ── Événements passés ── -->
+  {% if past_events %}
+  <section class="mt-4">
+    <div class="flex items-center gap-4 mb-6">
+      <div class="w-1 h-8 rounded-full bg-gray-200"></div>
+      <div>
+        <h2 class="text-lg font-bold text-gray-400" style="font-family:'Sora',sans-serif;">Éditions passées</h2>
+        <p class="text-xs text-gray-300 mt-0.5">{{ past_events.count }} événement{{ past_events.count|pluralize }}</p>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {% for event in past_events %}
+      <a href="{{ event.get_absolute_url }}"
+         class="flex items-center gap-4 p-4 bg-white rounded-xl border border-gray-100 hover:border-gray-300 hover:shadow-sm transition-all opacity-65 hover:opacity-100 group">
+        <div class="w-11 h-11 rounded-xl flex-shrink-0 flex items-center justify-center" style="background:#f3f4f6;">
+          <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <div class="min-w-0 flex-1">
+          <p class="font-semibold text-gray-700 text-sm truncate group-hover:text-gray-900"
+             style="font-family:'Sora',sans-serif;">{{ event.title }}</p>
+          <div class="flex items-center gap-2 mt-0.5">
+            <p class="text-xs text-gray-400">{{ event.start_datetime|date:"d F Y" }}</p>
+            <span class="text-gray-200">·</span>
+            <p class="text-xs text-gray-400">{{ event.get_event_type_display }}</p>
+          </div>
+        </div>
+        <svg class="w-4 h-4 text-gray-300 group-hover:text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
 </div>
 
-{% endblock %}
+<!-- ══ BANDEAU LASPAD ══ -->
+<section style="background:var(--dark);" class="mt-8">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+      <div>
+        <p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:var(--gold);">À propos</p>
+        <h2 class="text-3xl font-bold text-white mb-4" style="font-family:'Sora',sans-serif;">
+          Le LASPAD, acteur de la recherche africaine
+        </h2>
+        <p class="leading-relaxed text-sm mb-6" style="color:rgba(255,255,255,.55);">
+          Le Laboratoire d'Analyse des Sociétés et Pouvoirs / Afrique – Diasporas organise
+          régulièrement des événements scientifiques pour renforcer les capacités analytiques en Afrique.
+        </p>
+        <a href="mailto:communication@laspad.sn" class="btn-gold">Nous contacter</a>
+      </div>
+      <div class="flex justify-center">
+        <img src="{% static 'img/logo.png' %}" alt="LASPAD"
+             class="h-28 w-auto object-contain opacity-75"
+             style="filter:brightness(0) invert(1);">
+      </div>
+    </div>
+  </div>
+</section>
 
-{% block extra_js %}
 <script>
-const PER_PAGE   = 10;
-let currentPage  = 1;
-let activeStatus = 'upcoming';
-let activeMode   = 'all';
+// ═══════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════
+const INITIAL_SHOW = 6; // Nombre de cards visibles initialement (4+)
+let showAll = false;
 
-function setFilter(type, val) {
-  if (type === 'status') activeStatus = val;
-  if (type === 'mode')   activeMode   = val;
-  currentPage = 1;
+// ═══════════════════════════════════════
+// FILTRE PAR TYPE
+// ═══════════════════════════════════════
+function filterType(type, btn) {
+  document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
 
-  // Boutons statut
-  if (type === 'status') {
-    document.querySelectorAll('.ev-status-btn').forEach(btn => {
-      btn.style.background = '#f3f4f6'; btn.style.color = '#4b5563';
-    });
-    const b = document.getElementById(`fs-${val}`);
-    if (b) { b.style.background = '#1a6b3a'; b.style.color = '#fff'; }
-  }
-  // Boutons mode
-  if (type === 'mode') {
-    document.querySelectorAll('.ev-mode-btn').forEach(btn => {
-      btn.style.background = '#f3f4f6'; btn.style.color = '#4b5563';
-    });
-    const b = document.getElementById(`fm-${val}`);
-    if (b) { b.style.background = '#1f2937'; b.style.color = '#fff'; }
-  }
-  applyFilters();
-}
-
-function applyFilters() {
-  const search = document.getElementById('ev-search').value.toLowerCase().trim();
-  const rows   = [...document.querySelectorAll('.ev-row')];
-
-  const visible = rows.filter(row => {
-    // Statut
-    let matchStatus = true;
-    if (activeStatus === 'upcoming') matchStatus = row.dataset.upcoming === '1';
-    else if (activeStatus === 'past') matchStatus = row.dataset.past === '1';
-    else if (activeStatus !== 'all') matchStatus = row.dataset.status === activeStatus;
-
-    // Mode
-    const matchMode = activeMode === 'all' || row.dataset.mode === activeMode;
-
-    // Recherche
-    const matchSearch = !search || row.dataset.search.includes(search);
-
-    return matchStatus && matchMode && matchSearch;
-  });
-
-  // Masquer tout
-  rows.forEach(r => r.style.display = 'none');
-
-  // Pagination
-  const totalPages = Math.max(1, Math.ceil(visible.length / PER_PAGE));
-  if (currentPage > totalPages) currentPage = 1;
-
-  const start = (currentPage - 1) * PER_PAGE;
-  const end   = start + PER_PAGE;
-  visible.forEach((r, i) => {
-    r.style.display = (i >= start && i < end) ? '' : 'none';
-  });
-
-  // Messages
-  const emptyRow  = document.getElementById('empty-row');
-  const noResult  = document.getElementById('no-result-msg');
-  const hasEvents = rows.length > 0;
-
-  if (emptyRow) emptyRow.style.display = 'none';
-  if (noResult) noResult.classList.toggle('hidden', visible.length > 0 || !hasEvents);
-  if (!hasEvents && emptyRow) emptyRow.style.display = '';
-
-  // Info
-  const info = document.getElementById('ev-pagination-info');
-  if (info) {
-    const from = visible.length === 0 ? 0 : start + 1;
-    const to   = Math.min(end, visible.length);
-    info.textContent = visible.length === 0
-      ? 'Aucun résultat'
-      : `${from}–${to} sur ${visible.length} événement${visible.length > 1 ? 's' : ''}`;
-  }
-
-  renderPagination(totalPages, visible.length);
-}
-
-function renderPagination(totalPages, total) {
-  const container = document.getElementById('ev-pagination-btns');
-  if (!container) return;
-  container.innerHTML = '';
-  if (totalPages <= 1) return;
-
-  const prev = document.createElement('button');
-  prev.textContent = '←';
-  prev.className   = 'px-3 py-1.5 text-xs rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-100';
-  if (currentPage === 1) prev.style.opacity = '0.4';
-  prev.disabled = currentPage === 1;
-  prev.onclick  = () => { currentPage--; applyFilters(); };
-  container.appendChild(prev);
-
-  for (let i = 1; i <= totalPages; i++) {
-    const btn = document.createElement('button');
-    btn.textContent = i;
-    btn.className   = 'px-3 py-1.5 text-xs rounded-lg border font-semibold transition-all';
-    if (i === currentPage) {
-      btn.style.background  = '#1a6b3a';
-      btn.style.color       = '#fff';
-      btn.style.borderColor = '#1a6b3a';
+  const wrappers = document.querySelectorAll('.event-card-wrapper');
+  let visible = 0;
+  wrappers.forEach(w => {
+    const match = type === 'all' || w.dataset.type === type;
+    if (match) {
+      w.classList.remove('hidden-card');
+      visible++;
     } else {
-      btn.style.borderColor = '#e5e7eb';
-      btn.style.color       = '#6b7280';
-      btn.onmouseover = () => btn.style.background = '#f3f4f6';
-      btn.onmouseout  = () => btn.style.background = '';
+      w.classList.add('hidden-card');
     }
-    btn.onclick = () => { currentPage = i; applyFilters(); };
-    container.appendChild(btn);
+  });
+
+  // Réappliquer la limite si pas show all
+  if (!showAll) applyLimit();
+
+  const noMsg = document.getElementById('no-filter-msg');
+  if (noMsg) noMsg.classList.toggle('hidden', visible > 0);
+}
+
+// ═══════════════════════════════════════
+// SHOW MORE
+// ═══════════════════════════════════════
+function applyLimit() {
+  const wrappers = [...document.querySelectorAll('#events-grid .event-card-wrapper')];
+  const visible  = wrappers.filter(w => !w.classList.contains('hidden-card'));
+  const btn      = document.getElementById('show-more-btn');
+  const remaining = document.getElementById('remaining-count');
+
+  visible.forEach((w, i) => {
+    if (i >= INITIAL_SHOW) {
+      w.style.display = 'none';
+    } else {
+      w.style.display = '';
+    }
+  });
+
+  const hidden = visible.filter((w, i) => i >= INITIAL_SHOW).length;
+  if (btn) {
+    btn.style.display = hidden > 0 ? 'flex' : 'none';
+    if (remaining) remaining.textContent = hidden > 0 ? `(${hidden} de plus)` : '';
   }
-
-  const next = document.createElement('button');
-  next.textContent = '→';
-  next.className   = 'px-3 py-1.5 text-xs rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-100';
-  if (currentPage === totalPages) next.style.opacity = '0.4';
-  next.disabled = currentPage === totalPages;
-  next.onclick  = () => { currentPage++; applyFilters(); };
-  container.appendChild(next);
 }
 
-function resetFilters() {
-  document.getElementById('ev-search').value = '';
-  activeStatus = 'upcoming'; activeMode = 'all'; currentPage = 1;
-  document.querySelectorAll('.ev-status-btn').forEach(b => { b.style.background='#f3f4f6'; b.style.color='#4b5563'; });
-  document.querySelectorAll('.ev-mode-btn').forEach(b => { b.style.background='#f3f4f6'; b.style.color='#4b5563'; });
-  const fs = document.getElementById('fs-all');
-  const fm = document.getElementById('fm-all');
-  if (fs) { fs.style.background='#1a6b3a'; fs.style.color='#fff'; }
-  if (fm) { fm.style.background='#1f2937'; fm.style.color='#fff'; }
-  applyFilters();
+function showMore() {
+  showAll = true;
+  const wrappers = [...document.querySelectorAll('#events-grid .event-card-wrapper')];
+  wrappers.forEach(w => {
+    if (!w.classList.contains('hidden-card')) w.style.display = '';
+  });
+  const btn = document.getElementById('show-more-btn');
+  if (btn) btn.style.display = 'none';
 }
 
-document.addEventListener('DOMContentLoaded', applyFilters);
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+  const grid = document.getElementById('events-grid');
+  if (grid) {
+    const total = grid.querySelectorAll('.event-card-wrapper').length;
+    if (total > INITIAL_SHOW) applyLimit();
+  }
+});
 </script>
+
 {% endblock %}

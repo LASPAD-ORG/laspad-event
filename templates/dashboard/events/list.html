@@ -397,73 +397,72 @@
         </a>
       </div>
 
-      {% else %}
-      <!-- ── Cards compactes (2e, 3e, etc.) ── -->
-      <div class="event-card-wrapper" data-type="{{ event.event_type }}">
-        <a href="{{ event.get_absolute_url }}" class="card-compact h-full block">
-          <!-- Image -->
-          <div class="cc-img">
-            {% if event.banner %}
-            <img src="{{ event.banner.url }}" alt="{{ event.title }}">
-            {% else %}
-            <div class="w-full h-full flex items-center justify-center"
-                 style="background:linear-gradient(135deg,#0f1f15,#1a6b3a);">
-              <img src="{% static 'img/favicon.png' %}" alt="LASPAD"
-                   class="h-14 w-14 object-contain opacity-50">
-            </div>
-            {% endif %}
-            <!-- Badge type -->
-            <div style="position:absolute;top:.75rem;left:.75rem;">
-              <span class="type-badge text-white"
-                    style="background:rgba(0,0,0,.55);backdrop-filter:blur(4px);font-size:10px;">
-                {{ event.get_event_type_display }}
-              </span>
-            </div>
+    {% else %}
+    <!-- ── 4+ événements : grille magazine ── -->
+    <div id="events-grid">
+
+      <!-- Ligne 1 : featured (1er event) -->
+      {% for event in upcoming_events %}
+      {% if forloop.counter == 1 %}
+      <div class="event-card-wrapper mb-5" data-type="{{ event.event_type }}">
+        <a href="{{ event.get_absolute_url }}"
+           class="block relative rounded-2xl overflow-hidden group"
+           style="min-height:300px;">
+          <!-- Fond -->
+          {% if event.banner %}
+          <div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+               style="background-image:url('{{ event.banner.url }}');"></div>
+          {% else %}
+          <div class="absolute inset-0" style="background:linear-gradient(135deg,#0f1f15,#1a6b3a);"></div>
+          {% endif %}
+          <!-- Overlay -->
+          <div class="absolute inset-0" style="background:linear-gradient(to top,rgba(10,25,15,.92) 40%,rgba(10,25,15,.2) 100%);"></div>
+          <!-- Badge à la une -->
+          <div class="absolute top-5 left-5 z-10">
+            <span class="text-xs font-bold px-3 py-1.5 rounded-full" style="background:#c9a227;color:#fff;">★ À la une</span>
           </div>
-
-          <!-- Body -->
-          <div class="cc-body">
-            <div class="flex gap-1.5 mb-2">
+          <!-- Contenu -->
+          <div class="absolute bottom-0 left-0 right-0 p-6 z-10">
+            <div class="flex flex-wrap gap-2 mb-3">
+              <span class="text-xs font-bold px-3 py-1 rounded-full" style="background:rgba(255,255,255,.15);color:#fff;">{{ event.get_event_type_display }}</span>
               {% if event.participation_mode == 'hybrid' %}
-                <span class="type-badge" style="background:#fffbeb;color:#92400e;font-size:10px;">🔀 Hybride</span>
+                <span class="text-xs font-bold px-3 py-1 rounded-full" style="background:rgba(201,162,39,.3);color:#fde68a;">🔀 Hybride</span>
               {% elif event.participation_mode == 'onsite_only' %}
-                <span class="type-badge" style="background:#f5f3ff;color:#5b21b6;font-size:10px;">🏛️ Présentiel</span>
+                <span class="text-xs font-bold px-3 py-1 rounded-full" style="background:rgba(139,92,246,.3);color:#ddd6fe;">🏛️ Présentiel</span>
               {% else %}
-                <span class="type-badge" style="background:#eff6ff;color:#1d4ed8;font-size:10px;">🌐 En ligne</span>
+                <span class="text-xs font-bold px-3 py-1 rounded-full" style="background:rgba(59,130,246,.3);color:#bfdbfe;">🌐 En ligne</span>
               {% endif %}
             </div>
-
-            <h3 class="font-bold text-gray-900 text-sm leading-snug mb-2 flex-1"
-                style="font-family:'Sora',sans-serif;">
-              {{ event.title|truncatechars:65 }}
+            <h3 class="text-xl sm:text-2xl font-bold text-white mb-2 leading-snug" style="font-family:'Sora',sans-serif;">
+              {{ event.title|truncatechars:90 }}
             </h3>
-
-            <p class="text-xs text-gray-400 leading-relaxed mb-3">
-              {{ event.description|truncatechars:80 }}
-            </p>
-
-            <div class="flex items-center gap-1.5 text-xs text-gray-400 mb-4">
-              <svg class="w-3.5 h-3.5 flex-shrink-0" style="color:var(--green);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-              </svg>
-              {{ event.start_datetime|date:"d F Y" }} · {{ event.start_datetime|date:"H:i" }}
-            </div>
-
-            <div class="flex gap-2 mt-auto">
-              <span class="flex-1 text-center text-xs font-semibold py-2 px-3 rounded-lg border border-gray-200 text-gray-600 hover:border-green-600 hover:text-green-700 transition-all">
-                Détails
+            <div class="flex items-center justify-between flex-wrap gap-3">
+              <p class="text-sm" style="color:rgba(255,255,255,.65);">
+                📅 {{ event.start_datetime|date:"d F Y" }} à {{ event.start_datetime|date:"H:i" }}
+              </p>
+              <span class="text-xs font-bold px-4 py-2 rounded-xl" style="background:#c9a227;color:#fff;">
+                S'inscrire →
               </span>
-              {% if event.is_upcoming %}
-              <span class="btn-primary flex-1 text-xs py-2">S'inscrire</span>
-              {% else %}
-              <span class="flex-1 text-center text-xs font-semibold py-2 px-3 rounded-lg bg-gray-100 text-gray-400">Terminé</span>
-              {% endif %}
             </div>
           </div>
         </a>
       </div>
       {% endif %}
+      {% endfor %}
+
+      <!-- Grille 3 colonnes pour les suivants -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="events-sub-grid">
+        {% for event in upcoming_events %}
+        {% if forloop.counter > 1 %}
+        <div class="event-card-wrapper" data-type="{{ event.event_type }}">
+          {% include 'events/_card_full.html' %}
+        </div>
+        {% endif %}
+        {% endfor %}
+      </div>
+
+    </div>
+    {% endif %}
 
       {% endfor %}
     </div>

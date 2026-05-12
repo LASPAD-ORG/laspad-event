@@ -590,6 +590,7 @@ def contact_participants(request, pk):
     context = {
         'event':          event,
         'registrations':  registrations,
+        'all_registrations': event.registrations.select_related('participant').order_by('-registered_at'),
         'accepted_count': event.registrations.filter(status=Registration.STATUS_ACCEPTED).count(),
         'pending_count':  event.registrations.filter(status=Registration.STATUS_PENDING).count(),
         'all_count':      event.registrations.count(),

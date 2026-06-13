@@ -230,7 +230,7 @@ class Event(models.Model):
     # ── Properties générales ──
     @property
     def is_upcoming(self):
-        return self.start_datetime > timezone.now()
+        return self.end_datetime > timezone.now()
 
     @property
     def is_ongoing(self):

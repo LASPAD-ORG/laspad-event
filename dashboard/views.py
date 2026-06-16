@@ -143,18 +143,42 @@ def event_create(request):
             if request.POST.get('notify_newsletter') == '1' and event.status == Event.STATUS_PUBLISHED:
                 from django.core.mail import send_mail
                 from django.conf import settings
+                from django.template.loader import render_to_string
+
+                site_url    = getattr(settings, 'SITE_URL', 'https://events.laspad.org')
                 subscribers = Participant.objects.filter(newsletter=True)
-                notified = 0
+                notified    = 0
+
                 for sub in subscribers:
+                    # Lien de désabonnement unique par participant
+                    unsubscribe_url = f"{site_url}/evenements/newsletter/desabonnement/{sub.pk}/"
+
+                    message = (
+                        f"Bonjour {sub.first_name or 'cher(e) abonné(e)'},\n\n"
+                        f"Le LASPAD a le plaisir de vous annoncer un nouvel événement :\n\n"
+                        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                        f"📅  {event.title}\n"
+                        f"🗓️   {event.start_datetime.strftime('%d/%m/%Y à %Hh%M')} GMT\n"
+                        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+                        f"{event.description[:300]}{'...' if len(event.description) > 300 else ''}\n\n"
+                        f"👉 Inscrivez-vous gratuitement :\n"
+                        f"{site_url}{event.get_absolute_url()}\n\n"
+                        f"Cet événement est organisé par le Laboratoire d'Analyse des Sociétés\n"
+                        f"et Pouvoirs / Afrique – Diasporas (LASPAD), Université Gaston Berger\n"
+                        f"de Saint Louis.\n\n"
+                        f"Cordialement,\n"
+                        f"L'équipe LASPAD Event\n"
+                        f"📧 communication@laspad.sn\n"
+                        f"🌐 {site_url}\n\n"
+                        f"─────────────────────────────────────\n"
+                        f"Vous recevez cet email car vous êtes abonné(e) aux annonces LASPAD Events.\n"
+                        f"Pour vous désabonner : {unsubscribe_url}\n"
+                    )
+
                     try:
                         send_mail(
                             subject=f"[LASPAD Event] Nouvel événement : {event.title}",
-                            message=(
-                                f"Bonjour,\n\nLe LASPAD a le plaisir de vous annoncer :\n\n"
-                                f"{event.title}\n{event.start_datetime.strftime('%d/%m/%Y à %Hh%M')}\n\n"
-                                f"Inscrivez-vous :\n{settings.SITE_URL}{event.get_absolute_url()}\n\n"
-                                f"Cordialement,\nL'équipe LASPAD"
-                            ),
+                            message=message,
                             from_email=settings.DEFAULT_FROM_EMAIL,
                             recipient_list=[sub.email],
                             fail_silently=True,
@@ -162,6 +186,7 @@ def event_create(request):
                         notified += 1
                     except Exception:
                         pass
+
                 if notified:
                     messages.info(request, f"Newsletter envoyée à {notified} abonné(s).")
 
@@ -1002,4 +1027,7 @@ def dashboard_home(request):
         ]),
     }
     return render(request, 'dashboard/home.html', context)
+
+
+
 

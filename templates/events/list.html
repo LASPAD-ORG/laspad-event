@@ -30,6 +30,14 @@
       transform: translateY(-4px);
       box-shadow: 0 16px 32px rgba(0,0,0,.1);
     }
+    /* Bannière : ratio carré ou portrait, sans déformation */
+    .event-card-banner {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border-radius: 12px 12px 0 0;
+      display: block;
+    }
 
     /* ── Carrousel ── */
     .carousel-wrapper { overflow: hidden; cursor: grab; user-select: none; }
@@ -120,8 +128,8 @@
     }
     .btn-primary:hover { opacity: .92; transform: translateY(-1px); }
 
-    /* ── Événements passés : masquer au-delà de 3 ── */
-    .past-item-hidden { display: none; }
+    /* ── Événements passés cachés au chargement ── */
+    .past-hidden { display: none !important; }
   </style>
 {% endblock %}
 
@@ -132,7 +140,6 @@
 ══════════════════════════════════════ -->
 <section class="relative overflow-hidden" style="background:#0f1f15;">
 
-  <!-- Grille décorative -->
   <div class="absolute inset-0" style="opacity:.06;">
     <svg width="100%" height="100%">
       <defs>
@@ -143,8 +150,6 @@
       <rect width="100%" height="100%" fill="url(#grid)"/>
     </svg>
   </div>
-
-  <!-- Halos décoratifs -->
   <div class="absolute top-0 right-0 w-96 h-96 rounded-full pointer-events-none"
        style="background:radial-gradient(circle,rgba(201,162,39,.15),transparent 70%);transform:translate(30%,-30%)"></div>
   <div class="absolute bottom-0 left-0 w-80 h-80 rounded-full pointer-events-none"
@@ -153,7 +158,6 @@
   <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
-      <!-- Texte -->
       <div>
         <div class="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-6 border"
              style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);">
@@ -194,7 +198,6 @@
         </div>
       </div>
 
-      <!-- Logo desktop -->
       <div class="hidden lg:flex justify-center">
         <div class="relative">
           <div class="absolute inset-0 rounded-2xl"
@@ -206,7 +209,6 @@
           </div>
         </div>
       </div>
-
     </div>
 
     <!-- Stats hero -->
@@ -256,8 +258,8 @@
         </span>
       </div>
 
-      <!-- Filtres par type -->
-      <div class="flex gap-2 flex-wrap" id="type-filters">
+      <!-- Filtres par type — s'appliquent aux deux sections -->
+      <div class="flex gap-2 flex-wrap">
         <button class="filter-tab active" onclick="filterType('all', this)">Tous</button>
         <button class="filter-tab" onclick="filterType('webinaire', this)">Webinaires</button>
         <button class="filter-tab" onclick="filterType('conference', this)">Conférences</button>
@@ -267,17 +269,15 @@
     </div>
 
     {% if upcoming_events.count == 1 %}
-    <!-- 1 événement : centré -->
     <div class="flex justify-center" id="events-grid">
       {% for event in upcoming_events %}
       <div class="event-card-wrapper w-full max-w-sm" data-type="{{ event.event_type }}">
-        {% include 'events/_card.html' %}
+        {% include 'events/_card_full.html' %}
       </div>
       {% endfor %}
     </div>
 
     {% elif upcoming_events.count <= 3 %}
-    <!-- 2-3 événements : grille -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="events-grid">
       {% for event in upcoming_events %}
       <div class="event-card-wrapper" data-type="{{ event.event_type }}">
@@ -287,23 +287,19 @@
     </div>
 
     {% else %}
-    <!-- 4+ événements : carrousel -->
+    <!-- Carrousel 4+ -->
     <div class="relative" id="carousel-root">
-      <div class="flex items-center justify-between mb-4">
-        <div class="flex gap-2 overflow-x-auto pb-1" id="type-filters-carousel"
-             style="scrollbar-width:none;"></div>
-        <div class="flex items-center gap-2 flex-shrink-0 ml-3">
-          <button class="c-btn" id="c-prev" onclick="carouselSlide(-1)" aria-label="Précédent">
-            <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-            </svg>
-          </button>
-          <button class="c-btn" id="c-next" onclick="carouselSlide(1)" aria-label="Suivant">
-            <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-            </svg>
-          </button>
-        </div>
+      <div class="flex items-center justify-end mb-4 gap-2">
+        <button class="c-btn" id="c-prev" onclick="carouselSlide(-1)" aria-label="Précédent">
+          <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+          </svg>
+        </button>
+        <button class="c-btn" id="c-next" onclick="carouselSlide(1)" aria-label="Suivant">
+          <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+        </button>
       </div>
 
       <div class="carousel-wrapper" id="c-wrapper">
@@ -317,19 +313,17 @@
         </div>
       </div>
 
-      <!-- Dégradés bords -->
       <div class="absolute left-0 top-0 bottom-0 w-6 pointer-events-none"
            style="background:linear-gradient(to right,#f3f4f2,transparent);z-index:2;"></div>
       <div class="absolute right-0 top-0 bottom-0 w-6 pointer-events-none"
            style="background:linear-gradient(to left,#f3f4f2,transparent);z-index:2;"></div>
 
-      <div class="flex items-center justify-center gap-3 mt-5">
+      <div class="flex justify-center mt-5">
         <div class="flex gap-1.5" id="c-dots"></div>
       </div>
     </div>
     {% endif %}
 
-    <!-- Message aucun résultat filtre -->
     <div id="no-filter-msg" class="hidden text-center py-12 text-gray-400">
       <p class="text-sm">Aucun événement de ce type pour le moment.</p>
       <button onclick="filterType('all', document.querySelector('.filter-tab'))"
@@ -362,14 +356,14 @@
 
   <!-- ── Événements passés ── -->
   {% if past_events %}
-  <section>
+  <section id="past-section">
     <div class="flex items-center gap-4 mb-6">
       <div class="w-1 h-8 rounded-full bg-gray-200"></div>
       <div>
         <h2 class="text-lg font-bold text-gray-400" style="font-family:'Sora',sans-serif;">
           Éditions passées
         </h2>
-        <p class="text-xs text-gray-300 mt-0.5">
+        <p class="text-xs text-gray-300 mt-0.5" id="past-count-label">
           {{ past_events.count }} événement{{ past_events.count|pluralize }}
         </p>
       </div>
@@ -378,16 +372,22 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="past-grid">
       {% for event in past_events %}
       <a href="{{ event.get_absolute_url }}"
-         class="past-item {% if forloop.counter > 3 %}past-item-hidden{% endif %}
+         class="past-item{% if forloop.counter > 3 %} past-hidden{% endif %}
                 flex items-center gap-4 p-4 bg-white rounded-xl border border-gray-100
-                hover:border-gray-300 hover:shadow-sm transition-all opacity-65 hover:opacity-100 group">
+                hover:border-gray-300 hover:shadow-sm transition-all opacity-65 hover:opacity-100 group"
+         data-type="{{ event.event_type }}"
+         data-index="{{ forloop.counter0 }}">
         <div class="w-11 h-11 rounded-xl flex-shrink-0 flex items-center justify-center"
              style="background:#f3f4f6;">
-          <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-600"
-               fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-          </svg>
+          {% if event.banner %}
+            <img src="{{ event.banner.url }}" class="w-11 h-11 rounded-xl object-cover">
+          {% else %}
+            <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-600"
+                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+          {% endif %}
         </div>
         <div class="min-w-0 flex-1">
           <p class="font-semibold text-gray-700 text-sm truncate group-hover:text-gray-900"
@@ -408,8 +408,9 @@
       {% endfor %}
     </div>
 
+    <!-- Bouton voir plus — caché si ≤ 3 -->
     {% if past_events.count > 3 %}
-    <div class="flex justify-center mt-5">
+    <div class="flex justify-center mt-5" id="past-toggle-wrap">
       <button onclick="togglePastEvents()" id="btn-toggle-past"
               class="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold
                      text-gray-500 border border-gray-200 hover:border-green-600 hover:text-green-700
@@ -422,6 +423,11 @@
       </button>
     </div>
     {% endif %}
+
+    <!-- Message aucun passé pour ce filtre -->
+    <div id="no-past-msg" class="hidden text-center py-6 text-sm text-gray-400 mt-2">
+      Aucune édition passée pour ce type.
+    </div>
 
   </section>
   {% endif %}
@@ -456,51 +462,88 @@
 
 <script>
 // ═══════════════════════════════════════════════════
-// FILTRE PAR TYPE
+// ÉTAT GLOBAL
+// ═══════════════════════════════════════════════════
+let currentTypeFilter = 'all';
+let pastExpanded      = false;
+const PAST_VISIBLE    = 3;
+
+// ═══════════════════════════════════════════════════
+// FILTRE PAR TYPE — s'applique aux événements à venir ET aux passés
 // ═══════════════════════════════════════════════════
 function filterType(type, btn) {
+  currentTypeFilter = type;
+
+  // Mettre à jour les boutons
   document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
 
-  const wrappers = document.querySelectorAll('.event-card-wrapper');
-  let visible = 0;
-  wrappers.forEach(w => {
+  // ── À venir ──
+  const upcoming = document.querySelectorAll('.event-card-wrapper');
+  let visibleUpcoming = 0;
+  upcoming.forEach(w => {
     const match = type === 'all' || w.dataset.type === type;
     w.style.display = match ? '' : 'none';
-    if (match) visible++;
+    if (match) visibleUpcoming++;
   });
-
   const noMsg = document.getElementById('no-filter-msg');
-  if (noMsg) noMsg.classList.toggle('hidden', visible > 0);
-
+  if (noMsg) noMsg.classList.toggle('hidden', visibleUpcoming > 0);
   if (typeof carouselGoTo === 'function') carouselGoTo(0);
+
+  // ── Passés ──
+  applyPastFilter();
 }
 
 // ═══════════════════════════════════════════════════
-// ÉVÉNEMENTS PASSÉS — Voir plus / Voir moins
+// FILTRAGE DES PASSÉS (type + voir plus/moins)
 // ═══════════════════════════════════════════════════
-let pastExpanded = false;
+function applyPastFilter() {
+  const items = [...document.querySelectorAll('.past-item')];
 
+  // Filtrer par type
+  const typeMatches = items.filter(el =>
+    currentTypeFilter === 'all' || el.dataset.type === currentTypeFilter
+  );
+
+  // Masquer tous d'abord
+  items.forEach(el => { el.style.display = 'none'; });
+
+  // Afficher selon le type et l'état "voir plus"
+  typeMatches.forEach((el, i) => {
+    if (pastExpanded || i < PAST_VISIBLE) {
+      el.style.display = '';
+    }
+  });
+
+  // Bouton voir plus
+  const toggleWrap = document.getElementById('past-toggle-wrap');
+  const label      = document.getElementById('btn-past-label');
+  const icon       = document.getElementById('btn-past-icon');
+  const noMsg      = document.getElementById('no-past-msg');
+
+  if (noMsg) noMsg.classList.toggle('hidden', typeMatches.length > 0);
+
+  if (toggleWrap) {
+    // Afficher le bouton seulement s'il y a plus de PAST_VISIBLE résultats
+    toggleWrap.style.display = typeMatches.length > PAST_VISIBLE ? '' : 'none';
+    const remaining = typeMatches.length - PAST_VISIBLE;
+    if (label) label.textContent = pastExpanded
+      ? 'Voir moins'
+      : `Voir les ${remaining} autres éditions`;
+    if (icon) icon.style.transform = pastExpanded ? 'rotate(180deg)' : '';
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// VOIR PLUS / VOIR MOINS
+// ═══════════════════════════════════════════════════
 function togglePastEvents() {
   pastExpanded = !pastExpanded;
-
-  document.querySelectorAll('.past-item').forEach((el, i) => {
-    if (i >= 3) el.style.display = pastExpanded ? '' : 'none';
-  });
-
-  const label = document.getElementById('btn-past-label');
-  const icon  = document.getElementById('btn-past-icon');
-  const total = document.querySelectorAll('.past-item').length;
-
-  if (label) label.textContent = pastExpanded
-    ? 'Voir moins'
-    : `Voir les ${total - 3} autres éditions`;
-
-  if (icon) icon.style.transform = pastExpanded ? 'rotate(180deg)' : '';
+  applyPastFilter();
 }
 
 // ═══════════════════════════════════════════════════
-// CARROUSEL (4+ événements)
+// CARROUSEL (4+ événements à venir)
 // ═══════════════════════════════════════════════════
 (function () {
   const track   = document.getElementById('c-track');
@@ -584,7 +627,6 @@ function togglePastEvents() {
   function resetAuto() { clearInterval(autoTimer); startAuto(); }
   function stopAuto()  { clearInterval(autoTimer); }
 
-  // Drag souris
   wrapper.addEventListener('mousedown', e => {
     isDrag = true; dragStart = e.clientX; dragDelta = 0;
     track.style.transition = 'none'; stopAuto();
@@ -605,7 +647,6 @@ function togglePastEvents() {
     resetAuto();
   });
 
-  // Touch
   wrapper.addEventListener('touchstart', e => {
     dragStart = e.touches[0].clientX; dragDelta = 0;
     track.style.transition = 'none'; stopAuto();
@@ -623,7 +664,6 @@ function togglePastEvents() {
     resetAuto();
   });
 
-  // Resize
   let resizeTimer;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
@@ -633,11 +673,15 @@ function togglePastEvents() {
     }, 150);
   });
 
-  // Init
   buildDots();
   carouselGoTo(0);
   startAuto();
 })();
+
+// ── Init : appliquer le masquage initial des passés ──
+document.addEventListener('DOMContentLoaded', () => {
+  applyPastFilter();
+});
 </script>
 
 {% endblock %}

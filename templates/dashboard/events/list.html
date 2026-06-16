@@ -356,6 +356,9 @@ function resetFilters() {
   applyFilters();
 }
 
-document.addEventListener('DOMContentLoaded', applyFilters);
+document.addEventListener('DOMContentLoaded', () => {
+  // Activer "À venir" par défaut
+  setFilter('status', 'upcoming');
+});
 </script>
 {% endblock %}

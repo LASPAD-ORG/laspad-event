@@ -12,12 +12,9 @@ from events.models import Event, Location
 from events.forms import EventForm, LocationForm
 from registrations.models import Registration, Participant
 from notifications.tasks import send_confirmation_email, send_refused_email
-
-
 from django.db.models.functions import TruncDate
 from datetime import timedelta
 import json
-
 
 def is_staff(user):
     return user.is_staff or user.is_superuser
@@ -49,22 +46,6 @@ def dashboard_logout(request):
 # HOME
 # ═══════════════════════════════════════════════════════════════
 
-@login_required
-@user_passes_test(is_staff)
-def dashboard_home(request):
-    now = timezone.now()
-    context = {
-        'total_events':           Event.objects.count(),
-        'published_events':       Event.objects.filter(status=Event.STATUS_PUBLISHED).count(),
-        'upcoming_events':        Event.objects.filter(status=Event.STATUS_PUBLISHED, end_datetime__gte=now).count(),
-        'total_registrations':    Registration.objects.count(),
-        'pending_registrations':  Registration.objects.filter(status=Registration.STATUS_PENDING).count(),
-        'accepted_registrations': Registration.objects.filter(status=Registration.STATUS_ACCEPTED).count(),
-        'total_participants':     Participant.objects.count(),
-        'recent_registrations':   Registration.objects.select_related('event', 'participant').order_by('-registered_at')[:50],
-        'recent_events':          Event.objects.order_by('-created_at')[:10],
-    }
-    return render(request, 'dashboard/home.html', context)
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -1011,6 +992,8 @@ def dashboard_home(request):
         'total_participants':     Participant.objects.count(),
         'recent_registrations':   Registration.objects.select_related('event', 'participant').order_by('-registered_at')[:50],
         'recent_events':          Event.objects.order_by('-created_at')[:10],
+        'registrations_last30': Registration.objects.filter(registered_at__gte=since).count(),
+        'events_last30':        Event.objects.filter(created_at__gte=since).count(),
         'registrations_per_day':  json.dumps([
             {'date': str(r['date']), 'count': r['count']} for r in reg_per_day
         ]),
@@ -1019,3 +1002,4 @@ def dashboard_home(request):
         ]),
     }
     return render(request, 'dashboard/home.html', context)
+

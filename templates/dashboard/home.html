@@ -83,7 +83,7 @@
 
   <!-- Courbe inscriptions -->
   <div class="bg-white rounded-2xl border border-gray-200 p-5">
-    <div class="flex items-center justify-between mb-4">
+    <div class="flex items-center justify-between mb-3">
       <div>
         <h2 class="font-semibold text-gray-800 text-sm">Inscriptions</h2>
         <p class="text-xs text-gray-400 mt-0.5">30 derniers jours</p>
@@ -92,14 +92,29 @@
         {{ total_registrations }} total
       </span>
     </div>
-    <div style="height:140px;">
+    <div style="height:130px;">
       <canvas id="chart-registrations"></canvas>
+    </div>
+    <!-- Résumé chiffré -->
+    <div class="flex gap-4 mt-3 pt-3 border-t border-gray-100">
+      <div>
+        <p class="text-xs text-gray-400">30 derniers jours</p>
+        <p class="text-sm font-bold text-gray-800">{{ registrations_last30 }}</p>
+      </div>
+      <div>
+        <p class="text-xs text-gray-400">En attente</p>
+        <p class="text-sm font-bold text-yellow-500">{{ pending_registrations }}</p>
+      </div>
+      <div>
+        <p class="text-xs text-gray-400">Acceptées</p>
+        <p class="text-sm font-bold text-green-600">{{ accepted_registrations }}</p>
+      </div>
     </div>
   </div>
 
   <!-- Courbe événements -->
   <div class="bg-white rounded-2xl border border-gray-200 p-5">
-    <div class="flex items-center justify-between mb-4">
+    <div class="flex items-center justify-between mb-3">
       <div>
         <h2 class="font-semibold text-gray-800 text-sm">Événements créés</h2>
         <p class="text-xs text-gray-400 mt-0.5">30 derniers jours</p>
@@ -108,8 +123,23 @@
         {{ total_events }} total
       </span>
     </div>
-    <div style="height:140px;">
+    <div style="height:130px;">
       <canvas id="chart-events"></canvas>
+    </div>
+    <!-- Résumé chiffré -->
+    <div class="flex gap-4 mt-3 pt-3 border-t border-gray-100">
+      <div>
+        <p class="text-xs text-gray-400">30 derniers jours</p>
+        <p class="text-sm font-bold text-gray-800">{{ events_last30 }}</p>
+      </div>
+      <div>
+        <p class="text-xs text-gray-400">À venir</p>
+        <p class="text-sm font-bold text-green-600">{{ upcoming_events }}</p>
+      </div>
+      <div>
+        <p class="text-xs text-gray-400">Publiés</p>
+        <p class="text-sm font-bold text-blue-600">{{ published_events }}</p>
+      </div>
     </div>
   </div>
 
@@ -310,12 +340,10 @@
 // ═══════════════════════════════════════════
 // COURBES CHART.JS
 // ═══════════════════════════════════════════
-(function() {
-  // Données injectées depuis Django (à adapter dans la vue)
-  const regData    = {{ registrations_per_day|default:"[]"|safe }};
-  const evData     = {{ events_per_day|default:"[]"|safe }};
+(function () {
+  const regData = {{ registrations_per_day|default:"[]"|safe }};
+  const evData  = {{ events_per_day|default:"[]"|safe }};
 
-  // Générer les 30 derniers jours
   function last30Days() {
     const labels = [];
     const today  = new Date();
@@ -329,65 +357,87 @@
 
   const labels = last30Days();
 
-  // Transformer [{date, count}] en tableau aligné sur labels
+  // Labels courts pour l'axe X : afficher 1 sur 5
+  const shortLabels = labels.map((l, i) => {
+    if (i % 5 !== 0) return '';
+    const [, m, d] = l.split('-');
+    return `${d}/${m}`;
+  });
+
   function toSeries(data) {
     const map = {};
     (data || []).forEach(d => { map[d.date] = d.count; });
     return labels.map(l => map[l] || 0);
   }
 
-  const chartDefaults = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: { legend: { display: false }, tooltip: {
-      callbacks: { title: ctx => ctx[0].label.slice(5).replace('-', '/') }
-    }},
-    scales: {
-      x: { display: false },
-      y: { display: false, beginAtZero: true }
-    },
-    elements: { point: { radius: 0, hoverRadius: 4 } }
-  };
+  function makeChart(id, series, color, bgColor) {
+    const ctx = document.getElementById(id);
+    if (!ctx) return;
+    const max = Math.max(...series, 1);
 
-  // Courbe inscriptions
-  const ctxReg = document.getElementById('chart-registrations');
-  if (ctxReg) {
-    new Chart(ctxReg, {
+    new Chart(ctx, {
       type: 'line',
       data: {
-        labels,
+        labels: shortLabels,
         datasets: [{
-          data: toSeries(regData),
-          borderColor: '#3b82f6',
-          backgroundColor: 'rgba(59,130,246,.08)',
-          fill: true,
-          tension: 0.4,
-          borderWidth: 2,
+          data:                series,
+          borderColor:         color,
+          backgroundColor:     bgColor,
+          fill:                true,
+          tension:             0.4,
+          borderWidth:         2,
+          pointRadius:         series.map(v => v === Math.max(...series) && v > 0 ? 4 : 0),
+          pointBackgroundColor: color,
         }]
       },
-      options: chartDefaults
+      options: {
+        responsive:          true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend:  { display: false },
+          tooltip: {
+            callbacks: {
+              title: ctx => {
+                const raw    = labels[ctx[0].dataIndex];
+                const [, m, d] = raw.split('-');
+                return `${d}/${m}`;
+              },
+              label: ctx => ` ${ctx.parsed.y} ce jour`,
+            },
+            backgroundColor: '#1f2937',
+            titleColor:      '#9ca3af',
+            bodyColor:       '#f9fafb',
+            padding:         8,
+            cornerRadius:    8,
+          }
+        },
+        scales: {
+          x: {
+            display: true,
+            grid:    { display: false },
+            border:  { display: false },
+            ticks:   { color: '#9ca3af', font: { size: 10 }, maxRotation: 0 }
+          },
+          y: {
+            display:     true,
+            beginAtZero: true,
+            grid:        { color: 'rgba(0,0,0,.04)', drawTicks: false },
+            border:      { display: false },
+            ticks: {
+              color:         '#9ca3af',
+              font:          { size: 10 },
+              padding:       6,
+              maxTicksLimit: 4,
+              stepSize:      Math.ceil(max / 4) || 1,
+            }
+          }
+        }
+      }
     });
   }
 
-  // Courbe événements
-  const ctxEv = document.getElementById('chart-events');
-  if (ctxEv) {
-    new Chart(ctxEv, {
-      type: 'line',
-      data: {
-        labels,
-        datasets: [{
-          data: toSeries(evData),
-          borderColor: '#1a6b3a',
-          backgroundColor: 'rgba(26,107,58,.08)',
-          fill: true,
-          tension: 0.4,
-          borderWidth: 2,
-        }]
-      },
-      options: chartDefaults
-    });
-  }
+  makeChart('chart-registrations', toSeries(regData), '#3b82f6', 'rgba(59,130,246,.08)');
+  makeChart('chart-events',        toSeries(evData),  '#1a6b3a', 'rgba(26,107,58,.08)');
 })();
 
 // ═══════════════════════════════════════════
@@ -499,9 +549,9 @@ function filterEvents(filter) {
   const rows = document.querySelectorAll('.event-row');
   let visible = 0;
   rows.forEach(row => {
-    let show = filter === 'all' ? true
-             : filter === 'upcoming' ? row.dataset.upcoming === '1'
-             : row.dataset.status === filter;
+    const show = filter === 'all'      ? true
+               : filter === 'upcoming' ? row.dataset.upcoming === '1'
+               : row.dataset.status === filter;
     row.style.display = show ? '' : 'none';
     if (show) visible++;
   });

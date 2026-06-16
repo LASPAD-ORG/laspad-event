@@ -4,6 +4,10 @@
 {% block page_title %}Tableau de bord{% endblock %}
 {% block page_subtitle %}Vue globale de la plateforme LASPAD Event{% endblock %}
 
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+{% endblock %}
+
 {% block header_actions %}
   <a href="{% url 'dashboard:event_create' %}" class="btn-sm btn-primary-sm">
     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -15,44 +19,45 @@
 
 {% block content %}
 
-<!-- ── Stats principales ── -->
-<div class="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+<!-- ── Stats ── -->
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+
   <div class="stat-card">
     <div class="flex items-center justify-between mb-3">
-      <span class="text-sm text-gray-500">Événements</span>
-      <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background:#e8f5ef">
-        <svg class="w-5 h-5" style="color:var(--lp-green)" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <span class="text-xs text-gray-400 font-medium uppercase tracking-wide">Événements</span>
+      <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#e8f5ef">
+        <svg class="w-4 h-4" style="color:var(--lp-green)" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
         </svg>
       </div>
     </div>
-    <p class="text-3xl font-bold text-gray-900">{{ total_events }}</p>
+    <p class="text-2xl font-bold text-gray-900">{{ total_events }}</p>
     <p class="text-xs text-gray-400 mt-1">{{ published_events }} publié{{ published_events|pluralize }} · {{ upcoming_events }} à venir</p>
   </div>
 
   <div class="stat-card">
     <div class="flex items-center justify-between mb-3">
-      <span class="text-sm text-gray-500">Inscriptions</span>
-      <div class="w-9 h-9 rounded-xl flex items-center justify-center bg-blue-50">
-        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <span class="text-xs text-gray-400 font-medium uppercase tracking-wide">Inscriptions</span>
+      <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-blue-50">
+        <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
         </svg>
       </div>
     </div>
-    <p class="text-3xl font-bold text-gray-900">{{ total_registrations }}</p>
+    <p class="text-2xl font-bold text-gray-900">{{ total_registrations }}</p>
     <p class="text-xs text-gray-400 mt-1">{{ accepted_registrations }} acceptée{{ accepted_registrations|pluralize }}</p>
   </div>
 
   <div class="stat-card">
     <div class="flex items-center justify-between mb-3">
-      <span class="text-sm text-gray-500">En attente</span>
-      <div class="w-9 h-9 rounded-xl flex items-center justify-center bg-yellow-50">
-        <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <span class="text-xs text-gray-400 font-medium uppercase tracking-wide">En attente</span>
+      <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-yellow-50">
+        <svg class="w-4 h-4 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
         </svg>
       </div>
     </div>
-    <p class="text-3xl font-bold {% if pending_registrations > 0 %}text-yellow-600{% else %}text-gray-900{% endif %}">
+    <p class="text-2xl font-bold {% if pending_registrations > 0 %}text-yellow-500{% else %}text-gray-900{% endif %}">
       {{ pending_registrations }}
     </p>
     <p class="text-xs text-gray-400 mt-1">À valider</p>
@@ -60,74 +65,98 @@
 
   <div class="stat-card">
     <div class="flex items-center justify-between mb-3">
-      <span class="text-sm text-gray-500">Participants</span>
-      <div class="w-9 h-9 rounded-xl flex items-center justify-center bg-purple-50">
-        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <span class="text-xs text-gray-400 font-medium uppercase tracking-wide">Participants</span>
+      <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-purple-50">
+        <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
         </svg>
       </div>
     </div>
-    <p class="text-3xl font-bold text-gray-900">{{ total_participants }}</p>
+    <p class="text-2xl font-bold text-gray-900">{{ total_participants }}</p>
     <p class="text-xs text-gray-400 mt-1">Uniques inscrits</p>
   </div>
+
+</div>
+
+<!-- ── Courbes ── -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+
+  <!-- Courbe inscriptions -->
+  <div class="bg-white rounded-2xl border border-gray-200 p-5">
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <h2 class="font-semibold text-gray-800 text-sm">Inscriptions</h2>
+        <p class="text-xs text-gray-400 mt-0.5">30 derniers jours</p>
+      </div>
+      <span class="text-xs font-semibold px-2 py-1 rounded-lg bg-blue-50 text-blue-600">
+        {{ total_registrations }} total
+      </span>
+    </div>
+    <div style="height:140px;">
+      <canvas id="chart-registrations"></canvas>
+    </div>
+  </div>
+
+  <!-- Courbe événements -->
+  <div class="bg-white rounded-2xl border border-gray-200 p-5">
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <h2 class="font-semibold text-gray-800 text-sm">Événements créés</h2>
+        <p class="text-xs text-gray-400 mt-0.5">30 derniers jours</p>
+      </div>
+      <span class="text-xs font-semibold px-2 py-1 rounded-lg bg-green-50 text-green-700">
+        {{ total_events }} total
+      </span>
+    </div>
+    <div style="height:140px;">
+      <canvas id="chart-events"></canvas>
+    </div>
+  </div>
+
 </div>
 
 <!-- ── Grille principale ── -->
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
-  <!-- ══ Inscriptions avec filtres + pagination ══ -->
+  <!-- ══ Inscriptions ══ -->
   <div class="lg:col-span-2 bg-white rounded-2xl border border-gray-200 overflow-hidden">
-    <div class="px-6 py-4 border-b border-gray-100 flex flex-wrap items-center justify-between gap-3">
-      <h2 class="font-semibold text-gray-800">Inscriptions récentes</h2>
+    <div class="px-5 py-4 border-b border-gray-100 flex flex-wrap items-center justify-between gap-3">
+      <h2 class="font-semibold text-gray-800 text-sm">Inscriptions récentes</h2>
       {% if pending_registrations > 0 %}
         <span class="badge-pending">{{ pending_registrations }} en attente</span>
       {% endif %}
     </div>
 
-    <!-- Filtres -->
-    <div class="px-6 py-3 border-b border-gray-100 flex flex-wrap items-center gap-2" style="background:#fafafa;">
-      <!-- Filtre statut -->
+    <!-- Filtres statut -->
+    <div class="px-5 py-2.5 border-b border-gray-100 flex flex-wrap items-center gap-2" style="background:#fafafa;">
       <div class="flex gap-1">
         <button onclick="filterReg('all')" id="rf-all"
-                class="reg-filter-btn text-xs px-3 py-1.5 rounded-lg font-semibold transition-all"
-                style="background:#1a6b3a;color:#fff;">
-          Tout
-        </button>
+                class="reg-filter-btn text-xs px-2.5 py-1 rounded-lg font-semibold transition-all"
+                style="background:#1a6b3a;color:#fff;">Tout</button>
         <button onclick="filterReg('en_attente')" id="rf-en_attente"
-                class="reg-filter-btn text-xs px-3 py-1.5 rounded-lg font-semibold transition-all bg-gray-100 text-gray-600 hover:bg-yellow-50 hover:text-yellow-700">
-          ⏳ Attente
-        </button>
+                class="reg-filter-btn text-xs px-2.5 py-1 rounded-lg font-semibold bg-gray-100 text-gray-500 hover:bg-yellow-50 hover:text-yellow-700 transition-all">
+                ⏳ Attente</button>
         <button onclick="filterReg('accepte')" id="rf-accepte"
-                class="reg-filter-btn text-xs px-3 py-1.5 rounded-lg font-semibold transition-all bg-gray-100 text-gray-600 hover:bg-green-50 hover:text-green-700">
-          ✅ Accepté
-        </button>
+                class="reg-filter-btn text-xs px-2.5 py-1 rounded-lg font-semibold bg-gray-100 text-gray-500 hover:bg-green-50 hover:text-green-700 transition-all">
+                ✅ Accepté</button>
         <button onclick="filterReg('refuse')" id="rf-refuse"
-                class="reg-filter-btn text-xs px-3 py-1.5 rounded-lg font-semibold transition-all bg-gray-100 text-gray-600 hover:bg-red-50 hover:text-red-700">
-          ✗ Refusé
-        </button>
+                class="reg-filter-btn text-xs px-2.5 py-1 rounded-lg font-semibold bg-gray-100 text-gray-500 hover:bg-red-50 hover:text-red-700 transition-all">
+                ✗ Refusé</button>
       </div>
-
-      <!-- Filtre mode -->
       <div class="flex gap-1 ml-auto">
         <button onclick="filterMode('all')" id="rm-all"
-                class="reg-mode-btn text-xs px-3 py-1.5 rounded-lg font-semibold transition-all bg-gray-800 text-white">
-          Tous modes
-        </button>
+                class="reg-mode-btn text-xs px-2.5 py-1 rounded-lg font-semibold bg-gray-800 text-white transition-all">Tous</button>
         <button onclick="filterMode('onsite')" id="rm-onsite"
-                class="reg-mode-btn text-xs px-3 py-1.5 rounded-lg font-semibold transition-all bg-gray-100 text-gray-600 hover:bg-purple-50 hover:text-purple-700">
-          🏛️
-        </button>
+                class="reg-mode-btn text-xs px-2.5 py-1 rounded-lg font-semibold bg-gray-100 text-gray-500 hover:bg-purple-50 hover:text-purple-700 transition-all">🏛️</button>
         <button onclick="filterMode('online')" id="rm-online"
-                class="reg-mode-btn text-xs px-3 py-1.5 rounded-lg font-semibold transition-all bg-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-700">
-          🌐
-        </button>
+                class="reg-mode-btn text-xs px-2.5 py-1 rounded-lg font-semibold bg-gray-100 text-gray-500 hover:bg-blue-50 hover:text-blue-700 transition-all">🌐</button>
       </div>
     </div>
 
     <!-- Recherche -->
-    <div class="px-6 py-2 border-b border-gray-100">
+    <div class="px-5 py-2 border-b border-gray-100">
       <input type="text" id="reg-search" placeholder="Rechercher par nom, email ou événement..."
-             class="w-full text-sm px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:border-green-400"
+             class="w-full text-xs px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:border-green-400"
              oninput="applyFilters()">
     </div>
 
@@ -163,7 +192,7 @@
               </div>
             </td>
             <td class="text-gray-700 max-w-xs">
-              <div class="truncate text-sm" title="{{ reg.event.title }}">{{ reg.event.title|truncatechars:30 }}</div>
+              <div class="truncate text-sm" title="{{ reg.event.title }}">{{ reg.event.title|truncatechars:28 }}</div>
             </td>
             <td>
               {% if reg.participation_type == 'onsite' %}
@@ -179,11 +208,11 @@
               {% elif reg.status == 'accepte' %}<span class="badge-accepted">Accepté</span>
               {% else %}<span class="badge-refused">Refusé</span>{% endif %}
             </td>
-            <td class="text-gray-500 text-xs whitespace-nowrap">{{ reg.registered_at|date:"d/m/Y H:i" }}</td>
+            <td class="text-gray-400 text-xs whitespace-nowrap">{{ reg.registered_at|date:"d/m/Y H:i" }}</td>
           </tr>
           {% empty %}
           <tr id="empty-row">
-            <td colspan="5" class="text-center text-gray-400 py-10">Aucune inscription pour le moment.</td>
+            <td colspan="5" class="text-center text-gray-400 py-10 text-sm">Aucune inscription pour le moment.</td>
           </tr>
           {% endfor %}
         </tbody>
@@ -191,57 +220,44 @@
     </div>
 
     <!-- Pagination -->
-    <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between" id="pagination-bar">
-      <p class="text-xs text-gray-500" id="pagination-info"></p>
+    <div class="px-5 py-3 border-t border-gray-100 flex items-center justify-between">
+      <p class="text-xs text-gray-400" id="pagination-info"></p>
       <div class="flex gap-1" id="pagination-btns"></div>
     </div>
   </div>
 
-  <!-- ══ Événements avec filtres ══ -->
+  <!-- ══ Événements ══ -->
   <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-    <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-      <h2 class="font-semibold text-gray-800">Événements</h2>
+    <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+      <h2 class="font-semibold text-gray-800 text-sm">Événements</h2>
       <a href="{% url 'dashboard:event_list' %}" class="text-xs text-green-700 hover:underline">Voir tout</a>
     </div>
-      {% if event.is_upcoming %}
-              <span class="text-xs px-1.5 py-0.5 rounded bg-green-100 text-green-700 font-semibold">À venir</span>
-            {% endif %}
-          </div>
-        </div>
-    <!-- Filtres événements -->
+
+    <!-- Filtres -->
     <div class="px-4 py-2 border-b border-gray-100 flex gap-1 flex-wrap" style="background:#fafafa;">
       <button onclick="filterEvents('all')" id="ef-all"
               class="ev-filter-btn text-xs px-2.5 py-1 rounded-lg font-semibold transition-all"
-              style="background:#1a6b3a;color:#fff;">
-        Tous
-      </button>
+              style="background:#1a6b3a;color:#fff;">Tous</button>
       <button onclick="filterEvents('publie')" id="ef-publie"
-              class="ev-filter-btn text-xs px-2.5 py-1 rounded-lg font-semibold bg-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-700 transition-all">
-        Publié
-      </button>
+              class="ev-filter-btn text-xs px-2.5 py-1 rounded-lg font-semibold bg-gray-100 text-gray-500 hover:bg-blue-50 hover:text-blue-700 transition-all">Publié</button>
       <button onclick="filterEvents('brouillon')" id="ef-brouillon"
-              class="ev-filter-btn text-xs px-2.5 py-1 rounded-lg font-semibold bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all">
-        Brouillon
-      </button>
+              class="ev-filter-btn text-xs px-2.5 py-1 rounded-lg font-semibold bg-gray-100 text-gray-500 hover:bg-gray-200 transition-all">Brouillon</button>
       <button onclick="filterEvents('upcoming')" id="ef-upcoming"
-              class="ev-filter-btn text-xs px-2.5 py-1 rounded-lg font-semibold bg-gray-100 text-gray-600 hover:bg-green-50 hover:text-green-700 transition-all">
-        À venir
-      </button>
+              class="ev-filter-btn text-xs px-2.5 py-1 rounded-lg font-semibold bg-gray-100 text-gray-500 hover:bg-green-50 hover:text-green-700 transition-all">À venir</button>
     </div>
 
-    <!-- Liste événements -->
-    <!-- Liste événements -->
-    <div class="divide-y divide-gray-100 overflow-y-auto" style="max-height:480px;" id="events-list">
+    <!-- Liste -->
+    <div class="divide-y divide-gray-100 overflow-y-auto" style="max-height:420px;" id="events-list">
       {% for event in recent_events %}
       <a href="{% url 'dashboard:event_detail' pk=event.pk %}"
-        class="event-row flex items-start gap-3 px-5 py-4 hover:bg-gray-50 transition-colors"
-        data-status="{{ event.status }}"
-        data-upcoming="{% if event.is_upcoming and not event.is_finished %}1{% else %}0{% endif %}">
+         class="event-row flex items-start gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+         data-status="{{ event.status }}"
+         data-upcoming="{% if event.is_upcoming and not event.is_finished %}1{% else %}0{% endif %}">
 
-        <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
-            style="background:{% if event.status == 'publie' %}#dbeafe{% elif event.status == 'brouillon' %}#f3f4f6{% else %}#fee2e2{% endif %}">
-          <svg class="w-4 h-4 {% if event.status == 'publie' %}text-blue-600{% elif event.status == 'brouillon' %}text-gray-500{% else %}text-red-500{% endif %}"
-              fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
+             style="background:{% if event.status == 'publie' %}#dbeafe{% elif event.status == 'brouillon' %}#f3f4f6{% else %}#fee2e2{% endif %}">
+          <svg class="w-4 h-4 {% if event.status == 'publie' %}text-blue-500{% elif event.status == 'brouillon' %}text-gray-400{% else %}text-red-400{% endif %}"
+               fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
           </svg>
@@ -249,16 +265,16 @@
 
         <div class="min-w-0 flex-1">
           <p class="font-medium text-gray-900 text-sm truncate">{{ event.title }}</p>
-          <p class="text-xs text-gray-500 mt-0.5">{{ event.start_datetime|date:"d M Y" }}</p>
-          <div class="flex items-center gap-2 mt-1">
+          <p class="text-xs text-gray-400 mt-0.5">{{ event.start_datetime|date:"d M Y" }}</p>
+          <div class="flex items-center gap-1.5 mt-1 flex-wrap">
             {% if event.status == 'publie' %}<span class="badge-published">Publié</span>
             {% elif event.status == 'brouillon' %}<span class="badge-draft">Brouillon</span>
             {% else %}<span class="badge-refused">{{ event.get_status_display }}</span>{% endif %}
 
             {% if event.is_ongoing %}
-              <span class="text-xs px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 font-semibold">🔴 En cours</span>
+              <span class="text-xs px-1.5 py-0.5 rounded bg-blue-100 text-blue-600 font-semibold">🔴 En cours</span>
             {% elif event.is_finished %}
-              <span class="text-xs px-1.5 py-0.5 rounded bg-gray-100 text-gray-500 font-semibold">Terminé</span>
+              <span class="text-xs px-1.5 py-0.5 rounded bg-gray-100 text-gray-400 font-semibold">Terminé</span>
             {% else %}
               <span class="text-xs px-1.5 py-0.5 rounded bg-green-100 text-green-700 font-semibold">À venir</span>
             {% endif %}
@@ -266,7 +282,7 @@
         </div>
 
         <div class="text-right flex-shrink-0">
-          <p class="text-sm font-bold text-gray-900">{{ event.registrations.count }}</p>
+          <p class="text-sm font-bold text-gray-800">{{ event.registrations.count }}</p>
           <p class="text-xs text-gray-400">inscrits</p>
         </div>
       </a>
@@ -274,14 +290,12 @@
       <p class="text-center text-gray-400 py-10 text-sm">Aucun événement créé.</p>
       {% endfor %}
     </div>
-      
 
-    <!-- Message aucun résultat événements -->
-    <div id="no-events-msg" class="hidden text-center py-8 text-sm text-gray-400 border-t border-gray-100">
+    <div id="no-events-msg" class="hidden text-center py-6 text-sm text-gray-400 border-t border-gray-100">
       Aucun événement pour ce filtre.
     </div>
 
-    <div class="px-5 py-4 border-t border-gray-100">
+    <div class="px-4 py-3 border-t border-gray-100">
       <a href="{% url 'dashboard:event_create' %}" class="btn-sm btn-primary-sm w-full justify-center">
         + Créer un événement
       </a>
@@ -294,23 +308,104 @@
 {% block extra_js %}
 <script>
 // ═══════════════════════════════════════════
+// COURBES CHART.JS
+// ═══════════════════════════════════════════
+(function() {
+  // Données injectées depuis Django (à adapter dans la vue)
+  const regData    = {{ registrations_per_day|default:"[]"|safe }};
+  const evData     = {{ events_per_day|default:"[]"|safe }};
+
+  // Générer les 30 derniers jours
+  function last30Days() {
+    const labels = [];
+    const today  = new Date();
+    for (let i = 29; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      labels.push(d.toISOString().slice(0, 10));
+    }
+    return labels;
+  }
+
+  const labels = last30Days();
+
+  // Transformer [{date, count}] en tableau aligné sur labels
+  function toSeries(data) {
+    const map = {};
+    (data || []).forEach(d => { map[d.date] = d.count; });
+    return labels.map(l => map[l] || 0);
+  }
+
+  const chartDefaults = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: {
+      callbacks: { title: ctx => ctx[0].label.slice(5).replace('-', '/') }
+    }},
+    scales: {
+      x: { display: false },
+      y: { display: false, beginAtZero: true }
+    },
+    elements: { point: { radius: 0, hoverRadius: 4 } }
+  };
+
+  // Courbe inscriptions
+  const ctxReg = document.getElementById('chart-registrations');
+  if (ctxReg) {
+    new Chart(ctxReg, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          data: toSeries(regData),
+          borderColor: '#3b82f6',
+          backgroundColor: 'rgba(59,130,246,.08)',
+          fill: true,
+          tension: 0.4,
+          borderWidth: 2,
+        }]
+      },
+      options: chartDefaults
+    });
+  }
+
+  // Courbe événements
+  const ctxEv = document.getElementById('chart-events');
+  if (ctxEv) {
+    new Chart(ctxEv, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          data: toSeries(evData),
+          borderColor: '#1a6b3a',
+          backgroundColor: 'rgba(26,107,58,.08)',
+          fill: true,
+          tension: 0.4,
+          borderWidth: 2,
+        }]
+      },
+      options: chartDefaults
+    });
+  }
+})();
+
+// ═══════════════════════════════════════════
 // INSCRIPTIONS — Filtres + Recherche + Pagination
 // ═══════════════════════════════════════════
-const PER_PAGE    = 8;
-let currentPage   = 1;
-let activeStatus  = 'all';
-let activeMode    = 'all';
+const PER_PAGE   = 8;
+let currentPage  = 1;
+let activeStatus = 'all';
+let activeMode   = 'all';
 
 function filterReg(status) {
   activeStatus = status;
   currentPage  = 1;
-  // Boutons statut
   document.querySelectorAll('.reg-filter-btn').forEach(btn => {
-    btn.style.background = '#f3f4f6';
-    btn.style.color      = '#4b5563';
+    btn.style.background = '#f3f4f6'; btn.style.color = '#6b7280';
   });
-  const active = document.getElementById(`rf-${status}`);
-  if (active) { active.style.background = '#1a6b3a'; active.style.color = '#fff'; }
+  const a = document.getElementById(`rf-${status}`);
+  if (a) { a.style.background = '#1a6b3a'; a.style.color = '#fff'; }
   applyFilters();
 }
 
@@ -318,98 +413,77 @@ function filterMode(mode) {
   activeMode  = mode;
   currentPage = 1;
   document.querySelectorAll('.reg-mode-btn').forEach(btn => {
-    btn.style.background = '#f3f4f6';
-    btn.style.color      = '#4b5563';
+    btn.style.background = '#f3f4f6'; btn.style.color = '#6b7280';
   });
-  const active = document.getElementById(`rm-${mode}`);
-  if (active) { active.style.background = '#1f2937'; active.style.color = '#fff'; }
+  const a = document.getElementById(`rm-${mode}`);
+  if (a) { a.style.background = '#1f2937'; a.style.color = '#fff'; }
   applyFilters();
 }
 
 function applyFilters() {
-  const search = document.getElementById('reg-search').value.toLowerCase().trim();
-  const rows   = [...document.querySelectorAll('.reg-row')];
-
+  const search  = document.getElementById('reg-search').value.toLowerCase().trim();
+  const rows    = [...document.querySelectorAll('.reg-row')];
   const visible = rows.filter(row => {
-    const matchStatus = activeStatus === 'all' || row.dataset.status === activeStatus;
-    const matchMode   = activeMode   === 'all' || row.dataset.mode === activeMode;
-    const matchSearch = !search || row.dataset.search.includes(search);
-    return matchStatus && matchMode && matchSearch;
+    const ms = activeStatus === 'all' || row.dataset.status === activeStatus;
+    const mm = activeMode   === 'all' || row.dataset.mode   === activeMode;
+    const mq = !search || row.dataset.search.includes(search);
+    return ms && mm && mq;
   });
 
-  // Masquer tout
   rows.forEach(r => r.style.display = 'none');
-
-  // Pagination
   const totalPages = Math.max(1, Math.ceil(visible.length / PER_PAGE));
   if (currentPage > totalPages) currentPage = 1;
-
   const start = (currentPage - 1) * PER_PAGE;
-  const end   = start + PER_PAGE;
-  visible.forEach((r, i) => {
-    r.style.display = (i >= start && i < end) ? '' : 'none';
-  });
+  visible.forEach((r, i) => { r.style.display = (i >= start && i < start + PER_PAGE) ? '' : 'none'; });
 
-  // Ligne vide
   const emptyRow = document.getElementById('empty-row');
   if (emptyRow) emptyRow.style.display = visible.length === 0 ? '' : 'none';
 
-  // Info pagination
   const info = document.getElementById('pagination-info');
   if (info) {
     const from = visible.length === 0 ? 0 : start + 1;
-    const to   = Math.min(end, visible.length);
-    info.textContent = visible.length === 0
-      ? 'Aucun résultat'
-      : `${from}–${to} sur ${visible.length}`;
+    const to   = Math.min(start + PER_PAGE, visible.length);
+    info.textContent = visible.length === 0 ? 'Aucun résultat' : `${from}–${to} sur ${visible.length}`;
   }
-
   renderPagination(totalPages);
 }
 
 function renderPagination(totalPages) {
-  const container = document.getElementById('pagination-btns');
-  if (!container) return;
-  container.innerHTML = '';
-
+  const c = document.getElementById('pagination-btns');
+  if (!c) return;
+  c.innerHTML = '';
   if (totalPages <= 1) return;
 
-  // Précédent
   const prev = document.createElement('button');
   prev.textContent = '←';
-  prev.className   = 'px-3 py-1.5 text-xs rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-100 transition-all';
+  prev.className   = 'px-2.5 py-1 text-xs rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-100 transition-all';
   prev.disabled    = currentPage === 1;
   if (currentPage === 1) prev.style.opacity = '0.4';
   prev.onclick = () => { currentPage--; applyFilters(); };
-  container.appendChild(prev);
+  c.appendChild(prev);
 
-  // Pages
   for (let i = 1; i <= totalPages; i++) {
     const btn = document.createElement('button');
     btn.textContent = i;
-    btn.className   = 'px-3 py-1.5 text-xs rounded-lg border transition-all font-semibold';
+    btn.className   = 'px-2.5 py-1 text-xs rounded-lg border transition-all font-semibold';
     if (i === currentPage) {
-      btn.style.background   = '#1a6b3a';
-      btn.style.color        = '#fff';
-      btn.style.borderColor  = '#1a6b3a';
+      btn.style.background = '#1a6b3a'; btn.style.color = '#fff'; btn.style.borderColor = '#1a6b3a';
     } else {
-      btn.style.borderColor  = '#e5e7eb';
-      btn.style.color        = '#6b7280';
+      btn.style.borderColor = '#e5e7eb'; btn.style.color = '#6b7280';
       btn.onmouseover = () => { btn.style.background = '#f3f4f6'; };
       btn.onmouseout  = () => { btn.style.background = ''; };
     }
     btn.onclick = () => { currentPage = i; applyFilters(); };
-    container.appendChild(btn);
+    c.appendChild(btn);
   }
 
-  // Suivant
   const next = document.createElement('button');
   next.textContent = '→';
-  next.className   = 'px-3 py-1.5 text-xs rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-100 transition-all';
+  next.className   = 'px-2.5 py-1 text-xs rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-100 transition-all';
   next.disabled    = currentPage === totalPages;
   if (currentPage === totalPages) next.style.opacity = '0.4';
   next.onclick = () => { currentPage++; applyFilters(); };
-  container.appendChild(next);
+  c.appendChild(next);
 }
 
 // ═══════════════════════════════════════════
@@ -417,19 +491,17 @@ function renderPagination(totalPages) {
 // ═══════════════════════════════════════════
 function filterEvents(filter) {
   document.querySelectorAll('.ev-filter-btn').forEach(btn => {
-    btn.style.background = '#f3f4f6';
-    btn.style.color      = '#4b5563';
+    btn.style.background = '#f3f4f6'; btn.style.color = '#6b7280';
   });
-  const active = document.getElementById(`ef-${filter}`);
-  if (active) { active.style.background = '#1a6b3a'; active.style.color = '#fff'; }
+  const a = document.getElementById(`ef-${filter}`);
+  if (a) { a.style.background = '#1a6b3a'; a.style.color = '#fff'; }
 
-  const rows  = document.querySelectorAll('.event-row');
+  const rows = document.querySelectorAll('.event-row');
   let visible = 0;
   rows.forEach(row => {
-    let show = false;
-    if (filter === 'all')       show = true;
-    else if (filter === 'upcoming') show = row.dataset.upcoming === '1';
-    else                        show = row.dataset.status === filter;
+    let show = filter === 'all' ? true
+             : filter === 'upcoming' ? row.dataset.upcoming === '1'
+             : row.dataset.status === filter;
     row.style.display = show ? '' : 'none';
     if (show) visible++;
   });
@@ -438,9 +510,6 @@ function filterEvents(filter) {
   if (noMsg) noMsg.classList.toggle('hidden', visible > 0);
 }
 
-// Init
-document.addEventListener('DOMContentLoaded', () => {
-  applyFilters();
-});
+document.addEventListener('DOMContentLoaded', () => { applyFilters(); });
 </script>
 {% endblock %}

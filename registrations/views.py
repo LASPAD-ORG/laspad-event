@@ -17,7 +17,6 @@ def register(request, slug):
         messages.warning(request, "Les inscriptions pour cet événement sont closes.")
         return redirect('events:detail', slug=slug)
 
-    # Vérifier si l'événement est complet (tous modes)
     mode = getattr(event, 'participation_mode', 'online_only')
     if mode == 'onsite_only' and event.is_full_onsite:
         messages.error(request, "Désolé, cet événement est complet.")

@@ -16,55 +16,73 @@
       --lp-dark2:#142318;
       --lp-light:#e8f5ef;
       --sidebar-w:260px;
+      --header-h:64px;
     }
     body{font-family:'DM Sans',sans-serif;background:#f3f4f2;}
     h1,h2,h3,h4{font-family:'Sora',sans-serif;}
 
-    /* ── Sidebar desktop ── */
+    /* ── Header fixe pleine largeur ── */
+    .top-header{
+      position:fixed;
+      top:0; left:0; right:0;
+      height:var(--header-h);
+      background:#fff;
+      border-bottom:1px solid #e5e7eb;
+      box-shadow:0 1px 3px rgba(0,0,0,.04);
+      z-index:50;
+      display:flex;
+      align-items:center;
+      padding:0 24px;
+      gap:16px;
+    }
+
+    /* ── Sidebar ── */
     .sidebar{
       width:var(--sidebar-w);
       background:var(--lp-dark);
-      min-height:100vh;
       position:fixed;
-      top:0;left:0;
+      top:var(--header-h);
+      left:0;
+      bottom:0;
       z-index:40;
       display:flex;
       flex-direction:column;
       border-right:1px solid rgba(255,255,255,.04);
       transition:transform .25s cubic-bezier(.4,0,.2,1);
-    }
-    .main-content{
-      margin-left:var(--sidebar-w);
-      transition:margin-left .25s cubic-bezier(.4,0,.2,1);
+      overflow:hidden;
     }
 
-    /* ── Sidebar mobile ── */
+    .main-content{
+      margin-left:var(--sidebar-w);
+      margin-top:var(--header-h);
+      transition:margin-left .25s cubic-bezier(.4,0,.2,1);
+      min-height:calc(100vh - var(--header-h));
+    }
+
+    /* ── Mobile ── */
     @media(max-width:1023px){
       .sidebar{
         transform:translateX(-100%);
         box-shadow:4px 0 24px rgba(0,0,0,.3);
       }
-      .sidebar.open{
-        transform:translateX(0);
-      }
-      .main-content{
-        margin-left:0 !important;
-      }
+      .sidebar.open{ transform:translateX(0); }
+      .main-content{ margin-left:0 !important; }
     }
 
     /* Overlay mobile */
     .sidebar-overlay{
       display:none;
       position:fixed;inset:0;
+      top:var(--header-h);
       background:rgba(0,0,0,.5);
       z-index:39;
       backdrop-filter:blur(2px);
     }
     .sidebar-overlay.open{display:block;}
 
-    /* Logo bar */
+    /* Barre colorée haut sidebar */
     .sidebar-top-bar{
-      height:2px;
+      height:2px;flex-shrink:0;
       background:linear-gradient(90deg,var(--lp-green) 0%,var(--lp-gold) 50%,rgba(255,255,255,.15) 100%);
     }
 
@@ -98,8 +116,6 @@
       font-size:10px;font-weight:700;padding:1px 6px;
       border-radius:20px;min-width:18px;text-align:center;
     }
-    .nav-item.danger{color:rgba(252,165,165,.5);}
-    .nav-item.danger:hover{background:rgba(239,68,68,.12);color:#fca5a5;}
 
     /* ── Composants UI ── */
     .stat-card{background:#fff;border-radius:14px;border:1px solid #e5e7eb;padding:18px 20px;}
@@ -122,8 +138,8 @@
     .burger-btn{
       display:none;
       align-items:center;justify-content:center;
-      width:40px;height:40px;
-      border-radius:10px;
+      width:38px;height:38px;
+      border-radius:9px;
       border:1.5px solid #e5e7eb;
       background:#fff;
       cursor:pointer;
@@ -139,12 +155,91 @@
     .sidebar nav::-webkit-scrollbar{width:3px;}
     .sidebar nav::-webkit-scrollbar-track{background:transparent;}
     .sidebar nav::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:3px;}
+
+    /* Divider vertical header */
+    .header-divider{width:1px;height:24px;background:#e5e7eb;flex-shrink:0;}
   </style>
   {% block extra_head %}{% endblock %}
 </head>
 <body class="h-full">
 
-<!-- ── Overlay mobile ── -->
+<!-- ════════════════════════════════════════
+     HEADER — pleine largeur, fixe
+════════════════════════════════════════ -->
+<header class="top-header">
+
+  <!-- Burger (mobile) -->
+  <button class="burger-btn" onclick="openSidebar()" aria-label="Menu">
+    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+    </svg>
+  </button>
+
+  <!-- Logo -->
+  <a href="{% url 'dashboard:home' %}" class="flex items-center gap-2.5 flex-shrink-0 group">
+    <div class="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center flex-shrink-0"
+         style="background:var(--lp-dark);border:1px solid rgba(255,255,255,.1);">
+      <img src="{% static 'img/logo.png' %}" alt="LASPAD"
+           class="w-7 h-7 object-contain"
+           style="filter:brightness(0) invert(1);"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <span class="hidden w-full h-full items-center justify-center text-white font-bold text-sm"
+            style="font-family:'Sora',sans-serif;">L</span>
+    </div>
+    <div class="hidden sm:block">
+      <p class="font-bold leading-none text-gray-900" style="font-family:'Sora',sans-serif;font-size:14px;">LASPAD</p>
+      <p class="text-xs font-semibold leading-none mt-0.5" style="color:var(--lp-gold);">Event Platform</p>
+    </div>
+  </a>
+
+  <div class="header-divider hidden sm:block"></div>
+
+  <!-- Titre de la page -->
+  <div class="min-w-0 flex-1">
+    <h1 class="text-base lg:text-lg font-bold text-gray-900 truncate leading-none"
+        style="font-family:'Sora',sans-serif;">
+      {% block page_title %}Dashboard{% endblock %}
+    </h1>
+    <p class="text-xs text-gray-400 mt-0.5 hidden sm:block truncate">
+      {% block page_subtitle %}{% endblock %}
+    </p>
+  </div>
+
+  <!-- Actions droite -->
+  <div class="flex items-center gap-2 flex-shrink-0 flex-wrap justify-end">
+    {% block header_actions %}{% endblock %}
+
+    <div class="header-divider hidden md:block"></div>
+
+    <!-- Avatar utilisateur -->
+    <div class="flex items-center gap-2 flex-shrink-0">
+      <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+           style="background:var(--lp-gold);font-family:'Sora',sans-serif;">
+        {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+      </div>
+      <div class="hidden lg:block min-w-0">
+        <p class="text-sm font-semibold text-gray-800 leading-none truncate max-w-32">
+          {{ request.user.get_full_name|default:request.user.username }}
+        </p>
+        {% if request.user.is_superuser %}
+          <p class="text-xs mt-0.5" style="color:var(--lp-gold);">Administrateur</p>
+        {% elif request.user.is_staff %}
+          <p class="text-xs mt-0.5 text-blue-500">Gestionnaire</p>
+        {% endif %}
+      </div>
+      <a href="{% url 'dashboard:logout' %}"
+         title="Déconnexion"
+         class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 border border-gray-200 text-gray-400 hover:border-red-200 hover:bg-red-50 hover:text-red-500 transition-all">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- Overlay mobile -->
 <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
 
 <!-- ════════════════════════════════════════
@@ -152,35 +247,6 @@
 ════════════════════════════════════════ -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-top-bar"></div>
-
-  <!-- ── Logo + bouton fermer mobile ── -->
-  <div class="px-4 py-5 flex items-center justify-between"
-       style="border-bottom:1px solid rgba(255,255,255,.06);">
-    <a href="{% url 'dashboard:home' %}" class="flex items-center gap-3 group">
-      <div class="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 flex items-center justify-center"
-           style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);">
-        <img src="{% static 'img/logo.png' %}" alt="LASPAD" class="w-9 h-9 object-contain"
-             style="filter:brightness(0) invert(1);"
-             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <span class="hidden w-full h-full items-center justify-center text-white font-bold text-base"
-              style="font-family:'Sora',sans-serif;">L</span>
-      </div>
-      <div>
-        <p class="font-bold text-white leading-none" style="font-family:'Sora',sans-serif;font-size:15px;">LASPAD</p>
-        <p class="text-xs font-semibold mt-0.5 tracking-wide" style="color:var(--lp-gold);">Event Platform</p>
-      </div>
-    </a>
-    <!-- Bouton fermer (mobile uniquement) -->
-    <button onclick="closeSidebar()"
-            class="lg:hidden w-8 h-8 rounded-lg flex items-center justify-center transition-colors"
-            style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);"
-            onmouseover="this.style.background='rgba(255,255,255,.15)'"
-            onmouseout="this.style.background='rgba(255,255,255,.08)'">
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-      </svg>
-    </button>
-  </div>
 
   <!-- ── Navigation ── -->
   <nav class="flex-1 px-3 py-4 overflow-y-auto" style="scrollbar-width:thin;">
@@ -276,9 +342,9 @@
 
   </nav>
 
-  <!-- ── Profil utilisateur ── -->
-  <div class="px-3 pb-4" style="border-top:1px solid rgba(255,255,255,.06);">
-    <div class="px-2 py-2.5 mt-3 mb-2">
+  <!-- ── Profil bas de sidebar (rôle uniquement) ── -->
+  <div class="px-3 pb-4 flex-shrink-0" style="border-top:1px solid rgba(255,255,255,.06);">
+    <div class="px-2 py-3">
       {% if request.user.is_superuser %}
         <span class="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full"
               style="background:rgba(201,162,39,.2);color:var(--lp-gold);">
@@ -290,40 +356,9 @@
       {% elif request.user.is_staff %}
         <span class="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full"
               style="background:rgba(59,130,246,.15);color:#93c5fd;">
-          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-          </svg>
           Gestionnaire
         </span>
       {% endif %}
-    </div>
-
-    <div class="rounded-xl p-3 flex items-center gap-3"
-         style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);">
-      <div class="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-           style="background:var(--lp-gold);font-family:'Sora',sans-serif;">
-        {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
-      </div>
-      <div class="min-w-0 flex-1">
-        <p class="text-white text-sm font-semibold leading-none truncate">
-          {{ request.user.get_full_name|default:request.user.username }}
-        </p>
-        <p class="text-xs truncate mt-0.5" style="color:rgba(255,255,255,.35);">
-          {{ request.user.email|default:request.user.username }}
-        </p>
-      </div>
-      <a href="{% url 'dashboard:logout' %}"
-         title="Déconnexion"
-         class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors"
-         style="color:rgba(252,165,165,.5);"
-         onmouseover="this.style.background='rgba(239,68,68,.15)';this.style.color='#fca5a5'"
-         onmouseout="this.style.background='transparent';this.style.color='rgba(252,165,165,.5)'">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-        </svg>
-      </a>
     </div>
   </div>
 </aside>
@@ -331,31 +366,7 @@
 <!-- ════════════════════════════════════════
      CONTENU PRINCIPAL
 ════════════════════════════════════════ -->
-<div class="main-content min-h-screen flex flex-col" id="main-content">
-
-  <!-- Top bar -->
-  <header class="bg-white border-b border-gray-200 px-4 lg:px-8 py-4 flex items-center justify-between sticky top-0 z-30"
-          style="box-shadow:0 1px 3px rgba(0,0,0,.04);">
-    <div class="flex items-center gap-3 min-w-0">
-      <!-- Burger menu mobile -->
-      <button class="burger-btn" onclick="openSidebar()" id="burger-btn" aria-label="Menu">
-        <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-        </svg>
-      </button>
-      <div class="min-w-0">
-        <h1 class="text-lg lg:text-xl font-bold text-gray-900 truncate" style="font-family:'Sora',sans-serif;">
-          {% block page_title %}Dashboard{% endblock %}
-        </h1>
-        <p class="text-xs text-gray-400 mt-0.5 hidden sm:block">
-          {% block page_subtitle %}{% endblock %}
-        </p>
-      </div>
-    </div>
-    <div class="flex items-center gap-2 flex-shrink-0 flex-wrap justify-end">
-      {% block header_actions %}{% endblock %}
-    </div>
-  </header>
+<div class="main-content flex flex-col" id="main-content">
 
   <!-- Messages flash -->
   {% if messages %}
@@ -410,24 +421,15 @@ function openSidebar() {
   document.getElementById('sidebar-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
-
 function closeSidebar() {
   document.getElementById('sidebar').classList.remove('open');
   document.getElementById('sidebar-overlay').classList.remove('open');
   document.body.style.overflow = '';
 }
-
-// Fermer seulement sur mobile
 function closeSidebarMobile() {
   if (window.innerWidth < 1024) closeSidebar();
 }
-
-// Fermer avec Escape
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeSidebar();
-});
-
-// Adapter au resize
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
 window.addEventListener('resize', () => {
   if (window.innerWidth >= 1024) {
     document.getElementById('sidebar').classList.remove('open');

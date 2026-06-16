@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from .models import Event
+from registrations.models import Participant  # ← ajouter cette ligne
 
 
 def event_list(request):

@@ -6,19 +6,19 @@
 {% block extra_head %}
   <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
 
-  <!-- ══ Open Graph page d'accueil ══ -->
   {% with site_url=SITE_URL %}
   <meta property="og:type"        content="website">
   <meta property="og:site_name"   content="LASPAD Event">
   <meta property="og:title"       content="LASPAD Event — Événements scientifiques">
-  <meta property="og:description" content="return self.end_datetime > timezone.now() — rejoignez la communauté de recherche du LASPAD.">
+  <meta property="og:description" content="Webinaires, conférences, ateliers — rejoignez la communauté de recherche du LASPAD.">
   <meta property="og:url"         content="{{ site_url }}">
   <meta property="og:image"       content="{{ site_url }}{% static 'img/logo.png' %}">
   <meta name="twitter:card"       content="summary_large_image">
   <meta name="twitter:title"      content="LASPAD Event — Événements scientifiques">
   <meta name="twitter:image"      content="{{ site_url }}{% static 'img/logo.png' %}">
-  <meta name="description"        con tent="return self.end_datetime > timezone.now() — rejoignez la communauté de recherche du LASPAD.">
+  <meta name="description"        content="Webinaires, conférences, ateliers — rejoignez la communauté de recherche du LASPAD.">
   {% endwith %}
+
   <style>
     /* ── Cards ── */
     .event-card {
@@ -42,7 +42,7 @@
     }
     .carousel-track .event-card { flex-shrink: 0; }
 
-    /* ── Boutons nav ── */
+    /* ── Boutons nav carrousel ── */
     .c-btn {
       width: 2.5rem; height: 2.5rem;
       border-radius: 50%;
@@ -93,20 +93,11 @@
     }
     .filter-tab:not(.active):hover { border-color: #1a6b3a; color: #1a6b3a; }
 
-    /* ── Badge type ── */
-    .type-badge {
-      font-size: 11px; font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 999px;
-      text-transform: uppercase;
-      letter-spacing: .04em;
-    }
-
     /* ── Barre de progression ── */
-    .progress-bar { height: 4px; border-radius: 2px; background: #e5e7eb; overflow: hidden; }
+    .progress-bar  { height: 4px; border-radius: 2px; background: #e5e7eb; overflow: hidden; }
     .progress-fill { height: 100%; border-radius: 2px; background: #1a6b3a; }
 
-    /* btn-gold & btn-white */
+    /* ── Boutons hero ── */
     .btn-gold {
       display: inline-flex; align-items: center; gap: 8px;
       background: #c9a227; color: #fff;
@@ -116,9 +107,10 @@
       transition: all .15s;
     }
     .btn-gold:hover { background: #a8841f; transform: translateY(-1px); }
+
     .btn-primary {
       display: inline-flex; align-items: center; gap: 6px;
-      background: linear-gradient(135deg,#1a6b3a,#2d8a52);
+      background: linear-gradient(135deg, #1a6b3a, #2d8a52);
       color: #fff;
       padding: 10px 20px; border-radius: 10px;
       font-weight: 700; font-size: 13px;
@@ -127,14 +119,20 @@
       justify-content: center;
     }
     .btn-primary:hover { opacity: .92; transform: translateY(-1px); }
+
+    /* ── Événements passés : masquer au-delà de 3 ── */
+    .past-item-hidden { display: none; }
   </style>
 {% endblock %}
 
 {% block content %}
 
-<!-- ══ HERO ══ -->
+<!-- ══════════════════════════════════════
+     HERO
+══════════════════════════════════════ -->
 <section class="relative overflow-hidden" style="background:#0f1f15;">
-  <!-- Grille déco -->
+
+  <!-- Grille décorative -->
   <div class="absolute inset-0" style="opacity:.06;">
     <svg width="100%" height="100%">
       <defs>
@@ -145,6 +143,8 @@
       <rect width="100%" height="100%" fill="url(#grid)"/>
     </svg>
   </div>
+
+  <!-- Halos décoratifs -->
   <div class="absolute top-0 right-0 w-96 h-96 rounded-full pointer-events-none"
        style="background:radial-gradient(circle,rgba(201,162,39,.15),transparent 70%);transform:translate(30%,-30%)"></div>
   <div class="absolute bottom-0 left-0 w-80 h-80 rounded-full pointer-events-none"
@@ -152,22 +152,27 @@
 
   <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+
+      <!-- Texte -->
       <div>
         <div class="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-6 border"
              style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);">
           <span class="w-2 h-2 rounded-full animate-pulse" style="background:#c9a227;"></span>
           <span class="text-sm font-medium" style="color:rgba(255,255,255,.7);">Plateforme officielle LASPAD</span>
         </div>
+
         <h1 class="text-4xl sm:text-5xl font-bold leading-tight mb-5"
             style="font-family:'Sora',sans-serif;color:#fff;">
           Les événements<br>
           <span style="color:#c9a227;">scientifiques</span><br>
           du LASPAD
         </h1>
+
         <p class="text-base leading-relaxed mb-7" style="color:rgba(255,255,255,.55);">
-          return self.end_datetime > timezone.now() — rejoignez la communauté de recherche du
+          Webinaires, conférences, ateliers — rejoignez la communauté de recherche du
           Laboratoire d'Analyse des Sociétés et Pouvoirs / Afrique – Diasporas.
         </p>
+
         <div class="flex flex-wrap gap-3">
           <a href="#evenements" class="btn-gold">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -177,8 +182,8 @@
             Voir les événements
           </a>
           <a href="{% url 'events:recordings' %}"
-            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm"
-            style="background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.15);">
+             class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm"
+             style="background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.15);">
             🎬 Enregistrements
           </a>
           <a href="{% url 'dashboard:login' %}"
@@ -201,10 +206,12 @@
           </div>
         </div>
       </div>
+
     </div>
 
-    <!-- Stats -->
-    <div class="mt-14 grid grid-cols-3 gap-px rounded-2xl overflow-hidden" style="background:rgba(255,255,255,.07);">
+    <!-- Stats hero -->
+    <div class="mt-14 grid grid-cols-3 gap-px rounded-2xl overflow-hidden"
+         style="background:rgba(255,255,255,.07);">
       <div class="px-6 py-5 text-center" style="background:rgba(255,255,255,.04);">
         <p class="text-2xl font-bold" style="font-family:'Sora',sans-serif;color:#c9a227;">
           {{ upcoming_events.count }}
@@ -225,16 +232,19 @@
   </div>
 </section>
 
-<!-- ══ SECTION ÉVÉNEMENTS ══ -->
+<!-- ══════════════════════════════════════
+     SECTION ÉVÉNEMENTS
+══════════════════════════════════════ -->
 <div id="evenements" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
 
+  <!-- ── Événements à venir ── -->
   {% if upcoming_events %}
   <section class="mb-16">
 
-    <!-- En-tête section -->
     <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
       <div class="flex items-center gap-4">
-        <div class="w-1 h-9 rounded-full" style="background:linear-gradient(to bottom,#1a6b3a,#c9a227);"></div>
+        <div class="w-1 h-9 rounded-full"
+             style="background:linear-gradient(to bottom,#1a6b3a,#c9a227);"></div>
         <div>
           <h2 class="text-2xl font-bold" style="font-family:'Sora',sans-serif;color:#0f1f15;">
             Événements à venir
@@ -257,7 +267,7 @@
     </div>
 
     {% if upcoming_events.count == 1 %}
-    <!-- ── 1 événement : centré ── -->
+    <!-- 1 événement : centré -->
     <div class="flex justify-center" id="events-grid">
       {% for event in upcoming_events %}
       <div class="event-card-wrapper w-full max-w-sm" data-type="{{ event.event_type }}">
@@ -267,7 +277,7 @@
     </div>
 
     {% elif upcoming_events.count <= 3 %}
-    <!-- ── 2-3 événements : grille ── -->
+    <!-- 2-3 événements : grille -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="events-grid">
       {% for event in upcoming_events %}
       <div class="event-card-wrapper" data-type="{{ event.event_type }}">
@@ -277,13 +287,11 @@
     </div>
 
     {% else %}
-    <!-- ── 4+ événements : carrousel ── -->
+    <!-- 4+ événements : carrousel -->
     <div class="relative" id="carousel-root">
-      <!-- Contrôles -->
       <div class="flex items-center justify-between mb-4">
         <div class="flex gap-2 overflow-x-auto pb-1" id="type-filters-carousel"
-             style="scrollbar-width:none;">
-        </div>
+             style="scrollbar-width:none;"></div>
         <div class="flex items-center gap-2 flex-shrink-0 ml-3">
           <button class="c-btn" id="c-prev" onclick="carouselSlide(-1)" aria-label="Précédent">
             <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -298,7 +306,6 @@
         </div>
       </div>
 
-      <!-- Wrapper -->
       <div class="carousel-wrapper" id="c-wrapper">
         <div class="carousel-track" id="c-track">
           {% for event in upcoming_events %}
@@ -316,7 +323,6 @@
       <div class="absolute right-0 top-0 bottom-0 w-6 pointer-events-none"
            style="background:linear-gradient(to left,#f3f4f2,transparent);z-index:2;"></div>
 
-      <!-- Dots + compteur -->
       <div class="flex items-center justify-center gap-3 mt-5">
         <div class="flex gap-1.5" id="c-dots"></div>
       </div>
@@ -327,16 +333,19 @@
     <div id="no-filter-msg" class="hidden text-center py-12 text-gray-400">
       <p class="text-sm">Aucun événement de ce type pour le moment.</p>
       <button onclick="filterType('all', document.querySelector('.filter-tab'))"
-              class="text-green-700 hover:underline text-xs mt-1">Voir tous les événements</button>
+              class="text-green-700 hover:underline text-xs mt-1">
+        Voir tous les événements
+      </button>
     </div>
 
   </section>
   {% endif %}
 
-  <!-- ── Aucun événement ── -->
+  <!-- ── Aucun événement à venir ── -->
   {% if not upcoming_events %}
   <div class="text-center py-24">
-    <div class="w-20 h-20 rounded-full mx-auto mb-5 flex items-center justify-center" style="background:#f0fdf4;">
+    <div class="w-20 h-20 rounded-full mx-auto mb-5 flex items-center justify-center"
+         style="background:#f0fdf4;">
       <svg class="w-10 h-10" style="color:#1a6b3a;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
               d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -357,43 +366,71 @@
     <div class="flex items-center gap-4 mb-6">
       <div class="w-1 h-8 rounded-full bg-gray-200"></div>
       <div>
-        <h2 class="text-lg font-bold text-gray-400" style="font-family:'Sora',sans-serif;">Éditions passées</h2>
-        <p class="text-xs text-gray-300 mt-0.5">{{ past_events.count }} événement{{ past_events.count|pluralize }}</p>
+        <h2 class="text-lg font-bold text-gray-400" style="font-family:'Sora',sans-serif;">
+          Éditions passées
+        </h2>
+        <p class="text-xs text-gray-300 mt-0.5">
+          {{ past_events.count }} événement{{ past_events.count|pluralize }}
+        </p>
       </div>
     </div>
 
-    <!-- Grille passés : compacte -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="past-grid">
       {% for event in past_events %}
       <a href="{{ event.get_absolute_url }}"
-         class="flex items-center gap-4 p-4 bg-white rounded-xl border border-gray-100 hover:border-gray-300 hover:shadow-sm transition-all opacity-65 hover:opacity-100 group">
-        <div class="w-11 h-11 rounded-xl flex-shrink-0 flex items-center justify-center" style="background:#f3f4f6;">
-          <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+         class="past-item {% if forloop.counter > 3 %}past-item-hidden{% endif %}
+                flex items-center gap-4 p-4 bg-white rounded-xl border border-gray-100
+                hover:border-gray-300 hover:shadow-sm transition-all opacity-65 hover:opacity-100 group">
+        <div class="w-11 h-11 rounded-xl flex-shrink-0 flex items-center justify-center"
+             style="background:#f3f4f6;">
+          <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-600"
+               fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
           </svg>
         </div>
         <div class="min-w-0 flex-1">
           <p class="font-semibold text-gray-700 text-sm truncate group-hover:text-gray-900"
-             style="font-family:'Sora',sans-serif;">{{ event.title }}</p>
+             style="font-family:'Sora',sans-serif;">
+            {{ event.title }}
+          </p>
           <div class="flex items-center gap-2 mt-0.5">
             <p class="text-xs text-gray-400">{{ event.start_datetime|date:"d F Y" }}</p>
             <span class="text-gray-200">·</span>
             <p class="text-xs text-gray-400">{{ event.get_event_type_display }}</p>
           </div>
         </div>
-        <svg class="w-4 h-4 text-gray-300 group-hover:text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-4 h-4 text-gray-300 group-hover:text-green-600 flex-shrink-0"
+             fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
         </svg>
       </a>
       {% endfor %}
     </div>
+
+    {% if past_events.count > 3 %}
+    <div class="flex justify-center mt-5">
+      <button onclick="togglePastEvents()" id="btn-toggle-past"
+              class="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold
+                     text-gray-500 border border-gray-200 hover:border-green-600 hover:text-green-700
+                     transition-all bg-white">
+        <span id="btn-past-label">Voir les {{ past_events.count|add:"-3" }} autres éditions</span>
+        <svg id="btn-past-icon" class="w-4 h-4 transition-transform duration-200"
+             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </button>
+    </div>
+    {% endif %}
+
   </section>
   {% endif %}
 
 </div>
 
-<!-- ══ BANDEAU LASPAD ══ -->
+<!-- ══════════════════════════════════════
+     BANDEAU LASPAD
+══════════════════════════════════════ -->
 <section style="background:#0f1f15;" class="mt-8">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
@@ -422,7 +459,6 @@
 // FILTRE PAR TYPE
 // ═══════════════════════════════════════════════════
 function filterType(type, btn) {
-  // Mettre à jour les boutons actifs
   document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
 
@@ -437,14 +473,36 @@ function filterType(type, btn) {
   const noMsg = document.getElementById('no-filter-msg');
   if (noMsg) noMsg.classList.toggle('hidden', visible > 0);
 
-  // Si carrousel, recalculer
   if (typeof carouselGoTo === 'function') carouselGoTo(0);
+}
+
+// ═══════════════════════════════════════════════════
+// ÉVÉNEMENTS PASSÉS — Voir plus / Voir moins
+// ═══════════════════════════════════════════════════
+let pastExpanded = false;
+
+function togglePastEvents() {
+  pastExpanded = !pastExpanded;
+
+  document.querySelectorAll('.past-item').forEach((el, i) => {
+    if (i >= 3) el.style.display = pastExpanded ? '' : 'none';
+  });
+
+  const label = document.getElementById('btn-past-label');
+  const icon  = document.getElementById('btn-past-icon');
+  const total = document.querySelectorAll('.past-item').length;
+
+  if (label) label.textContent = pastExpanded
+    ? 'Voir moins'
+    : `Voir les ${total - 3} autres éditions`;
+
+  if (icon) icon.style.transform = pastExpanded ? 'rotate(180deg)' : '';
 }
 
 // ═══════════════════════════════════════════════════
 // CARROUSEL (4+ événements)
 // ═══════════════════════════════════════════════════
-(function() {
+(function () {
   const track   = document.getElementById('c-track');
   const wrapper = document.getElementById('c-wrapper');
   const dotsEl  = document.getElementById('c-dots');
@@ -497,7 +555,8 @@ function filterType(type, btn) {
   }
 
   function updateDots() {
-    dotsEl?.querySelectorAll('.c-dot').forEach((d, i) => d.classList.toggle('active', i === current));
+    dotsEl?.querySelectorAll('.c-dot').forEach((d, i) =>
+      d.classList.toggle('active', i === current));
   }
 
   function updateBtns() {
@@ -505,14 +564,14 @@ function filterType(type, btn) {
     if (btnNext) btnNext.disabled = current >= maxIdx();
   }
 
-  window.carouselGoTo = function(idx) {
+  window.carouselGoTo = function (idx) {
     current = Math.max(0, Math.min(idx, maxIdx()));
     track.style.transform = `translateX(-${current * cardW()}px)`;
     updateDots();
     updateBtns();
   };
 
-  window.carouselSlide = function(dir) {
+  window.carouselSlide = function (dir) {
     carouselGoTo(current + dir);
     resetAuto();
   };
@@ -525,7 +584,7 @@ function filterType(type, btn) {
   function resetAuto() { clearInterval(autoTimer); startAuto(); }
   function stopAuto()  { clearInterval(autoTimer); }
 
-  // ── Drag souris ──
+  // Drag souris
   wrapper.addEventListener('mousedown', e => {
     isDrag = true; dragStart = e.clientX; dragDelta = 0;
     track.style.transition = 'none'; stopAuto();
@@ -540,13 +599,13 @@ function filterType(type, btn) {
     isDrag = false;
     track.style.transition = 'transform .45s cubic-bezier(.4,0,.2,1)';
     const thr = cardW() * .25;
-    if (dragDelta < -thr) carouselGoTo(current + 1);
-    else if (dragDelta > thr) carouselGoTo(current - 1);
-    else carouselGoTo(current);
+    if      (dragDelta < -thr) carouselGoTo(current + 1);
+    else if (dragDelta >  thr) carouselGoTo(current - 1);
+    else                       carouselGoTo(current);
     resetAuto();
   });
 
-  // ── Touch ──
+  // Touch
   wrapper.addEventListener('touchstart', e => {
     dragStart = e.touches[0].clientX; dragDelta = 0;
     track.style.transition = 'none'; stopAuto();
@@ -558,13 +617,13 @@ function filterType(type, btn) {
   wrapper.addEventListener('touchend', () => {
     track.style.transition = 'transform .45s cubic-bezier(.4,0,.2,1)';
     const thr = cardW() * .25;
-    if (dragDelta < -thr) carouselGoTo(current + 1);
-    else if (dragDelta > thr) carouselGoTo(current - 1);
-    else carouselGoTo(current);
+    if      (dragDelta < -thr) carouselGoTo(current + 1);
+    else if (dragDelta >  thr) carouselGoTo(current - 1);
+    else                       carouselGoTo(current);
     resetAuto();
   });
 
-  // ── Resize ──
+  // Resize
   let resizeTimer;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);

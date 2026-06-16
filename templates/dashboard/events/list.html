@@ -1,361 +1,629 @@
-{% extends 'dashboard/base_dashboard.html' %}
+{% extends 'base/base.html' %}
+{% load static %}
 
-{% block title %}Événements{% endblock %}
-{% block page_title %}Événements{% endblock %}
-{% block page_subtitle %}{{ events.count }} événement{{ events.count|pluralize }} au total{% endblock %}
+{% block title %}LASPAD Event — Événements scientifiques{% endblock %}
 
-{% block header_actions %}
-  <a href="{% url 'dashboard:event_create' %}" class="btn-sm btn-primary-sm">
-    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-    </svg>
-    Nouvel événement
-  </a>
+{% block extra_head %}
+  <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
+
+  <!-- ══ Open Graph page d'accueil ══ -->
+  {% with site_url=SITE_URL %}
+  <meta property="og:type"        content="website">
+  <meta property="og:site_name"   content="LASPAD Event">
+  <meta property="og:title"       content="LASPAD Event — Événements scientifiques">
+  <meta property="og:description" content="Webinaires, conférences, ateliers — rejoignez la communauté de recherche du LASPAD.">
+  <meta property="og:url"         content="{{ site_url }}">
+  <meta property="og:image"       content="{{ site_url }}{% static 'img/logo.png' %}">
+  <meta name="twitter:card"       content="summary_large_image">
+  <meta name="twitter:title"      content="LASPAD Event — Événements scientifiques">
+  <meta name="twitter:image"      content="{{ site_url }}{% static 'img/logo.png' %}">
+  <meta name="description"        content="Webinaires, conférences, ateliers — rejoignez la communauté de recherche du LASPAD.">
+  {% endwith %}
+  <style>
+    /* ── Cards ── */
+    .event-card {
+      transition: transform .2s, box-shadow .2s;
+      display: flex;
+      flex-direction: column;
+    }
+    .event-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 32px rgba(0,0,0,.1);
+    }
+
+    /* ── Carrousel ── */
+    .carousel-wrapper { overflow: hidden; cursor: grab; user-select: none; }
+    .carousel-wrapper:active { cursor: grabbing; }
+    .carousel-track {
+      display: flex;
+      gap: 1.5rem;
+      transition: transform .45s cubic-bezier(.4,0,.2,1);
+      will-change: transform;
+    }
+    .carousel-track .event-card { flex-shrink: 0; }
+
+    /* ── Boutons nav ── */
+    .c-btn {
+      width: 2.5rem; height: 2.5rem;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: #fff;
+      border: 1.5px solid #e5e7eb;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+      cursor: pointer;
+      transition: all .15s;
+      flex-shrink: 0;
+    }
+    .c-btn:hover { background: #1a6b3a; border-color: #1a6b3a; }
+    .c-btn:hover svg { stroke: #fff; }
+    .c-btn:disabled { opacity: .3; cursor: not-allowed; pointer-events: none; }
+
+    /* ── Dots ── */
+    .c-dot {
+      width: 6px; height: 6px;
+      border-radius: 3px;
+      background: #d1d5db;
+      transition: all .2s;
+      cursor: pointer;
+      border: none;
+      padding: 0;
+    }
+    .c-dot.active { width: 20px; background: #1a6b3a; }
+
+    /* ── Filtre tabs ── */
+    .filter-tab {
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .15s;
+      border: 1.5px solid transparent;
+      white-space: nowrap;
+    }
+    .filter-tab.active {
+      background: #1a6b3a;
+      color: #fff;
+      border-color: #1a6b3a;
+    }
+    .filter-tab:not(.active) {
+      background: #fff;
+      color: #6b7280;
+      border-color: #e5e7eb;
+    }
+    .filter-tab:not(.active):hover { border-color: #1a6b3a; color: #1a6b3a; }
+
+    /* ── Badge type ── */
+    .type-badge {
+      font-size: 11px; font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    /* ── Barre de progression ── */
+    .progress-bar { height: 4px; border-radius: 2px; background: #e5e7eb; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 2px; background: #1a6b3a; }
+
+    /* btn-gold & btn-primary */
+    .btn-gold {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #c9a227; color: #fff;
+      padding: 10px 22px; border-radius: 10px;
+      font-weight: 700; font-size: 14px;
+      text-decoration: none;
+      transition: all .15s;
+    }
+    .btn-gold:hover { background: #a8841f; transform: translateY(-1px); }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: linear-gradient(135deg,#1a6b3a,#2d8a52);
+      color: #fff;
+      padding: 10px 20px; border-radius: 10px;
+      font-weight: 700; font-size: 13px;
+      text-decoration: none;
+      transition: all .15s;
+      justify-content: center;
+    }
+    .btn-primary:hover { opacity: .92; transform: translateY(-1px); }
+
+    /* ── Événements passés cachés ── */
+    .past-item-hidden { display: none; }
+  </style>
 {% endblock %}
 
 {% block content %}
 
-<!-- ── Filtres + Recherche ── -->
-<div class="bg-white rounded-2xl border border-gray-200 overflow-hidden mb-4">
-  <div class="px-6 py-4 flex flex-wrap items-center gap-3">
+<!-- ══ HERO ══ -->
+<section class="relative overflow-hidden" style="background:#0f1f15;">
+  <!-- Grille déco -->
+  <div class="absolute inset-0" style="opacity:.06;">
+    <svg width="100%" height="100%">
+      <defs>
+        <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+          <path d="M60 0L0 0 0 60" fill="none" stroke="white" stroke-width=".8"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#grid)"/>
+    </svg>
+  </div>
+  <div class="absolute top-0 right-0 w-96 h-96 rounded-full pointer-events-none"
+       style="background:radial-gradient(circle,rgba(201,162,39,.15),transparent 70%);transform:translate(30%,-30%)"></div>
+  <div class="absolute bottom-0 left-0 w-80 h-80 rounded-full pointer-events-none"
+       style="background:radial-gradient(circle,rgba(26,107,58,.25),transparent 70%);transform:translate(-30%,30%)"></div>
 
-    <!-- Recherche -->
-    <div class="flex-1 min-w-48">
-      <div class="relative">
-        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-        </svg>
-        <input type="text" id="ev-search" placeholder="Rechercher un événement..."
-               class="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-green-400"
-               oninput="applyFilters()">
+  <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div>
+        <div class="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-6 border"
+             style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);">
+          <span class="w-2 h-2 rounded-full animate-pulse" style="background:#c9a227;"></span>
+          <span class="text-sm font-medium" style="color:rgba(255,255,255,.7);">Plateforme officielle LASPAD</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-bold leading-tight mb-5"
+            style="font-family:'Sora',sans-serif;color:#fff;">
+          Les événements<br>
+          <span style="color:#c9a227;">scientifiques</span><br>
+          du LASPAD
+        </h1>
+        <p class="text-base leading-relaxed mb-7" style="color:rgba(255,255,255,.55);">
+          Webinaires, conférences, ateliers — rejoignez la communauté de recherche du
+          Laboratoire d'Analyse des Sociétés et Pouvoirs / Afrique – Diasporas.
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <a href="#evenements" class="btn-gold">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            Voir les événements
+          </a>
+          <a href="{% url 'events:recordings' %}"
+            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm"
+            style="background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.15);">
+            🎬 Enregistrements
+          </a>
+          <a href="{% url 'dashboard:login' %}"
+             class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm"
+             style="background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.15);">
+            Espace admin →
+          </a>
+        </div>
+      </div>
+
+      <!-- Logo desktop -->
+      <div class="hidden lg:flex justify-center">
+        <div class="relative">
+          <div class="absolute inset-0 rounded-2xl"
+               style="background:radial-gradient(circle,rgba(201,162,39,.15),transparent 65%);transform:scale(1.4);"></div>
+          <div class="relative rounded-2xl p-8 flex items-center justify-center"
+               style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(8px);">
+            <img src="{% static 'img/logo.png' %}" alt="LASPAD" class="w-64 h-auto object-contain"
+                 style="filter:brightness(0) invert(1);">
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="flex gap-1 flex-wrap">
-      <button onclick="setFilter('status','all')" id="fs-all"
-              class="ev-status-btn text-xs px-3 py-1.5 rounded-lg font-semibold bg-gray-100 text-gray-600 hover:bg-green-50 hover:text-green-700 transition-all">
-        Tous</button>
-
-      <!-- Bouton À venir : vert actif par défaut -->
-      <button onclick="setFilter('status','upcoming')" id="fs-upcoming"
-              class="ev-status-btn text-xs px-3 py-1.5 rounded-lg font-semibold transition-all"
-              style="background:#1a6b3a;color:#fff;">
-        À venir</button>
-      <button onclick="setFilter('status','publie')" id="fs-publie"
-              class="ev-status-btn text-xs px-3 py-1.5 rounded-lg font-semibold bg-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-700 transition-all">
-        Publié</button>
-      <button onclick="setFilter('status','brouillon')" id="fs-brouillon"
-              class="ev-status-btn text-xs px-3 py-1.5 rounded-lg font-semibold bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all">
-        Brouillon</button>
-      <button onclick="setFilter('status','past')" id="fs-past"
-              class="ev-status-btn text-xs px-3 py-1.5 rounded-lg font-semibold bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all">
-        Passé</button>
+    <!-- Stats -->
+    <div class="mt-14 grid grid-cols-3 gap-px rounded-2xl overflow-hidden" style="background:rgba(255,255,255,.07);">
+      <div class="px-6 py-5 text-center" style="background:rgba(255,255,255,.04);">
+        <p class="text-2xl font-bold" style="font-family:'Sora',sans-serif;color:#c9a227;">
+          {{ upcoming_events.count }}
+        </p>
+        <p class="text-xs mt-0.5" style="color:rgba(255,255,255,.45);">À venir</p>
+      </div>
+      <div class="px-6 py-5 text-center" style="background:rgba(255,255,255,.04);">
+        <p class="text-2xl font-bold" style="font-family:'Sora',sans-serif;color:#c9a227;">
+          {{ past_events.count }}
+        </p>
+        <p class="text-xs mt-0.5" style="color:rgba(255,255,255,.45);">Éditions passées</p>
+      </div>
+      <div class="px-6 py-5 text-center" style="background:rgba(255,255,255,.04);">
+        <p class="text-2xl font-bold" style="font-family:'Sora',sans-serif;color:#c9a227;">100%</p>
+        <p class="text-xs mt-0.5" style="color:rgba(255,255,255,.45);">Gratuit</p>
+      </div>
     </div>
-
-    <!-- Filtre mode -->
-    <div class="flex gap-1">
-      <button onclick="setFilter('mode','all')" id="fm-all"
-              class="ev-mode-btn text-xs px-3 py-1.5 rounded-lg font-semibold transition-all"
-              style="background:#1f2937;color:#fff;">Tous modes</button>
-      <button onclick="setFilter('mode','online_only')" id="fm-online_only"
-              class="ev-mode-btn text-xs px-3 py-1.5 rounded-lg font-semibold bg-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-700 transition-all">
-        🌐 En ligne</button>
-      <button onclick="setFilter('mode','onsite_only')" id="fm-onsite_only"
-              class="ev-mode-btn text-xs px-3 py-1.5 rounded-lg font-semibold bg-gray-100 text-gray-600 hover:bg-purple-50 hover:text-purple-700 transition-all">
-        🏛️ Présentiel</button>
-      <button onclick="setFilter('mode','hybrid')" id="fm-hybrid"
-              class="ev-mode-btn text-xs px-3 py-1.5 rounded-lg font-semibold bg-gray-100 text-gray-600 hover:bg-amber-50 hover:text-amber-700 transition-all">
-        🔀 Hybride</button>
-    </div>
-
   </div>
-</div>
+</section>
 
-<!-- ── Table ── -->
-<div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-  <div class="overflow-x-auto">
-    <table class="table w-full" id="ev-table">
-      <thead>
-        <tr>
-          <th class="text-left">Titre</th>
-          <th class="text-left">Type / Mode</th>
-          <th class="text-left">Date</th>
-          <th class="text-left">Statut</th>
-          <th class="text-left">Inscriptions</th>
-          <th class="text-left">Actions</th>
-        </tr>
-      </thead>
-      <tbody id="ev-tbody">
-        {% for event in events %}
-        <tr class="ev-row"
-            data-status="{{ event.status }}"
-            data-upcoming="{% if event.is_upcoming %}1{% else %}0{% endif %}"
-            data-past="{% if event.is_finished %}1{% else %}0{% endif %}"
-            data-mode="{{ event.participation_mode|default:'online_only' }}"
-            data-search="{{ event.title|lower }} {{ event.get_event_type_display|lower }}">
+<!-- ══ SECTION ÉVÉNEMENTS ══ -->
+<div id="evenements" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
 
-          <td>
-            <a href="{% url 'dashboard:event_detail' pk=event.pk %}"
-               class="font-semibold text-gray-900 hover:text-green-700 transition-colors">
-              {{ event.title|truncatechars:45 }}
-            </a>
-            <div class="flex flex-wrap gap-1 mt-1">
-              {% if event.access_mode == 'validation' %}
-                <span class="text-xs text-yellow-600 bg-yellow-50 px-1.5 py-0.5 rounded">validation</span>
-              {% endif %}
-              {% if event.participation_mode == 'hybrid' %}
-                <span class="text-xs bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded font-semibold">🔀 Hybride</span>
-              {% elif event.participation_mode == 'onsite_only' %}
-                <span class="text-xs bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded font-semibold">🏛️ Présentiel</span>
-              {% else %}
-                <span class="text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded font-semibold">🌐 En ligne</span>
-              {% endif %}
-            </div>
-          </td>
+  {% if upcoming_events %}
+  <section class="mb-16">
 
-          <td>
-            <span class="text-sm text-gray-600">{{ event.get_event_type_display }}</span>
-          </td>
+    <!-- En-tête section -->
+    <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+      <div class="flex items-center gap-4">
+        <div class="w-1 h-9 rounded-full" style="background:linear-gradient(to bottom,#1a6b3a,#c9a227);"></div>
+        <div>
+          <h2 class="text-2xl font-bold" style="font-family:'Sora',sans-serif;color:#0f1f15;">
+            Événements à venir
+          </h2>
+          <p class="text-sm text-gray-400 mt-0.5">Inscrivez-vous dès maintenant</p>
+        </div>
+        <span class="text-xs font-bold px-2.5 py-1 rounded-full text-white" style="background:#1a6b3a;">
+          {{ upcoming_events.count }}
+        </span>
+      </div>
 
-          <td class="text-sm text-gray-600 whitespace-nowrap">
-            {{ event.start_datetime|date:"d/m/Y" }}
-            <p class="text-xs text-gray-400">{{ event.start_datetime|date:"H:i" }}</p>
-          </td>
+      <!-- Filtres par type -->
+      <div class="flex gap-2 flex-wrap" id="type-filters">
+        <button class="filter-tab active" onclick="filterType('all', this)">Tous</button>
+        <button class="filter-tab" onclick="filterType('webinaire', this)">Webinaires</button>
+        <button class="filter-tab" onclick="filterType('conference', this)">Conférences</button>
+        <button class="filter-tab" onclick="filterType('atelier', this)">Ateliers</button>
+        <button class="filter-tab" onclick="filterType('seminaire', this)">Séminaires</button>
+      </div>
+    </div>
 
-          <td>
-            {% if event.status == 'publie' %}<span class="badge-published">Publié</span>
-            {% elif event.status == 'brouillon' %}<span class="badge-draft">Brouillon</span>
-            {% elif event.status == 'annule' %}<span class="badge-refused">Annulé</span>
-            {% else %}<span class="badge-draft">Terminé</span>{% endif %}
-            {% if event.is_upcoming %}
-              <p class="text-xs text-green-600 font-semibold mt-0.5">À venir</p>
-            {% elif event.is_finished %}
-              <p class="text-xs text-gray-400 mt-0.5">Terminé</p>
-            {% endif %}
-          </td>
+    {% if upcoming_events.count == 1 %}
+    <!-- ── 1 événement : centré ── -->
+    <div class="flex justify-center" id="events-grid">
+      {% for event in upcoming_events %}
+      <div class="event-card-wrapper w-full max-w-sm" data-type="{{ event.event_type }}">
+        {% include 'events/_card.html' %}
+      </div>
+      {% endfor %}
+    </div>
 
-          <td>
-            <div class="flex items-center gap-2">
-              <span class="font-semibold text-gray-900">{{ event.reg_count }}</span>
-              {% if event.pending_count > 0 %}
-                <span class="badge-pending text-xs">{{ event.pending_count }} att.</span>
-              {% endif %}
-            </div>
-            {% if event.participation_mode == 'hybrid' %}
-              <div class="flex gap-1 mt-1">
-                <span class="text-xs text-purple-600">🏛️ {{ event.accepted_onsite.count }}</span>
-                <span class="text-xs text-gray-300">|</span>
-                <span class="text-xs text-blue-600">🌐 {{ event.accepted_online.count }}</span>
-              </div>
-            {% endif %}
-          </td>
+    {% elif upcoming_events.count <= 3 %}
+    <!-- ── 2-3 événements : grille ── -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="events-grid">
+      {% for event in upcoming_events %}
+      <div class="event-card-wrapper" data-type="{{ event.event_type }}">
+        {% include 'events/_card_full.html' %}
+      </div>
+      {% endfor %}
+    </div>
 
-          <td>
-            <div class="flex flex-wrap items-center gap-1.5">
-              <a href="{% url 'dashboard:event_detail' pk=event.pk %}"
-                class="btn-sm bg-gray-100 text-gray-700 hover:bg-gray-200 text-xs">
-                Gérer
-              </a>
-              <a href="{% url 'dashboard:event_edit' pk=event.pk %}"
-                class="btn-sm bg-blue-50 text-blue-700 hover:bg-blue-100 text-xs">
-                Modifier
-              </a>
-              <a href="{% url 'dashboard:schedule_manage' pk=event.pk %}"
-                class="btn-sm bg-green-50 text-green-700 hover:bg-green-100 text-xs">
-                📅
-              </a>
-              <a href="{% url 'dashboard:contact_participants' pk=event.pk %}"
-                class="btn-sm bg-purple-50 text-purple-700 hover:bg-purple-100 text-xs">
-                ✉
-              </a>
-              <a href="{% url 'dashboard:export_csv' pk=event.pk %}"
-                class="btn-sm bg-gray-50 text-gray-600 hover:bg-gray-100 text-xs">
-                CSV
-              </a>
-              {% if request.user.is_superuser %}
-              <a href="{% url 'dashboard:event_delete' pk=event.pk %}"
-                class="btn-sm bg-red-50 text-red-600 hover:bg-red-100 text-xs">
-                🗑️
-              </a>
-              {% endif %}
-            </div>
-          </td>
-        </tr>
-        {% empty %}
-        <tr id="empty-row">
-          <td colspan="6" class="text-center py-16 text-gray-400">
-            <svg class="w-12 h-12 mx-auto mb-3 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+    {% else %}
+    <!-- ── 4+ événements : carrousel ── -->
+    <div class="relative" id="carousel-root">
+      <!-- Contrôles -->
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex gap-2 overflow-x-auto pb-1" id="type-filters-carousel"
+             style="scrollbar-width:none;">
+        </div>
+        <div class="flex items-center gap-2 flex-shrink-0 ml-3">
+          <button class="c-btn" id="c-prev" onclick="carouselSlide(-1)" aria-label="Précédent">
+            <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg>
-            <p class="font-medium">Aucun événement créé.</p>
-            <a href="{% url 'dashboard:event_create' %}" class="text-green-700 hover:underline text-sm mt-1 inline-block">
-              Créer le premier événement →
-            </a>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+          </button>
+          <button class="c-btn" id="c-next" onclick="carouselSlide(1)" aria-label="Suivant">
+            <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+          </button>
+        </div>
+      </div>
 
-  <!-- Message aucun résultat -->
-  <div id="no-result-msg" class="hidden text-center py-12 text-gray-400 border-t border-gray-100">
-    <svg class="w-10 h-10 mx-auto mb-3 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-    </svg>
-    <p class="font-medium">Aucun événement ne correspond à votre recherche.</p>
-    <button onclick="resetFilters()" class="text-green-700 hover:underline text-sm mt-1">Réinitialiser les filtres</button>
-  </div>
+      <!-- Wrapper -->
+      <div class="carousel-wrapper" id="c-wrapper">
+        <div class="carousel-track" id="c-track">
+          {% for event in upcoming_events %}
+          <div class="event-card-wrapper" data-type="{{ event.event_type }}"
+               style="width: calc((100% - 3rem) / 3);">
+            {% include 'events/_card_full.html' %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
 
-  <!-- Pagination -->
-  <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-    <p class="text-xs text-gray-500" id="ev-pagination-info"></p>
-    <div class="flex gap-1" id="ev-pagination-btns"></div>
+      <!-- Dégradés bords -->
+      <div class="absolute left-0 top-0 bottom-0 w-6 pointer-events-none"
+           style="background:linear-gradient(to right,#f3f4f2,transparent);z-index:2;"></div>
+      <div class="absolute right-0 top-0 bottom-0 w-6 pointer-events-none"
+           style="background:linear-gradient(to left,#f3f4f2,transparent);z-index:2;"></div>
+
+      <!-- Dots -->
+      <div class="flex items-center justify-center gap-3 mt-5">
+        <div class="flex gap-1.5" id="c-dots"></div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Message aucun résultat filtre -->
+    <div id="no-filter-msg" class="hidden text-center py-12 text-gray-400">
+      <p class="text-sm">Aucun événement de ce type pour le moment.</p>
+      <button onclick="filterType('all', document.querySelector('.filter-tab'))"
+              class="text-green-700 hover:underline text-xs mt-1">Voir tous les événements</button>
+    </div>
+
+  </section>
+  {% endif %}
+
+  <!-- ── Aucun événement à venir ── -->
+  {% if not upcoming_events %}
+  <div class="text-center py-24">
+    <div class="w-20 h-20 rounded-full mx-auto mb-5 flex items-center justify-center" style="background:#f0fdf4;">
+      <svg class="w-10 h-10" style="color:#1a6b3a;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+      </svg>
+    </div>
+    <h3 class="text-xl font-bold text-gray-800 mb-2" style="font-family:'Sora',sans-serif;">
+      Aucun événement à venir
+    </h3>
+    <p class="text-gray-400 text-sm max-w-xs mx-auto">
+      Revenez bientôt — de nouveaux événements seront annoncés prochainement.
+    </p>
   </div>
+  {% endif %}
+
+  <!-- ── Événements passés ── -->
+  {% if past_events %}
+  <section>
+    <div class="flex items-center gap-4 mb-6">
+      <div class="w-1 h-8 rounded-full bg-gray-200"></div>
+      <div>
+        <h2 class="text-lg font-bold text-gray-400" style="font-family:'Sora',sans-serif;">Éditions passées</h2>
+        <p class="text-xs text-gray-300 mt-0.5">{{ past_events.count }} événement{{ past_events.count|pluralize }}</p>
+      </div>
+    </div>
+
+    <!-- Grille passés : compacte -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="past-grid">
+      {% for event in past_events %}
+      <a href="{{ event.get_absolute_url }}"
+         class="past-item {% if forloop.counter > 3 %}past-item-hidden{% endif %} flex items-center gap-4 p-4 bg-white rounded-xl border border-gray-100 hover:border-gray-300 hover:shadow-sm transition-all opacity-65 hover:opacity-100 group">
+        <div class="w-11 h-11 rounded-xl flex-shrink-0 flex items-center justify-center" style="background:#f3f4f6;">
+          <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <div class="min-w-0 flex-1">
+          <p class="font-semibold text-gray-700 text-sm truncate group-hover:text-gray-900"
+             style="font-family:'Sora',sans-serif;">{{ event.title }}</p>
+          <div class="flex items-center gap-2 mt-0.5">
+            <p class="text-xs text-gray-400">{{ event.start_datetime|date:"d F Y" }}</p>
+            <span class="text-gray-200">·</span>
+            <p class="text-xs text-gray-400">{{ event.get_event_type_display }}</p>
+          </div>
+        </div>
+        <svg class="w-4 h-4 text-gray-300 group-hover:text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </a>
+      {% endfor %}
+    </div>
+
+    <!-- Bouton Voir plus / Voir moins (affiché seulement si > 3 passés) -->
+    {% if past_events.count > 3 %}
+    <div class="flex justify-center mt-5">
+      <button onclick="togglePastEvents()" id="btn-toggle-past"
+              class="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold text-gray-500 border border-gray-200 hover:border-green-600 hover:text-green-700 transition-all bg-white">
+        <span id="btn-past-label">Voir les {{ past_events.count|add:"-3" }} autres éditions</span>
+        <svg id="btn-past-icon" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </button>
+    </div>
+    {% endif %}
+
+  </section>
+  {% endif %}
+
 </div>
 
-{% endblock %}
+<!-- ══ BANDEAU LASPAD ══ -->
+<section style="background:#0f1f15;" class="mt-8">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+      <div>
+        <p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#c9a227;">À propos</p>
+        <h2 class="text-3xl font-bold text-white mb-4" style="font-family:'Sora',sans-serif;">
+          Le LASPAD, acteur de la recherche africaine
+        </h2>
+        <p class="leading-relaxed text-sm mb-6" style="color:rgba(255,255,255,.55);">
+          Le Laboratoire d'Analyse des Sociétés et Pouvoirs / Afrique – Diasporas organise
+          régulièrement des événements scientifiques pour renforcer les capacités analytiques en Afrique.
+        </p>
+        <a href="mailto:communication@laspad.sn" class="btn-gold">Nous contacter</a>
+      </div>
+      <div class="flex justify-center">
+        <img src="{% static 'img/logo.png' %}" alt="LASPAD"
+             class="h-28 w-auto object-contain opacity-75"
+             style="filter:brightness(0) invert(1);">
+      </div>
+    </div>
+  </div>
+</section>
 
-{% block extra_js %}
 <script>
-const PER_PAGE   = 10;
-let currentPage  = 1;
-let activeStatus = 'all';
-let activeMode   = 'all';
+// ═══════════════════════════════════════════════════
+// FILTRE PAR TYPE
+// ═══════════════════════════════════════════════════
+function filterType(type, btn) {
+  document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
 
-function setFilter(type, val) {
-  if (type === 'status') activeStatus = val;
-  if (type === 'mode')   activeMode   = val;
-  currentPage = 1;
-
-  // Boutons statut
-  if (type === 'status') {
-    document.querySelectorAll('.ev-status-btn').forEach(btn => {
-      btn.style.background = '#f3f4f6'; btn.style.color = '#4b5563';
-    });
-    const b = document.getElementById(`fs-${val}`);
-    if (b) { b.style.background = '#1a6b3a'; b.style.color = '#fff'; }
-  }
-  // Boutons mode
-  if (type === 'mode') {
-    document.querySelectorAll('.ev-mode-btn').forEach(btn => {
-      btn.style.background = '#f3f4f6'; btn.style.color = '#4b5563';
-    });
-    const b = document.getElementById(`fm-${val}`);
-    if (b) { b.style.background = '#1f2937'; b.style.color = '#fff'; }
-  }
-  applyFilters();
-}
-
-function applyFilters() {
-  const search = document.getElementById('ev-search').value.toLowerCase().trim();
-  const rows   = [...document.querySelectorAll('.ev-row')];
-
-  const visible = rows.filter(row => {
-    // Statut
-    let matchStatus = true;
-    if (activeStatus === 'upcoming') matchStatus = row.dataset.upcoming === '1';
-    else if (activeStatus === 'past') matchStatus = row.dataset.past === '1';
-    else if (activeStatus !== 'all') matchStatus = row.dataset.status === activeStatus;
-
-    // Mode
-    const matchMode = activeMode === 'all' || row.dataset.mode === activeMode;
-
-    // Recherche
-    const matchSearch = !search || row.dataset.search.includes(search);
-
-    return matchStatus && matchMode && matchSearch;
+  const wrappers = document.querySelectorAll('.event-card-wrapper');
+  let visible = 0;
+  wrappers.forEach(w => {
+    const match = type === 'all' || w.dataset.type === type;
+    w.style.display = match ? '' : 'none';
+    if (match) visible++;
   });
 
-  // Masquer tout
-  rows.forEach(r => r.style.display = 'none');
+  const noMsg = document.getElementById('no-filter-msg');
+  if (noMsg) noMsg.classList.toggle('hidden', visible > 0);
 
-  // Pagination
-  const totalPages = Math.max(1, Math.ceil(visible.length / PER_PAGE));
-  if (currentPage > totalPages) currentPage = 1;
-
-  const start = (currentPage - 1) * PER_PAGE;
-  const end   = start + PER_PAGE;
-  visible.forEach((r, i) => {
-    r.style.display = (i >= start && i < end) ? '' : 'none';
-  });
-
-  // Messages
-  const emptyRow  = document.getElementById('empty-row');
-  const noResult  = document.getElementById('no-result-msg');
-  const hasEvents = rows.length > 0;
-
-  if (emptyRow) emptyRow.style.display = 'none';
-  if (noResult) noResult.classList.toggle('hidden', visible.length > 0 || !hasEvents);
-  if (!hasEvents && emptyRow) emptyRow.style.display = '';
-
-  // Info
-  const info = document.getElementById('ev-pagination-info');
-  if (info) {
-    const from = visible.length === 0 ? 0 : start + 1;
-    const to   = Math.min(end, visible.length);
-    info.textContent = visible.length === 0
-      ? 'Aucun résultat'
-      : `${from}–${to} sur ${visible.length} événement${visible.length > 1 ? 's' : ''}`;
-  }
-
-  renderPagination(totalPages, visible.length);
+  if (typeof carouselGoTo === 'function') carouselGoTo(0);
 }
 
-function renderPagination(totalPages, total) {
-  const container = document.getElementById('ev-pagination-btns');
-  if (!container) return;
-  container.innerHTML = '';
-  if (totalPages <= 1) return;
+// ═══════════════════════════════════════════════════
+// ÉVÉNEMENTS PASSÉS — Voir plus / Voir moins
+// ═══════════════════════════════════════════════════
+let pastExpanded = false;
 
-  const prev = document.createElement('button');
-  prev.textContent = '←';
-  prev.className   = 'px-3 py-1.5 text-xs rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-100';
-  if (currentPage === 1) prev.style.opacity = '0.4';
-  prev.disabled = currentPage === 1;
-  prev.onclick  = () => { currentPage--; applyFilters(); };
-  container.appendChild(prev);
+function togglePastEvents() {
+  pastExpanded = !pastExpanded;
 
-  for (let i = 1; i <= totalPages; i++) {
-    const btn = document.createElement('button');
-    btn.textContent = i;
-    btn.className   = 'px-3 py-1.5 text-xs rounded-lg border font-semibold transition-all';
-    if (i === currentPage) {
-      btn.style.background  = '#1a6b3a';
-      btn.style.color       = '#fff';
-      btn.style.borderColor = '#1a6b3a';
-    } else {
-      btn.style.borderColor = '#e5e7eb';
-      btn.style.color       = '#6b7280';
-      btn.onmouseover = () => btn.style.background = '#f3f4f6';
-      btn.onmouseout  = () => btn.style.background = '';
+  document.querySelectorAll('.past-item-hidden').forEach(el => {
+    el.style.display = pastExpanded ? '' : 'none';
+  });
+
+  // Remettre en place le display:none initial si on referme
+  if (!pastExpanded) {
+    document.querySelectorAll('.past-item').forEach((el, i) => {
+      if (i >= 3) el.style.display = 'none';
+    });
+  }
+
+  const label = document.getElementById('btn-past-label');
+  const icon  = document.getElementById('btn-past-icon');
+  const total = document.querySelectorAll('.past-item').length;
+
+  if (label) label.textContent = pastExpanded
+    ? 'Voir moins'
+    : `Voir les ${total - 3} autres éditions`;
+
+  if (icon) icon.style.transform = pastExpanded ? 'rotate(180deg)' : '';
+}
+
+// ═══════════════════════════════════════════════════
+// CARROUSEL (4+ événements)
+// ═══════════════════════════════════════════════════
+(function() {
+  const track   = document.getElementById('c-track');
+  const wrapper = document.getElementById('c-wrapper');
+  const dotsEl  = document.getElementById('c-dots');
+  const btnPrev = document.getElementById('c-prev');
+  const btnNext = document.getElementById('c-next');
+
+  if (!track || !wrapper) return;
+
+  const GAP     = 24;
+  const AUTO_MS = 4000;
+
+  let current   = 0;
+  let autoTimer = null;
+  let isDrag    = false;
+  let dragStart = 0;
+  let dragDelta = 0;
+
+  function visibleCount() {
+    const w = wrapper.offsetWidth;
+    if (w >= 1024) return 3;
+    if (w >= 640)  return 2;
+    return 1;
+  }
+
+  function getCards() {
+    return [...track.querySelectorAll('.event-card-wrapper')]
+      .filter(c => c.style.display !== 'none');
+  }
+
+  function cardW() {
+    const cards = getCards();
+    if (!cards.length) return wrapper.offsetWidth;
+    return (wrapper.offsetWidth - GAP * (visibleCount() - 1)) / visibleCount() + GAP;
+  }
+
+  function maxIdx() {
+    return Math.max(0, getCards().length - visibleCount());
+  }
+
+  function buildDots() {
+    if (!dotsEl) return;
+    dotsEl.innerHTML = '';
+    const total = maxIdx() + 1;
+    for (let i = 0; i < total; i++) {
+      const d = document.createElement('button');
+      d.className = 'c-dot' + (i === current ? ' active' : '');
+      d.onclick   = () => { carouselGoTo(i); resetAuto(); };
+      dotsEl.appendChild(d);
     }
-    btn.onclick = () => { currentPage = i; applyFilters(); };
-    container.appendChild(btn);
   }
 
-  const next = document.createElement('button');
-  next.textContent = '→';
-  next.className   = 'px-3 py-1.5 text-xs rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-100';
-  if (currentPage === totalPages) next.style.opacity = '0.4';
-  next.disabled = currentPage === totalPages;
-  next.onclick  = () => { currentPage++; applyFilters(); };
-  container.appendChild(next);
-}
+  function updateDots() {
+    dotsEl?.querySelectorAll('.c-dot').forEach((d, i) => d.classList.toggle('active', i === current));
+  }
 
-function resetFilters() {
-  document.getElementById('ev-search').value = '';
-  activeStatus = 'all'; activeMode = 'all'; currentPage = 1;
-  document.querySelectorAll('.ev-status-btn').forEach(b => { b.style.background='#f3f4f6'; b.style.color='#4b5563'; });
-  document.querySelectorAll('.ev-mode-btn').forEach(b => { b.style.background='#f3f4f6'; b.style.color='#4b5563'; });
-  const fs = document.getElementById('fs-all');
-  const fm = document.getElementById('fm-all');
-  if (fs) { fs.style.background='#1a6b3a'; fs.style.color='#fff'; }
-  if (fm) { fm.style.background='#1f2937'; fm.style.color='#fff'; }
-  applyFilters();
-}
+  function updateBtns() {
+    if (btnPrev) btnPrev.disabled = current === 0;
+    if (btnNext) btnNext.disabled = current >= maxIdx();
+  }
 
-document.addEventListener('DOMContentLoaded', applyFilters);
+  window.carouselGoTo = function(idx) {
+    current = Math.max(0, Math.min(idx, maxIdx()));
+    track.style.transform = `translateX(-${current * cardW()}px)`;
+    updateDots();
+    updateBtns();
+  };
+
+  window.carouselSlide = function(dir) {
+    carouselGoTo(current + dir);
+    resetAuto();
+  };
+
+  function startAuto() {
+    autoTimer = setInterval(() => {
+      carouselGoTo(current < maxIdx() ? current + 1 : 0);
+    }, AUTO_MS);
+  }
+  function resetAuto() { clearInterval(autoTimer); startAuto(); }
+  function stopAuto()  { clearInterval(autoTimer); }
+
+  // ── Drag souris ──
+  wrapper.addEventListener('mousedown', e => {
+    isDrag = true; dragStart = e.clientX; dragDelta = 0;
+    track.style.transition = 'none'; stopAuto();
+  });
+  window.addEventListener('mousemove', e => {
+    if (!isDrag) return;
+    dragDelta = e.clientX - dragStart;
+    track.style.transform = `translateX(${-current * cardW() + dragDelta}px)`;
+  });
+  window.addEventListener('mouseup', () => {
+    if (!isDrag) return;
+    isDrag = false;
+    track.style.transition = 'transform .45s cubic-bezier(.4,0,.2,1)';
+    const thr = cardW() * .25;
+    if (dragDelta < -thr) carouselGoTo(current + 1);
+    else if (dragDelta > thr) carouselGoTo(current - 1);
+    else carouselGoTo(current);
+    resetAuto();
+  });
+
+  // ── Touch ──
+  wrapper.addEventListener('touchstart', e => {
+    dragStart = e.touches[0].clientX; dragDelta = 0;
+    track.style.transition = 'none'; stopAuto();
+  }, { passive: true });
+  wrapper.addEventListener('touchmove', e => {
+    dragDelta = e.touches[0].clientX - dragStart;
+    track.style.transform = `translateX(${-current * cardW() + dragDelta}px)`;
+  }, { passive: true });
+  wrapper.addEventListener('touchend', () => {
+    track.style.transition = 'transform .45s cubic-bezier(.4,0,.2,1)';
+    const thr = cardW() * .25;
+    if (dragDelta < -thr) carouselGoTo(current + 1);
+    else if (dragDelta > thr) carouselGoTo(current - 1);
+    else carouselGoTo(current);
+    resetAuto();
+  });
+
+  // ── Resize ──
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      buildDots();
+      carouselGoTo(Math.min(current, maxIdx()));
+    }, 150);
+  });
+
+  // Init
+  buildDots();
+  carouselGoTo(0);
+  startAuto();
+})();
 </script>
+
 {% endblock %}

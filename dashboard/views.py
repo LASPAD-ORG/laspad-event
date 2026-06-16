@@ -14,6 +14,11 @@ from registrations.models import Registration, Participant
 from notifications.tasks import send_confirmation_email, send_refused_email
 
 
+from django.db.models.functions import TruncDate
+from datetime import timedelta
+import json
+
+
 def is_staff(user):
     return user.is_staff or user.is_superuser
 
@@ -969,3 +974,48 @@ def scan_lookup(request):
     if reg:
         return JsonResponse({'token': str(reg.token), 'name': reg.participant.full_name})
     return JsonResponse({'token': None})
+
+
+
+@login_required
+@user_passes_test(is_staff)
+def dashboard_home(request):
+    now   = timezone.now()
+    since = now - timedelta(days=30)
+
+    reg_per_day = (
+        Registration.objects
+        .filter(registered_at__gte=since)
+        .annotate(date=TruncDate('registered_at'))
+        .values('date')
+        .annotate(count=Count('id'))
+        .order_by('date')
+    )
+
+    ev_per_day = (
+        Event.objects
+        .filter(created_at__gte=since)
+        .annotate(date=TruncDate('created_at'))
+        .values('date')
+        .annotate(count=Count('id'))
+        .order_by('date')
+    )
+
+    context = {
+        'total_events':           Event.objects.count(),
+        'published_events':       Event.objects.filter(status=Event.STATUS_PUBLISHED).count(),
+        'upcoming_events':        Event.objects.filter(status=Event.STATUS_PUBLISHED, end_datetime__gte=now).count(),
+        'total_registrations':    Registration.objects.count(),
+        'pending_registrations':  Registration.objects.filter(status=Registration.STATUS_PENDING).count(),
+        'accepted_registrations': Registration.objects.filter(status=Registration.STATUS_ACCEPTED).count(),
+        'total_participants':     Participant.objects.count(),
+        'recent_registrations':   Registration.objects.select_related('event', 'participant').order_by('-registered_at')[:50],
+        'recent_events':          Event.objects.order_by('-created_at')[:10],
+        'registrations_per_day':  json.dumps([
+            {'date': str(r['date']), 'count': r['count']} for r in reg_per_day
+        ]),
+        'events_per_day': json.dumps([
+            {'date': str(e['date']), 'count': e['count']} for e in ev_per_day
+        ]),
+    }
+    return render(request, 'dashboard/home.html', context)

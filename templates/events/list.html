@@ -30,14 +30,6 @@
       transform: translateY(-4px);
       box-shadow: 0 16px 32px rgba(0,0,0,.1);
     }
-    /* Bannière : ratio carré ou portrait, sans déformation */
-    .event-card-banner {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      object-fit: cover;
-      border-radius: 12px 12px 0 0;
-      display: block;
-    }
 
     /* ── Carrousel ── */
     .carousel-wrapper { overflow: hidden; cursor: grab; user-select: none; }
@@ -128,8 +120,10 @@
     }
     .btn-primary:hover { opacity: .92; transform: translateY(-1px); }
 
-    /* ── Événements passés cachés au chargement ── */
-    .past-hidden { display: none !important; }
+    /*
+     * IMPORTANT : pas de classe CSS pour masquer les passés.
+     * Tout est géré en JS via style inline pour éviter les conflits !important.
+     */
   </style>
 {% endblock %}
 
@@ -258,7 +252,7 @@
         </span>
       </div>
 
-      <!-- Filtres par type — s'appliquent aux deux sections -->
+      <!-- Filtres par type (à venir + passés) -->
       <div class="flex gap-2 flex-wrap">
         <button class="filter-tab active" onclick="filterType('all', this)">Tous</button>
         <button class="filter-tab" onclick="filterType('webinaire', this)">Webinaires</button>
@@ -269,7 +263,7 @@
     </div>
 
     {% if upcoming_events.count == 1 %}
-    <div class="flex justify-center" id="events-grid">
+    <div class="flex justify-center">
       {% for event in upcoming_events %}
       <div class="event-card-wrapper w-full max-w-sm" data-type="{{ event.event_type }}">
         {% include 'events/_card_full.html' %}
@@ -278,7 +272,7 @@
     </div>
 
     {% elif upcoming_events.count <= 3 %}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="events-grid">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {% for event in upcoming_events %}
       <div class="event-card-wrapper" data-type="{{ event.event_type }}">
         {% include 'events/_card_full.html' %}
@@ -354,7 +348,9 @@
   </div>
   {% endif %}
 
-  <!-- ── Événements passés ── -->
+  <!-- ── Événements passés ──
+       Aucune classe de masquage ici — tout géré par JS au DOMContentLoaded
+  ── -->
   {% if past_events %}
   <section id="past-section">
     <div class="flex items-center gap-4 mb-6">
@@ -363,20 +359,19 @@
         <h2 class="text-lg font-bold text-gray-400" style="font-family:'Sora',sans-serif;">
           Éditions passées
         </h2>
-        <p class="text-xs text-gray-300 mt-0.5" id="past-count-label">
+        <p class="text-xs text-gray-300 mt-0.5">
           {{ past_events.count }} événement{{ past_events.count|pluralize }}
         </p>
       </div>
     </div>
 
+    <!-- Grille des passés — pas de classe de masquage, JS s'en charge -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="past-grid">
       {% for event in past_events %}
       <a href="{{ event.get_absolute_url }}"
-         class="past-item{% if forloop.counter > 3 %} past-hidden{% endif %}
-                flex items-center gap-4 p-4 bg-white rounded-xl border border-gray-100
+         class="past-item flex items-center gap-4 p-4 bg-white rounded-xl border border-gray-100
                 hover:border-gray-300 hover:shadow-sm transition-all opacity-65 hover:opacity-100 group"
-         data-type="{{ event.event_type }}"
-         data-index="{{ forloop.counter0 }}">
+         data-type="{{ event.event_type }}">
         <div class="w-11 h-11 rounded-xl flex-shrink-0 flex items-center justify-center"
              style="background:#f3f4f6;">
           {% if event.banner %}
@@ -391,9 +386,7 @@
         </div>
         <div class="min-w-0 flex-1">
           <p class="font-semibold text-gray-700 text-sm truncate group-hover:text-gray-900"
-             style="font-family:'Sora',sans-serif;">
-            {{ event.title }}
-          </p>
+             style="font-family:'Sora',sans-serif;">{{ event.title }}</p>
           <div class="flex items-center gap-2 mt-0.5">
             <p class="text-xs text-gray-400">{{ event.start_datetime|date:"d F Y" }}</p>
             <span class="text-gray-200">·</span>
@@ -408,7 +401,7 @@
       {% endfor %}
     </div>
 
-    <!-- Bouton voir plus — caché si ≤ 3 -->
+    <!-- Bouton voir plus (toujours présent dans le DOM si > 3, JS gère sa visibilité) -->
     {% if past_events.count > 3 %}
     <div class="flex justify-center mt-5" id="past-toggle-wrap">
       <button onclick="togglePastEvents()" id="btn-toggle-past"
@@ -424,7 +417,6 @@
     </div>
     {% endif %}
 
-    <!-- Message aucun passé pour ce filtre -->
     <div id="no-past-msg" class="hidden text-center py-6 text-sm text-gray-400 mt-2">
       Aucune édition passée pour ce type.
     </div>
@@ -469,16 +461,18 @@ let pastExpanded      = false;
 const PAST_VISIBLE    = 3;
 
 // ═══════════════════════════════════════════════════
-// FILTRE PAR TYPE — s'applique aux événements à venir ET aux passés
+// FILTRE PAR TYPE
+// S'applique aux événements à venir ET aux passés
 // ═══════════════════════════════════════════════════
 function filterType(type, btn) {
   currentTypeFilter = type;
+  pastExpanded      = false; // reset "voir plus" à chaque changement de filtre
 
-  // Mettre à jour les boutons
+  // Boutons
   document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
 
-  // ── À venir ──
+  // À venir
   const upcoming = document.querySelectorAll('.event-card-wrapper');
   let visibleUpcoming = 0;
   upcoming.forEach(w => {
@@ -490,28 +484,27 @@ function filterType(type, btn) {
   if (noMsg) noMsg.classList.toggle('hidden', visibleUpcoming > 0);
   if (typeof carouselGoTo === 'function') carouselGoTo(0);
 
-  // ── Passés ──
+  // Passés
   applyPastFilter();
 }
 
 // ═══════════════════════════════════════════════════
-// FILTRAGE DES PASSÉS (type + voir plus/moins)
+// FILTRAGE DES PASSÉS
+// Gère type + voir plus/moins uniquement via style inline
 // ═══════════════════════════════════════════════════
 function applyPastFilter() {
-  const items = [...document.querySelectorAll('.past-item')];
-
-  // Filtrer par type
-  const typeMatches = items.filter(el =>
+  const allItems    = [...document.querySelectorAll('.past-item')];
+  const typeMatches = allItems.filter(el =>
     currentTypeFilter === 'all' || el.dataset.type === currentTypeFilter
   );
 
-  // Masquer tous d'abord
-  items.forEach(el => { el.style.display = 'none'; });
+  // Masquer TOUS les items via style inline (pas de CSS classe)
+  allItems.forEach(el => { el.style.display = 'none'; });
 
-  // Afficher selon le type et l'état "voir plus"
+  // Afficher ceux qui correspondent au filtre, dans la limite de PAST_VISIBLE
   typeMatches.forEach((el, i) => {
     if (pastExpanded || i < PAST_VISIBLE) {
-      el.style.display = '';
+      el.style.display = 'flex'; // les items utilisent flex
     }
   });
 
@@ -521,16 +514,19 @@ function applyPastFilter() {
   const icon       = document.getElementById('btn-past-icon');
   const noMsg      = document.getElementById('no-past-msg');
 
+  // Message "aucun résultat"
   if (noMsg) noMsg.classList.toggle('hidden', typeMatches.length > 0);
 
   if (toggleWrap) {
-    // Afficher le bouton seulement s'il y a plus de PAST_VISIBLE résultats
-    toggleWrap.style.display = typeMatches.length > PAST_VISIBLE ? '' : 'none';
-    const remaining = typeMatches.length - PAST_VISIBLE;
-    if (label) label.textContent = pastExpanded
-      ? 'Voir moins'
-      : `Voir les ${remaining} autres éditions`;
-    if (icon) icon.style.transform = pastExpanded ? 'rotate(180deg)' : '';
+    const hasMore = typeMatches.length > PAST_VISIBLE;
+    toggleWrap.style.display = hasMore ? 'flex' : 'none';
+    if (hasMore) {
+      const remaining = typeMatches.length - PAST_VISIBLE;
+      if (label) label.textContent = pastExpanded
+        ? 'Voir moins'
+        : `Voir les ${remaining} autres éditions`;
+      if (icon) icon.style.transform = pastExpanded ? 'rotate(180deg)' : 'rotate(0deg)';
+    }
   }
 }
 
@@ -678,8 +674,11 @@ function togglePastEvents() {
   startAuto();
 })();
 
-// ── Init : appliquer le masquage initial des passés ──
-document.addEventListener('DOMContentLoaded', () => {
+// ═══════════════════════════════════════════════════
+// INIT — masquer les passés au chargement via JS uniquement
+// Aucune classe CSS impliquée → pas de conflit !important
+// ═══════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', function () {
   applyPastFilter();
 });
 </script>

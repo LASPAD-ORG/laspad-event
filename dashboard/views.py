@@ -7,7 +7,6 @@ from django.utils import timezone
 from django.http import HttpResponse, JsonResponse
 from django.db.models import Count, Q
 import csv
-import io
 
 from events.models import Event, Location
 from events.forms import EventForm, LocationForm
@@ -48,15 +47,16 @@ def dashboard_logout(request):
 @login_required
 @user_passes_test(is_staff)
 def dashboard_home(request):
+    now = timezone.now()
     context = {
         'total_events':           Event.objects.count(),
         'published_events':       Event.objects.filter(status=Event.STATUS_PUBLISHED).count(),
-        'upcoming_events':        Event.objects.filter(status=Event.STATUS_PUBLISHED, start_datetime__gte=timezone.now()).count(),
+        'upcoming_events':        Event.objects.filter(status=Event.STATUS_PUBLISHED, end_datetime__gte=now).count(),
         'total_registrations':    Registration.objects.count(),
         'pending_registrations':  Registration.objects.filter(status=Registration.STATUS_PENDING).count(),
         'accepted_registrations': Registration.objects.filter(status=Registration.STATUS_ACCEPTED).count(),
         'total_participants':     Participant.objects.count(),
-        'recent_registrations':   Registration.objects.select_related('event','participant').order_by('-registered_at')[:50],
+        'recent_registrations':   Registration.objects.select_related('event', 'participant').order_by('-registered_at')[:50],
         'recent_events':          Event.objects.order_by('-created_at')[:10],
     }
     return render(request, 'dashboard/home.html', context)
@@ -69,11 +69,18 @@ def dashboard_home(request):
 @login_required
 @user_passes_test(is_staff)
 def event_list(request):
+    now    = timezone.now()
     events = Event.objects.annotate(
         reg_count=Count('registrations'),
         pending_count=Count('registrations', filter=Q(registrations__status='en_attente')),
     ).order_by('-created_at')
-    return render(request, 'dashboard/events/list.html', {'events': events})
+    context = {
+        'events':          events,
+        'upcoming_events': events.filter(end_datetime__gte=now, start_datetime__gt=now),
+        'ongoing_events':  events.filter(start_datetime__lte=now, end_datetime__gte=now),
+        'past_events':     events.filter(end_datetime__lt=now),
+    }
+    return render(request, 'dashboard/events/list.html', context)
 
 
 @login_required
@@ -86,24 +93,22 @@ def event_create(request):
         location_form = LocationForm(request.POST)
 
         if form.is_valid() and location_form.is_valid():
-            location       = location_form.save()
-            event          = form.save(commit=False)
-            event.location = location
-            event.organizer= request.user
+            location        = location_form.save()
+            event           = form.save(commit=False)
+            event.location  = location
+            event.organizer = request.user
             event.save()
-            
             form.save_m2m()
+
             if event.access_mode == 'validation':
                 event.access_onsite = 'validation'
                 event.access_online = 'validation'
                 event.save(update_fields=['access_onsite', 'access_online'])
 
-            # ── Programme PDF ──
             if request.FILES.get('program_pdf'):
                 event.program_pdf = request.FILES['program_pdf']
                 event.save(update_fields=['program_pdf'])
 
-            # ── QR code du formulaire d'inscription ──
             try:
                 from notifications.ticket_service import generate_event_qr
                 generate_event_qr(event)
@@ -111,7 +116,7 @@ def event_create(request):
                 import logging
                 logging.getLogger(__name__).warning(f"QR code événement non généré : {e}")
 
-            # ── Participants pré-inscrits ──
+            # Participants pré-inscrits
             first_names  = request.POST.getlist('pre_first_name[]')
             last_names   = request.POST.getlist('pre_last_name[]')
             emails       = request.POST.getlist('pre_email[]')
@@ -148,7 +153,7 @@ def event_create(request):
                 except Exception:
                     pass
 
-            # ── Newsletter ──
+            # Newsletter
             if request.POST.get('notify_newsletter') == '1' and event.status == Event.STATUS_PUBLISHED:
                 from django.core.mail import send_mail
                 from django.conf import settings
@@ -215,7 +220,6 @@ def event_edit(request, pk):
                 event.program_pdf = None
                 event.save(update_fields=['program_pdf'])
 
-            # Régénérer le QR si le lien a changé
             try:
                 from notifications.ticket_service import generate_event_qr
                 generate_event_qr(event)
@@ -245,10 +249,10 @@ def event_detail(request, pk):
     pending       = registrations.filter(status=Registration.STATUS_PENDING)
     accepted      = registrations.filter(status=Registration.STATUS_ACCEPTED)
     refused       = registrations.filter(status=Registration.STATUS_REFUSED)
-    pending_onsite  = pending.filter(participation_type__in=['onsite','both'])
-    pending_online  = pending.filter(participation_type__in=['online','both'])
-    accepted_onsite = accepted.filter(participation_type__in=['onsite','both'])
-    accepted_online = accepted.filter(participation_type__in=['online','both'])
+    pending_onsite  = pending.filter(participation_type__in=['onsite', 'both'])
+    pending_online  = pending.filter(participation_type__in=['online', 'both'])
+    accepted_onsite = accepted.filter(participation_type__in=['onsite', 'both'])
+    accepted_online = accepted.filter(participation_type__in=['online', 'both'])
 
     context = {
         'event':              event,
@@ -263,6 +267,37 @@ def event_detail(request, pk):
         'participation_mode': getattr(event, 'participation_mode', 'online_only'),
     }
     return render(request, 'dashboard/events/detail.html', context)
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def event_delete(request, pk):
+    event = get_object_or_404(Event, pk=pk)
+    if request.method == 'POST':
+        title = event.title
+        try:
+            if event.banner:       event.banner.delete(save=False)
+            if event.program_pdf:  event.program_pdf.delete(save=False)
+            if event.registration_qr: event.registration_qr.delete(save=False)
+        except Exception:
+            pass
+        event.delete()
+        messages.success(request, f"Événement « {title} » supprimé définitivement.")
+        return redirect('dashboard:event_list')
+    return render(request, 'dashboard/events/delete_confirm.html', {'event': event})
+
+
+@login_required
+@user_passes_test(is_staff)
+def event_recording(request, pk):
+    event = get_object_or_404(Event, pk=pk)
+    if request.method == 'POST':
+        url = request.POST.get('recording_url', '').strip()
+        event.recording_url = url if url else None
+        event.save(update_fields=['recording_url'])
+        messages.success(request, "Lien d'enregistrement mis à jour.")
+        return redirect('dashboard:event_detail', pk=event.pk)
+    return redirect('dashboard:event_detail', pk=event.pk)
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -398,9 +433,9 @@ def registration_accept_bulk(request, pk):
     qs    = event.registrations.filter(status=Registration.STATUS_PENDING)
 
     if mode == 'onsite':
-        qs = qs.filter(participation_type__in=['onsite','both'])
+        qs = qs.filter(participation_type__in=['onsite', 'both'])
     elif mode == 'online':
-        qs = qs.filter(participation_type__in=['online','both'])
+        qs = qs.filter(participation_type__in=['online', 'both'])
     elif ids:
         qs = qs.filter(pk__in=ids)
 
@@ -415,7 +450,7 @@ def registration_accept_bulk(request, pk):
     for reg in qs:
         reg.status       = Registration.STATUS_ACCEPTED
         reg.validated_at = timezone.now()
-        reg.save(update_fields=['status','validated_at'])
+        reg.save(update_fields=['status', 'validated_at'])
         count += 1
         try:
             from notifications.email_service import send_registration_confirmation
@@ -426,7 +461,7 @@ def registration_accept_bulk(request, pk):
             import logging
             logging.getLogger(__name__).warning(f"Email non envoyé : {e}")
 
-    mode_label = {'onsite':'présentiel','online':'en ligne','both':'les deux','all':''}.get(mode,'')
+    mode_label = {'onsite': 'présentiel', 'online': 'en ligne', 'both': 'les deux', 'all': ''}.get(mode, '')
     messages.success(request, f"{count} inscription(s) {mode_label} acceptée(s).")
     return redirect('dashboard:event_detail', pk=pk)
 
@@ -447,7 +482,7 @@ def registration_refuse_bulk(request, pk):
     for reg in qs:
         reg.status       = Registration.STATUS_REFUSED
         reg.validated_at = timezone.now()
-        reg.save(update_fields=['status','validated_at'])
+        reg.save(update_fields=['status', 'validated_at'])
         count += 1
         try:
             from notifications.email_service import send_registration_refused
@@ -489,7 +524,7 @@ def export_registrations_csv(request, pk):
     response['Content-Disposition'] = f'attachment; filename="inscriptions_{event.slug}.csv"'
     response.write('\ufeff')
     writer = csv.writer(response, delimiter=';')
-    writer.writerow(['Prénom','Nom','Email','Institution','Fonction','Téléphone','Statut','Date inscription','Motivation'])
+    writer.writerow(['Prénom', 'Nom', 'Email', 'Institution', 'Fonction', 'Téléphone', 'Statut', 'Date inscription', 'Motivation'])
     for reg in registrations:
         p = reg.participant
         writer.writerow([
@@ -513,26 +548,26 @@ def export_presence_csv(request, pk):
     mode   = getattr(event, 'participation_mode', 'online_only')
 
     if mode == 'hybrid':
-        writer.writerow(['Prénom','Nom','Email','Institution','Fonction','Téléphone','Mode participation','N° Ticket','Présent (présentiel)','Heure pointage présentiel','Connecté (en ligne)','Heure connexion en ligne','Date inscription'])
+        writer.writerow(['Prénom', 'Nom', 'Email', 'Institution', 'Fonction', 'Téléphone', 'Mode participation', 'N° Ticket', 'Présent (présentiel)', 'Heure pointage présentiel', 'Connecté (en ligne)', 'Heure connexion en ligne', 'Date inscription'])
     elif mode == 'onsite_only':
-        writer.writerow(['Prénom','Nom','Email','Institution','Fonction','Téléphone','N° Ticket','Présent','Heure de pointage','Date inscription'])
+        writer.writerow(['Prénom', 'Nom', 'Email', 'Institution', 'Fonction', 'Téléphone', 'N° Ticket', 'Présent', 'Heure de pointage', 'Date inscription'])
     else:
-        writer.writerow(['Prénom','Nom','Email','Institution','Fonction','Téléphone','Connecté','Heure de connexion','Date inscription'])
+        writer.writerow(['Prénom', 'Nom', 'Email', 'Institution', 'Fonction', 'Téléphone', 'Connecté', 'Heure de connexion', 'Date inscription'])
 
     for reg in registrations:
-        p               = reg.participant
-        onsite_str      = 'Oui' if reg.attended_onsite else 'Non'
-        online_str      = 'Oui' if reg.attended_online else 'Non'
-        at_str          = reg.attended_at.strftime('%d/%m/%Y %H:%M') if reg.attended_at else '—'
-        mode_labels     = {'onsite':'Présentiel','online':'En ligne','both':'Présentiel + En ligne'}
-        ptype_str       = mode_labels.get(getattr(reg,'participation_type','online'),'En ligne')
+        p           = reg.participant
+        onsite_str  = 'Oui' if reg.attended_onsite else 'Non'
+        online_str  = 'Oui' if reg.attended_online else 'Non'
+        at_str      = reg.attended_at.strftime('%d/%m/%Y %H:%M') if reg.attended_at else '—'
+        mode_labels = {'onsite': 'Présentiel', 'online': 'En ligne', 'both': 'Présentiel + En ligne'}
+        ptype_str   = mode_labels.get(getattr(reg, 'participation_type', 'online'), 'En ligne')
 
         if mode == 'hybrid':
-            writer.writerow([p.first_name,p.last_name,p.email,p.institution,p.role,p.phone or '—',ptype_str,reg.ticket_number or '—',onsite_str,at_str if reg.attended_onsite else '—',online_str,at_str if reg.attended_online else '—',reg.registered_at.strftime('%d/%m/%Y %H:%M')])
+            writer.writerow([p.first_name, p.last_name, p.email, p.institution, p.role, p.phone or '—', ptype_str, reg.ticket_number or '—', onsite_str, at_str if reg.attended_onsite else '—', online_str, at_str if reg.attended_online else '—', reg.registered_at.strftime('%d/%m/%Y %H:%M')])
         elif mode == 'onsite_only':
-            writer.writerow([p.first_name,p.last_name,p.email,p.institution,p.role,p.phone or '—',reg.ticket_number or '—',onsite_str,at_str if reg.attended_onsite else '—',reg.registered_at.strftime('%d/%m/%Y %H:%M')])
+            writer.writerow([p.first_name, p.last_name, p.email, p.institution, p.role, p.phone or '—', reg.ticket_number or '—', onsite_str, at_str if reg.attended_onsite else '—', reg.registered_at.strftime('%d/%m/%Y %H:%M')])
         else:
-            writer.writerow([p.first_name,p.last_name,p.email,p.institution,p.role,p.phone or '—',online_str,at_str if reg.attended_online else '—',reg.registered_at.strftime('%d/%m/%Y %H:%M')])
+            writer.writerow([p.first_name, p.last_name, p.email, p.institution, p.role, p.phone or '—', online_str, at_str if reg.attended_online else '—', reg.registered_at.strftime('%d/%m/%Y %H:%M')])
 
     return response
 
@@ -555,9 +590,9 @@ def contact_participants(request, pk):
     registrations = event.registrations.filter(status=Registration.STATUS_ACCEPTED).select_related('participant')
 
     if request.method == 'POST':
-        subject = request.POST.get('subject','').strip()
-        body    = request.POST.get('body','').strip()
-        target  = request.POST.get('target','accepted')
+        subject = request.POST.get('subject', '').strip()
+        body    = request.POST.get('body', '').strip()
+        target  = request.POST.get('target', 'accepted')
 
         if not subject or not body:
             messages.error(request, "Le sujet et le message sont obligatoires.")
@@ -588,12 +623,12 @@ def contact_participants(request, pk):
         return redirect('dashboard:event_detail', pk=pk)
 
     context = {
-        'event':          event,
-        'registrations':  registrations,
+        'event':             event,
+        'registrations':     registrations,
         'all_registrations': event.registrations.select_related('participant').order_by('-registered_at'),
-        'accepted_count': event.registrations.filter(status=Registration.STATUS_ACCEPTED).count(),
-        'pending_count':  event.registrations.filter(status=Registration.STATUS_PENDING).count(),
-        'all_count':      event.registrations.count(),
+        'accepted_count':    event.registrations.filter(status=Registration.STATUS_ACCEPTED).count(),
+        'pending_count':     event.registrations.filter(status=Registration.STATUS_PENDING).count(),
+        'all_count':         event.registrations.count(),
     }
     return render(request, 'dashboard/events/contact.html', context)
 
@@ -603,8 +638,8 @@ def contact_participants(request, pk):
 def contact_one_participant(request, pk):
     participant = get_object_or_404(Participant, pk=pk)
     if request.method == 'POST':
-        subject = request.POST.get('subject','').strip()
-        body    = request.POST.get('body','').strip()
+        subject = request.POST.get('subject', '').strip()
+        body    = request.POST.get('body', '').strip()
         if not subject or not body:
             messages.error(request, "Le sujet et le message sont obligatoires.")
             return redirect('dashboard:participants_list')
@@ -670,13 +705,13 @@ def user_list(request):
 def user_invite(request):
     from django.contrib.auth.models import User
     if request.method == 'POST':
-        username   = request.POST.get('username','').strip()
-        first_name = request.POST.get('first_name','').strip()
-        last_name  = request.POST.get('last_name','').strip()
-        email      = request.POST.get('email','').strip()
-        password   = request.POST.get('password','').strip()
-        password2  = request.POST.get('password2','').strip()
-        role       = request.POST.get('role','manager')
+        username   = request.POST.get('username', '').strip()
+        first_name = request.POST.get('first_name', '').strip()
+        last_name  = request.POST.get('last_name', '').strip()
+        email      = request.POST.get('email', '').strip()
+        password   = request.POST.get('password', '').strip()
+        password2  = request.POST.get('password2', '').strip()
+        role       = request.POST.get('role', 'manager')
 
         if not all([username, first_name, last_name, email, password]):
             messages.error(request, "Tous les champs obligatoires doivent être remplis.")
@@ -702,13 +737,12 @@ def user_invite(request):
         user.save()
 
         role_label = 'Administrateur' if role == 'admin' else 'Gestionnaire'
-
         try:
             from django.core.mail import send_mail
             from django.template.loader import render_to_string
             from django.conf import settings
-            site_url  = getattr(settings, 'SITE_URL', 'https://events.laspad.org')
-            site_name = getattr(settings, 'SITE_NAME', 'LASPAD Event')
+            site_url     = getattr(settings, 'SITE_URL', 'https://events.laspad.org')
+            site_name    = getattr(settings, 'SITE_NAME', 'LASPAD Event')
             html_message = render_to_string('emails/invite.html', {
                 'user': user, 'username': username, 'password': password,
                 'role_label': role_label, 'site_url': site_url,
@@ -741,17 +775,17 @@ def user_edit(request, pk):
         messages.warning(request, "Vous ne pouvez pas modifier votre propre compte depuis cette interface.")
         return redirect('dashboard:user_list')
     if request.method == 'POST':
-        target.first_name = request.POST.get('first_name','').strip()
-        target.last_name  = request.POST.get('last_name','').strip()
-        target.email      = request.POST.get('email','').strip()
-        role = request.POST.get('role','manager')
+        target.first_name = request.POST.get('first_name', '').strip()
+        target.last_name  = request.POST.get('last_name', '').strip()
+        target.email      = request.POST.get('email', '').strip()
+        role = request.POST.get('role', 'manager')
         if role == 'admin':
             target.is_staff = True; target.is_superuser = True
         elif role == 'manager':
             target.is_staff = True; target.is_superuser = False
         else:
             target.is_staff = False; target.is_superuser = False
-        new_pw = request.POST.get('new_password','').strip()
+        new_pw = request.POST.get('new_password', '').strip()
         if new_pw:
             if len(new_pw) < 8:
                 messages.error(request, "Le nouveau mot de passe doit contenir au moins 8 caractères.")
@@ -821,21 +855,21 @@ def organizer_list(request):
 def organizer_create(request):
     from django.contrib.auth.models import User
     if request.method == 'POST':
-        first_name  = request.POST.get('first_name','').strip()
-        last_name   = request.POST.get('last_name','').strip()
-        email       = request.POST.get('email','').strip()
-        institution = request.POST.get('institution','').strip()
-        bio         = request.POST.get('bio','').strip()
-        phone       = request.POST.get('phone','').strip()
+        first_name  = request.POST.get('first_name', '').strip()
+        last_name   = request.POST.get('last_name', '').strip()
+        email       = request.POST.get('email', '').strip()
+        institution = request.POST.get('institution', '').strip()
+        bio         = request.POST.get('bio', '').strip()
+        phone       = request.POST.get('phone', '').strip()
         photo       = request.FILES.get('photo')
         if not all([first_name, last_name, email]):
             messages.error(request, "Prénom, Nom et Email sont obligatoires.")
-            return render(request, 'dashboard/organizers/form.html', {'action':'Ajouter','post':request.POST})
-        username = base = f"{first_name.lower()}.{last_name.lower()}".replace(' ','')
+            return render(request, 'dashboard/organizers/form.html', {'action': 'Ajouter', 'post': request.POST})
+        username = base = f"{first_name.lower()}.{last_name.lower()}".replace(' ', '')
         counter  = 1
         while User.objects.filter(username=username).exists():
             username = f"{base}{counter}"; counter += 1
-        user, created = User.objects.get_or_create(email=email, defaults={'username':username,'first_name':first_name,'last_name':last_name,'is_active':True})
+        user, created = User.objects.get_or_create(email=email, defaults={'username': username, 'first_name': first_name, 'last_name': last_name, 'is_active': True})
         if not created:
             user.first_name = first_name; user.last_name = last_name; user.save()
         from events.models import Organizer
@@ -844,9 +878,9 @@ def organizer_create(request):
         if photo: organizer.photo = photo
         organizer.save()
         messages.success(request, f"Intervenant « {first_name} {last_name} » ajouté.")
-        next_url = request.GET.get('next','')
+        next_url = request.GET.get('next', '')
         return redirect(next_url) if next_url else redirect('dashboard:organizer_list')
-    return render(request, 'dashboard/organizers/form.html', {'action':'Ajouter','post':{}})
+    return render(request, 'dashboard/organizers/form.html', {'action': 'Ajouter', 'post': {}})
 
 
 @login_required
@@ -855,18 +889,18 @@ def organizer_edit(request, pk):
     from events.models import Organizer
     organizer = get_object_or_404(Organizer, pk=pk)
     if request.method == 'POST':
-        organizer.user.first_name = request.POST.get('first_name','').strip()
-        organizer.user.last_name  = request.POST.get('last_name','').strip()
-        organizer.user.email      = request.POST.get('email','').strip()
+        organizer.user.first_name = request.POST.get('first_name', '').strip()
+        organizer.user.last_name  = request.POST.get('last_name', '').strip()
+        organizer.user.email      = request.POST.get('email', '').strip()
         organizer.user.save()
-        organizer.institution = request.POST.get('institution','').strip()
-        organizer.bio         = request.POST.get('bio','').strip()
-        organizer.phone       = request.POST.get('phone','').strip()
+        organizer.institution = request.POST.get('institution', '').strip()
+        organizer.bio         = request.POST.get('bio', '').strip()
+        organizer.phone       = request.POST.get('phone', '').strip()
         if request.FILES.get('photo'): organizer.photo = request.FILES['photo']
         organizer.save()
         messages.success(request, "Intervenant mis à jour.")
         return redirect('dashboard:organizer_list')
-    return render(request, 'dashboard/organizers/form.html', {'action':'Modifier','organizer':organizer,'post':{}})
+    return render(request, 'dashboard/organizers/form.html', {'action': 'Modifier', 'organizer': organizer, 'post': {}})
 
 
 @login_required
@@ -924,7 +958,7 @@ def scan_ticket(request, token):
 @login_required
 @user_passes_test(is_staff)
 def scan_lookup(request):
-    q = request.GET.get('q','').strip()
+    q = request.GET.get('q', '').strip()
     if not q:
         return JsonResponse({'token': None})
     reg = Registration.objects.filter(ticket_number__iexact=q).first()
@@ -935,38 +969,3 @@ def scan_lookup(request):
     if reg:
         return JsonResponse({'token': str(reg.token), 'name': reg.participant.full_name})
     return JsonResponse({'token': None})
-
-@login_required
-@user_passes_test(lambda u: u.is_superuser)
-def event_delete(request, pk):
-    """Supprimer définitivement un événement."""
-    event = get_object_or_404(Event, pk=pk)
-    if request.method == 'POST':
-        title = event.title
-        # Supprimer les fichiers associés
-        try:
-            if event.banner:
-                event.banner.delete(save=False)
-            if event.program_pdf:
-                event.program_pdf.delete(save=False)
-            if event.registration_qr:
-                event.registration_qr.delete(save=False)
-        except Exception:
-            pass
-        event.delete()
-        messages.success(request, f"Événement « {title} » supprimé définitivement.")
-        return redirect('dashboard:event_list')
-    return render(request, 'dashboard/events/delete_confirm.html', {'event': event})
-
-
-@login_required
-@user_passes_test(is_staff)
-def event_recording(request, pk):
-    event = get_object_or_404(Event, pk=pk)
-    if request.method == 'POST':
-        url = request.POST.get('recording_url', '').strip()
-        event.recording_url = url if url else None
-        event.save(update_fields=['recording_url'])
-        messages.success(request, "Lien d'enregistrement mis à jour.")
-        return redirect('dashboard:event_detail', pk=event.pk)
-    return redirect('dashboard:event_detail', pk=event.pk)

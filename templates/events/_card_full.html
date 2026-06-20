@@ -3,12 +3,12 @@
 
   <!-- Bannière -->
   {% if event.banner %}
-  <div class="overflow-hidden" style="height:180px;">
+  <div class="overflow-hidden flex items-center justify-center" style="height:220px;background:#f3f4f6;">
     <img src="{{ event.banner.url }}" alt="{{ event.title }}"
-         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+         class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300">
   </div>
   {% else %}
-  <div class="flex items-center justify-center" style="height:180px;background:linear-gradient(135deg,#0f1f15,#1a6b3a);">
+  <div class="flex items-center justify-center" style="height:220px;background:linear-gradient(135deg,#0f1f15,#1a6b3a);">
     <img src="{% static 'img/favicon.png' %}" alt="LASPAD" class="h-16 w-16 object-contain opacity-60">
   </div>
   {% endif %}

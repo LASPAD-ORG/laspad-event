@@ -31,45 +31,6 @@
       box-shadow: 0 16px 32px rgba(0,0,0,.1);
     }
 
-    /* ── Carrousel ── */
-    .carousel-wrapper { overflow: hidden; cursor: grab; user-select: none; }
-    .carousel-wrapper:active { cursor: grabbing; }
-    .carousel-track {
-      display: flex;
-      gap: 1.5rem;
-      transition: transform .45s cubic-bezier(.4,0,.2,1);
-      will-change: transform;
-    }
-    .carousel-track .event-card { flex-shrink: 0; }
-
-    /* ── Boutons nav carrousel ── */
-    .c-btn {
-      width: 2.5rem; height: 2.5rem;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      background: #fff;
-      border: 1.5px solid #e5e7eb;
-      box-shadow: 0 2px 8px rgba(0,0,0,.08);
-      cursor: pointer;
-      transition: all .15s;
-      flex-shrink: 0;
-    }
-    .c-btn:hover { background: #1a6b3a; border-color: #1a6b3a; }
-    .c-btn:hover svg { stroke: #fff; }
-    .c-btn:disabled { opacity: .3; cursor: not-allowed; pointer-events: none; }
-
-    /* ── Dots ── */
-    .c-dot {
-      width: 6px; height: 6px;
-      border-radius: 3px;
-      background: #d1d5db;
-      transition: all .2s;
-      cursor: pointer;
-      border: none;
-      padding: 0;
-    }
-    .c-dot.active { width: 20px; background: #1a6b3a; }
-
     /* ── Filtre tabs ── */
     .filter-tab {
       padding: 6px 16px;
@@ -124,6 +85,18 @@
      * IMPORTANT : pas de classe CSS pour masquer les passés.
      * Tout est géré en JS via style inline pour éviter les conflits !important.
      */
+
+    /* ── Grille événements à venir : 2 colonnes fixes, plus de carrousel ── */
+    .upcoming-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 640px) {
+      .upcoming-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
   </style>
 {% endblock %}
 
@@ -233,7 +206,10 @@
 ══════════════════════════════════════ -->
 <div id="evenements" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
 
-  <!-- ── Événements à venir ── -->
+  <!-- ── Événements à venir ──
+       La vue Django (events/views.py) filtre déjà avec end_datetime__gte=now,
+       donc un événement reste "à venir" tant que sa journée n'est pas terminée.
+  ── -->
   {% if upcoming_events %}
   <section class="mb-16">
 
@@ -252,7 +228,7 @@
         </span>
       </div>
 
-      <!-- Filtres par type (à venir + passés) -->
+      <!-- Filtres par type (s'appliquent à venir + passés) -->
       <div class="flex gap-2 flex-wrap">
         <button class="filter-tab active" onclick="filterType('all', this)">Tous</button>
         <button class="filter-tab" onclick="filterType('webinaire', this)">Webinaires</button>
@@ -262,61 +238,14 @@
       </div>
     </div>
 
-    {% if upcoming_events.count == 1 %}
-    <div class="flex justify-center">
-      {% for event in upcoming_events %}
-      <div class="event-card-wrapper w-full max-w-sm" data-type="{{ event.event_type }}">
-        {% include 'events/_card_full.html' %}
-      </div>
-      {% endfor %}
-    </div>
-
-    {% elif upcoming_events.count <= 3 %}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Grille fixe à 2 colonnes — toujours la même mise en page, quel que soit le nombre d'événements -->
+    <div class="upcoming-grid">
       {% for event in upcoming_events %}
       <div class="event-card-wrapper" data-type="{{ event.event_type }}">
         {% include 'events/_card_full.html' %}
       </div>
       {% endfor %}
     </div>
-
-    {% else %}
-    <!-- Carrousel 4+ -->
-    <div class="relative" id="carousel-root">
-      <div class="flex items-center justify-end mb-4 gap-2">
-        <button class="c-btn" id="c-prev" onclick="carouselSlide(-1)" aria-label="Précédent">
-          <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-          </svg>
-        </button>
-        <button class="c-btn" id="c-next" onclick="carouselSlide(1)" aria-label="Suivant">
-          <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-          </svg>
-        </button>
-      </div>
-
-      <div class="carousel-wrapper" id="c-wrapper">
-        <div class="carousel-track" id="c-track">
-          {% for event in upcoming_events %}
-          <div class="event-card-wrapper" data-type="{{ event.event_type }}"
-               style="width: calc((100% - 3rem) / 3);">
-            {% include 'events/_card_full.html' %}
-          </div>
-          {% endfor %}
-        </div>
-      </div>
-
-      <div class="absolute left-0 top-0 bottom-0 w-6 pointer-events-none"
-           style="background:linear-gradient(to right,#f3f4f2,transparent);z-index:2;"></div>
-      <div class="absolute right-0 top-0 bottom-0 w-6 pointer-events-none"
-           style="background:linear-gradient(to left,#f3f4f2,transparent);z-index:2;"></div>
-
-      <div class="flex justify-center mt-5">
-        <div class="flex gap-1.5" id="c-dots"></div>
-      </div>
-    </div>
-    {% endif %}
 
     <div id="no-filter-msg" class="hidden text-center py-12 text-gray-400">
       <p class="text-sm">Aucun événement de ce type pour le moment.</p>
@@ -482,7 +411,6 @@ function filterType(type, btn) {
   });
   const noMsg = document.getElementById('no-filter-msg');
   if (noMsg) noMsg.classList.toggle('hidden', visibleUpcoming > 0);
-  if (typeof carouselGoTo === 'function') carouselGoTo(0);
 
   // Passés
   applyPastFilter();
@@ -537,142 +465,6 @@ function togglePastEvents() {
   pastExpanded = !pastExpanded;
   applyPastFilter();
 }
-
-// ═══════════════════════════════════════════════════
-// CARROUSEL (4+ événements à venir)
-// ═══════════════════════════════════════════════════
-(function () {
-  const track   = document.getElementById('c-track');
-  const wrapper = document.getElementById('c-wrapper');
-  const dotsEl  = document.getElementById('c-dots');
-  const btnPrev = document.getElementById('c-prev');
-  const btnNext = document.getElementById('c-next');
-
-  if (!track || !wrapper) return;
-
-  const GAP     = 24;
-  const AUTO_MS = 4000;
-
-  let current   = 0;
-  let autoTimer = null;
-  let isDrag    = false;
-  let dragStart = 0;
-  let dragDelta = 0;
-
-  function visibleCount() {
-    const w = wrapper.offsetWidth;
-    if (w >= 1024) return 3;
-    if (w >= 640)  return 2;
-    return 1;
-  }
-
-  function getCards() {
-    return [...track.querySelectorAll('.event-card-wrapper')]
-      .filter(c => c.style.display !== 'none');
-  }
-
-  function cardW() {
-    const cards = getCards();
-    if (!cards.length) return wrapper.offsetWidth;
-    return (wrapper.offsetWidth - GAP * (visibleCount() - 1)) / visibleCount() + GAP;
-  }
-
-  function maxIdx() {
-    return Math.max(0, getCards().length - visibleCount());
-  }
-
-  function buildDots() {
-    if (!dotsEl) return;
-    dotsEl.innerHTML = '';
-    const total = maxIdx() + 1;
-    for (let i = 0; i < total; i++) {
-      const d = document.createElement('button');
-      d.className = 'c-dot' + (i === current ? ' active' : '');
-      d.onclick   = () => { carouselGoTo(i); resetAuto(); };
-      dotsEl.appendChild(d);
-    }
-  }
-
-  function updateDots() {
-    dotsEl?.querySelectorAll('.c-dot').forEach((d, i) =>
-      d.classList.toggle('active', i === current));
-  }
-
-  function updateBtns() {
-    if (btnPrev) btnPrev.disabled = current === 0;
-    if (btnNext) btnNext.disabled = current >= maxIdx();
-  }
-
-  window.carouselGoTo = function (idx) {
-    current = Math.max(0, Math.min(idx, maxIdx()));
-    track.style.transform = `translateX(-${current * cardW()}px)`;
-    updateDots();
-    updateBtns();
-  };
-
-  window.carouselSlide = function (dir) {
-    carouselGoTo(current + dir);
-    resetAuto();
-  };
-
-  function startAuto() {
-    autoTimer = setInterval(() => {
-      carouselGoTo(current < maxIdx() ? current + 1 : 0);
-    }, AUTO_MS);
-  }
-  function resetAuto() { clearInterval(autoTimer); startAuto(); }
-  function stopAuto()  { clearInterval(autoTimer); }
-
-  wrapper.addEventListener('mousedown', e => {
-    isDrag = true; dragStart = e.clientX; dragDelta = 0;
-    track.style.transition = 'none'; stopAuto();
-  });
-  window.addEventListener('mousemove', e => {
-    if (!isDrag) return;
-    dragDelta = e.clientX - dragStart;
-    track.style.transform = `translateX(${-current * cardW() + dragDelta}px)`;
-  });
-  window.addEventListener('mouseup', () => {
-    if (!isDrag) return;
-    isDrag = false;
-    track.style.transition = 'transform .45s cubic-bezier(.4,0,.2,1)';
-    const thr = cardW() * .25;
-    if      (dragDelta < -thr) carouselGoTo(current + 1);
-    else if (dragDelta >  thr) carouselGoTo(current - 1);
-    else                       carouselGoTo(current);
-    resetAuto();
-  });
-
-  wrapper.addEventListener('touchstart', e => {
-    dragStart = e.touches[0].clientX; dragDelta = 0;
-    track.style.transition = 'none'; stopAuto();
-  }, { passive: true });
-  wrapper.addEventListener('touchmove', e => {
-    dragDelta = e.touches[0].clientX - dragStart;
-    track.style.transform = `translateX(${-current * cardW() + dragDelta}px)`;
-  }, { passive: true });
-  wrapper.addEventListener('touchend', () => {
-    track.style.transition = 'transform .45s cubic-bezier(.4,0,.2,1)';
-    const thr = cardW() * .25;
-    if      (dragDelta < -thr) carouselGoTo(current + 1);
-    else if (dragDelta >  thr) carouselGoTo(current - 1);
-    else                       carouselGoTo(current);
-    resetAuto();
-  });
-
-  let resizeTimer;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      buildDots();
-      carouselGoTo(Math.min(current, maxIdx()));
-    }, 150);
-  });
-
-  buildDots();
-  carouselGoTo(0);
-  startAuto();
-})();
 
 // ═══════════════════════════════════════════════════
 // INIT — masquer les passés au chargement via JS uniquement

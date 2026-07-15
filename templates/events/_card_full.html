@@ -3,12 +3,12 @@
 
   <!-- Bannière -->
   {% if event.banner %}
-  <div class="overflow-hidden w-full" style="aspect-ratio: 1 / 1; background:#f3f4f6;">
+  <div class="overflow-hidden w-full" style="aspect-ratio: 3 / 2; background:#f3f4f6;">
     <img src="{{ event.banner.url }}" alt="{{ event.title }}"
          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
   </div>
   {% else %}
-  <div class="flex items-center justify-center w-full" style="aspect-ratio: 1 / 1; background:linear-gradient(135deg,#14343a,#00909e);">
+  <div class="flex items-center justify-center w-full" style="aspect-ratio: 3 / 2; background:linear-gradient(135deg,#14343a,#00909e);">
     <img src="{% static 'img/logo.png' %}" alt="LASPAD" class="w-2/5 object-contain opacity-40" style="filter:brightness(0) invert(1);">
   </div>
   {% endif %}

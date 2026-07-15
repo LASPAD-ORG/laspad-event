@@ -9,7 +9,7 @@
   </div>
   {% else %}
   <div class="flex items-center justify-center w-full" style="aspect-ratio: 1 / 1; background:linear-gradient(135deg,#14343a,#00909e);">
-    <img src="{% static 'img/favicon.png' %}" alt="LASPAD" class="h-16 w-16 object-contain opacity-60">
+    <img src="{% static 'img/logo.png' %}" alt="LASPAD" class="w-2/5 object-contain opacity-40" style="filter:brightness(0) invert(1);">
   </div>
   {% endif %}
 
@@ -24,11 +24,11 @@
         {{ event.get_event_type_display }}
       </span>
       {% if event.participation_mode == 'hybrid' %}
-        <span class="type-badge text-xs" style="background:#fffbeb;color:#92400e;">🔀 Hybride</span>
+        <span class="type-badge text-xs" style="background:#eef0ee;color:#5d655f;">🔀 Hybride</span>
       {% elif event.participation_mode == 'onsite_only' %}
-        <span class="type-badge text-xs" style="background:#f5f3ff;color:#5b21b6;">🏛️ Présentiel</span>
+        <span class="type-badge text-xs" style="background:#eef0ee;color:#5d655f;">🏛️ Présentiel</span>
       {% else %}
-        <span class="type-badge text-xs" style="background:#eff6ff;color:#1d4ed8;">🌐 En ligne</span>
+        <span class="type-badge text-xs" style="background:#eef0ee;color:#5d655f;">🌐 En ligne</span>
       {% endif %}
     </div>
 

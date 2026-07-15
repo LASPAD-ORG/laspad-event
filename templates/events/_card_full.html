@@ -8,7 +8,7 @@
          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
   </div>
   {% else %}
-  <div class="flex items-center justify-center w-full" style="aspect-ratio: 1 / 1; background:linear-gradient(135deg,#0f1f15,#1a6b3a);">
+  <div class="flex items-center justify-center w-full" style="aspect-ratio: 1 / 1; background:linear-gradient(135deg,#14343a,#00909e);">
     <img src="{% static 'img/favicon.png' %}" alt="LASPAD" class="h-16 w-16 object-contain opacity-60">
   </div>
   {% endif %}
@@ -20,7 +20,7 @@
 
     <!-- Badges -->
     <div class="flex items-center gap-2 mb-3">
-      <span class="type-badge text-xs" style="background:#f0fdf4;color:#1a6b3a;">
+      <span class="type-badge text-xs" style="background:#e2f3f4;color:#00909e;">
         {{ event.get_event_type_display }}
       </span>
       {% if event.participation_mode == 'hybrid' %}
@@ -34,7 +34,7 @@
 
     <!-- Titre -->
     <h3 class="font-bold text-gray-900 text-base leading-snug mb-2"
-        style="font-family:'Sora',sans-serif;">
+        style="font-family:'Zilla Slab',sans-serif;">
       {{ event.title|truncatechars:70 }}
     </h3>
 

@@ -1,67 +1,111 @@
 {% load static %}
-<nav style="background:#fff;border-bottom:1.5px solid #e5e7eb;" class="sticky top-0 z-50 shadow-sm">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex items-center justify-between h-16">
+<style>
+  /* En-tête refonte LASPAD — 2 niveaux */
+  .iheader{position:sticky;top:0;z-index:50;box-shadow:0 2px 14px -8px rgba(16,44,52,.25);}
+  /* Niveau 1 : bandeau utilitaire blanc */
+  .ih-espace{background:#fff;color:var(--lp-dark);border-bottom:1px solid #e7e4dc;}
+  .ih-espace .wrap{max-width:72rem;margin:0 auto;padding:0 1rem;display:flex;justify-content:space-between;align-items:center;min-height:36px;gap:16px;font-size:12.5px;flex-wrap:wrap;}
+  .ih-espace .nl{color:var(--lp-dark);}
+  .ih-espace .nl b{color:#0a7c88;font-weight:700;}
+  .ih-espace .ihe-right{display:flex;align-items:center;gap:14px;}
+  .ih-espace .soc{display:flex;align-items:center;gap:12px;}
+  .ih-espace .soc a{color:#0a7c88;display:flex;align-items:center;transition:color .15s;}
+  .ih-espace .soc a:hover{color:var(--lp-dark);}
+  .ih-espace .soc svg{width:17px;height:17px;display:block;fill:currentColor;}
+  .ih-espace .join{color:var(--lp-dark);font-weight:700;padding-left:14px;border-left:1px solid #e7e4dc;text-decoration:none;}
+  .ih-espace .join:hover{color:#0a7c88;}
+  /* Niveau 2 : barre principale teal */
+  .ih-main{background:var(--lp-green);color:#eafcf9;}
+  .ih-main .wrap{max-width:72rem;margin:0 auto;padding:0 1rem;display:flex;align-items:center;height:70px;gap:26px;}
+  .ih-logo{display:flex;align-items:center;gap:11px;margin-right:auto;text-decoration:none;}
+  .ih-logo .mark{width:38px;height:38px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#37a7b1,#00909e 62%,#0a3b40);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:19px;box-shadow:0 3px 10px rgba(0,0,0,.22);font-family:'Zilla Slab',Georgia,serif;}
+  .ih-logo .wm{font-family:'Zilla Slab',Georgia,serif;font-weight:700;font-size:23px;color:#fff;line-height:1;}
+  .ih-logo .wm small{display:block;font-family:'Hanken Grotesk',sans-serif;font-size:11px;font-weight:700;letter-spacing:.14em;color:#bdeef0;text-transform:uppercase;}
+  .ih-menu{display:flex;align-items:center;gap:26px;}
+  .ih-menu a{font-family:'Hanken Grotesk',sans-serif;font-size:16px;font-weight:600;color:#eafcf9;padding:6px 0;border-bottom:2.5px solid transparent;transition:.15s;text-decoration:none;}
+  .ih-menu a:hover{color:#fff;border-bottom-color:var(--lp-gold);}
+  .ih-menu .create{background:var(--lp-gold);color:#3c2c08;border-radius:9px;padding:7px 14px;border-bottom:none;font-weight:700;}
+  .ih-menu .create:hover{background:#c9791f;color:#fff;}
+  .ih-menu .logout{color:#bdeef0;font-weight:500;}
+  .ih-menu .logout:hover{color:#ffd9d9;border-bottom-color:transparent;}
+  .ih-back{font-family:'Hanken Grotesk',sans-serif;font-size:14px;font-weight:700;color:var(--lp-dark);background:#fff;border-radius:9px;padding:8px 15px;display:inline-flex;align-items:center;gap:6px;text-decoration:none;transition:.15s;white-space:nowrap;}
+  .ih-back:hover{background:#eafcf9;color:#0a7c88;}
+  .ih-burger{display:none;background:transparent;border:none;color:#fff;padding:8px;cursor:pointer;}
+  @media(max-width:860px){
+    .ih-espace .nl{display:none;}
+    .ih-menu,.ih-back{display:none;}
+    .ih-burger{display:block;}
+  }
+  .ih-mobile{display:none;background:var(--lp-green);border-top:1px solid rgba(255,255,255,.15);padding:8px 1rem 14px;}
+  .ih-mobile.open{display:block;}
+  .ih-mobile a{display:block;padding:10px 12px;border-radius:9px;color:#eafcf9;font-family:'Hanken Grotesk',sans-serif;font-size:15px;font-weight:600;text-decoration:none;}
+  .ih-mobile a:hover{background:rgba(255,255,255,.1);}
+</style>
 
-      <!-- Logo LASPAD -->
-      <a href="{% url 'events:list' %}" class="flex items-center gap-3 group">
-        <div class="relative">
-          <img src="{% static 'img/logo.png' %}" alt="LASPAD" class="h-11 w-auto object-contain"
-               onerror="this.style.display='none';document.getElementById('logo-fallback').style.display='flex'">
-          <div id="logo-fallback" class="hidden w-11 h-11 rounded-full items-center justify-center text-white font-bold text-sm" style="background:var(--lp-green)">L</div>
+<header class="iheader">
+  <!-- Niveau 1 : bandeau utilitaire -->
+  <div class="ih-espace">
+    <div class="wrap">
+      <div class="nl">📩 <span>La lettre du LASPAD — </span><b>abonnez-vous</b></div>
+      <div class="ihe-right">
+        <div class="soc">
+          <a href="https://www.linkedin.com/company/laspad-ugb/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14zM8.34 17V10.5H6.2V17h2.14zM7.27 9.4a1.24 1.24 0 100-2.48 1.24 1.24 0 000 2.48zM18 17v-3.57c0-1.9-.41-3.36-2.63-3.36a2.3 2.3 0 00-2.07 1.14h-.03V10.5h-2.05V17h2.14v-3.2c0-.85.16-1.67 1.21-1.67 1.04 0 1.05.97 1.05 1.73V17H18z"/></svg></a>
+          <a href="https://x.com/ulaspad" target="_blank" rel="noopener" aria-label="X"><svg viewBox="0 0 24 24"><path d="M18.24 2.25h3.31l-7.23 8.26 8.5 11.24h-6.66l-5.22-6.82-5.97 6.82H1.06l7.73-8.83L.66 2.25h6.83l4.71 6.23 5.04-6.23zm-1.16 17.52h1.83L7.02 4.13H5.05l12.03 15.64z"/></svg></a>
+          <a href="https://www.youtube.com/channel/UCSEsNnnwl_ORXMIph2p6RQw" target="_blank" rel="noopener" aria-label="YouTube"><svg viewBox="0 0 24 24"><path d="M23.5 6.2a3.02 3.02 0 00-2.12-2.14C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.51A3.02 3.02 0 00.5 6.2 31.5 31.5 0 000 12a31.5 31.5 0 00.5 5.8 3.02 3.02 0 002.12 2.14c1.88.51 9.38.51 9.38.51s7.5 0 9.38-.51a3.02 3.02 0 002.12-2.14A31.5 31.5 0 0024 12a31.5 31.5 0 00-.5-5.8zM9.55 15.57V8.43L15.82 12l-6.27 3.57z"/></svg></a>
+          <a href="https://fr-fr.facebook.com/laspad/" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M24 12a12 12 0 10-13.88 11.85v-8.38H7.08V12h3.04V9.36c0-3 1.79-4.67 4.53-4.67 1.31 0 2.68.24 2.68.24v2.95h-1.51c-1.49 0-1.95.92-1.95 1.87V12h3.32l-.53 3.47h-2.79v8.38A12 12 0 0024 12z"/></svg></a>
         </div>
-        <div class="leading-tight">
-          <div style="font-family:'Sora',sans-serif;font-weight:700;font-size:1.05rem;color:var(--lp-dark);line-height:1.1;">LASPAD</div>
-          <div style="font-size:0.72rem;font-weight:500;letter-spacing:.06em;color:var(--lp-green);text-transform:uppercase;">Event</div>
-        </div>
+        <a class="join" href="https://laspad.org/nous-rejoindre/" target="_blank" rel="noopener">Nous rejoindre</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Niveau 2 : barre principale teal -->
+  <div class="ih-main">
+    <div class="wrap">
+      <a class="ih-logo" href="{% url 'events:list' %}">
+        <img src="{% static 'img/logo.png' %}" alt="LASPAD" style="height:44px;width:auto;filter:brightness(0) invert(1);"
+             onerror="this.style.display='none';document.getElementById('logo-fallback').style.display='flex'">
+        <div id="logo-fallback" class="mark" style="display:none;">L</div>
+        <span class="wm">LASPAD <small>Event</small></span>
       </a>
 
-      <!-- Nav desktop -->
-      <div class="hidden md:flex items-center gap-6">
-        <a href="{% url 'events:list' %}" class="text-sm font-medium text-gray-600 hover:text-green-700 transition-colors">
-          Événements
-        </a>
-        <a href="{% url 'events:recordings' %}" class="text-sm font-medium text-gray-600 hover:text-green-700 transition-colors">
-          Enregistrements
-        </a>
+      <nav class="ih-menu">
+        <a href="{% url 'events:list' %}">Événements</a>
+        <a href="{% url 'events:recordings' %}">Enregistrements</a>
         {% if user.is_authenticated and user.is_staff %}
-          <a href="{% url 'dashboard:home' %}" class="text-sm font-medium text-gray-600 hover:text-green-700 transition-colors">
-            Dashboard
-          </a>
-          <a href="{% url 'dashboard:event_create' %}" class="btn-primary text-sm py-1.5">
-            + Créer
-          </a>
-          <a href="{% url 'dashboard:logout' %}" class="text-sm text-gray-400 hover:text-red-600 transition-colors">
-            Déconnexion
-          </a>
+          <a href="{% url 'dashboard:home' %}">Dashboard</a>
+          <a href="{% url 'dashboard:event_create' %}" class="create">+ Créer</a>
+          <a href="{% url 'dashboard:logout' %}" class="logout">Déconnexion</a>
         {% else %}
-          <a href="{% url 'dashboard:login' %}" class="text-sm font-medium text-gray-500 hover:text-green-700 transition-colors">
-            Administration
-          </a>
+          <a href="{% url 'dashboard:login' %}">Administration</a>
         {% endif %}
-      </div>
+      </nav>
 
-      <!-- Mobile toggle -->
-      <button class="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100" id="mobile-menu-btn">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-        </svg>
+      <a class="ih-back" href="https://laspad.org" target="_blank" rel="noopener">← Retour au site LASPAD</a>
+
+      <button class="ih-burger" id="mobile-menu-btn" aria-label="Menu">
+        <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
       </button>
     </div>
 
-    <!-- Mobile menu -->
-    <div class="md:hidden hidden pb-3 space-y-1 border-t border-gray-100 pt-2" id="mobile-menu">
-      <a href="{% url 'events:list' %}" class="block px-3 py-2 rounded-lg text-gray-700 hover:bg-green-50 text-sm font-medium">Événements</a>
-      <a href="{% url 'events:recordings' %}" class="block px-3 py-2 rounded-lg text-gray-700 hover:bg-green-50 text-sm font-medium">Enregistrements</a>
+    <!-- Menu mobile -->
+    <div class="ih-mobile" id="mobile-menu">
+      <a href="{% url 'events:list' %}">Événements</a>
+      <a href="{% url 'events:recordings' %}">Enregistrements</a>
       {% if user.is_authenticated and user.is_staff %}
-        <a href="{% url 'dashboard:home' %}" class="block px-3 py-2 rounded-lg text-gray-700 hover:bg-green-50 text-sm">Dashboard</a>
-        <a href="{% url 'dashboard:logout' %}" class="block px-3 py-2 rounded-lg text-red-600 hover:bg-red-50 text-sm">Déconnexion</a>
+        <a href="{% url 'dashboard:home' %}">Dashboard</a>
+        <a href="{% url 'dashboard:event_create' %}">+ Créer un événement</a>
+        <a href="{% url 'dashboard:logout' %}">Déconnexion</a>
+      {% else %}
+        <a href="{% url 'dashboard:login' %}">Administration</a>
       {% endif %}
+      <a href="https://laspad.org" target="_blank" rel="noopener">← Retour au site LASPAD</a>
     </div>
   </div>
-</nav>
+</header>
+
 <script>
-  document.getElementById('mobile-menu-btn').addEventListener('click',()=>{
-    document.getElementById('mobile-menu').classList.toggle('hidden');
+  document.getElementById('mobile-menu-btn').addEventListener('click',function(){
+    document.getElementById('mobile-menu').classList.toggle('open');
   });
 </script>

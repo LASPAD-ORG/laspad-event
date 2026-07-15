@@ -47,8 +47,8 @@
 <!-- État vide -->
 <div class="bg-white rounded-2xl border border-gray-200 p-12 text-center mb-6">
   <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
-       style="background:#f0fdf4;">
-    <svg class="w-8 h-8" style="color:#1a6b3a;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+       style="background:#e2f3f4;">
+    <svg class="w-8 h-8" style="color:#00909e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
     </svg>
@@ -66,7 +66,7 @@
 
   <!-- Header du jour -->
   <div class="px-6 py-4 flex items-center justify-between gap-4"
-       style="background:linear-gradient(135deg,#0f1f15,#1a6b3a);">
+       style="background:linear-gradient(135deg,#14343a,#00909e);">
     <div class="flex items-center gap-3 min-w-0">
       <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-white font-bold"
            style="background:rgba(255,255,255,.15);">
@@ -140,13 +140,13 @@
 
       <!-- Heure -->
       <div class="flex-shrink-0 text-center w-16">
-        <p class="text-sm font-bold" style="color:#1a6b3a;">{{ session.start_time|time:"H:i" }}</p>
+        <p class="text-sm font-bold" style="color:#00909e;">{{ session.start_time|time:"H:i" }}</p>
         <p class="text-xs text-gray-400">{{ session.end_time|time:"H:i" }}</p>
       </div>
 
       <!-- Séparateur vertical -->
       <div class="flex-shrink-0 flex flex-col items-center" style="padding-top:4px;">
-        <div class="w-2 h-2 rounded-full flex-shrink-0" style="background:#1a6b3a;"></div>
+        <div class="w-2 h-2 rounded-full flex-shrink-0" style="background:#00909e;"></div>
         <div class="w-0.5 flex-1 mt-1" style="background:#e5e7eb;min-height:24px;"></div>
       </div>
 
@@ -272,7 +272,7 @@
   <div class="border-t border-gray-100">
     <button onclick="toggleAddSession({{ day.pk }})"
             class="w-full flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold transition-colors hover:bg-green-50"
-            style="color:#1a6b3a;" id="btn-add-session-{{ day.pk }}">
+            style="color:#00909e;" id="btn-add-session-{{ day.pk }}">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
       </svg>
@@ -361,7 +361,7 @@
 <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
   <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-3" style="background:#f8faf9;">
     <div class="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold"
-         style="background:#1a6b3a;">+</div>
+         style="background:#00909e;">+</div>
     <h2 class="font-semibold text-gray-900">Ajouter un jour</h2>
   </div>
   <form method="post" class="p-6 space-y-4">
@@ -399,7 +399,7 @@
 
     <button type="submit"
             class="btn-sm px-6 py-2.5 font-semibold text-sm"
-            style="background:#1a6b3a;color:#fff;">
+            style="background:#00909e;color:#fff;">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
       </svg>

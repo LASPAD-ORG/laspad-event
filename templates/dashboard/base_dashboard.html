@@ -7,19 +7,19 @@
   <title>{% block title %}Dashboard{% endblock %} — LASPAD Event</title>
   <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root{
-      --lp-green:#1a6b3a;
-      --lp-gold:#c9a227;
+      --lp-green:#00909e;
+      --lp-gold:#e8a33d;
       --lp-dark:#0d1a10;
       --lp-dark2:#142318;
-      --lp-light:#e8f5ef;
+      --lp-light:#eafcf9;
       --sidebar-w:260px;
       --header-h:64px;
     }
-    body{font-family:'DM Sans',sans-serif;background:#f3f4f2;}
-    h1,h2,h3,h4{font-family:'Sora',sans-serif;}
+    body{font-family:'Hanken Grotesk',sans-serif;background:#f3f4f2;}
+    h1,h2,h3,h4{font-family:'Zilla Slab',sans-serif;}
 
     /* ── Header fixe pleine largeur ── */
     .top-header{
@@ -127,8 +127,8 @@
     .btn-sm{padding:5px 13px;border-radius:7px;font-size:13px;font-weight:500;transition:all .15s;display:inline-flex;align-items:center;gap:5px;text-decoration:none;border:none;cursor:pointer;}
     .btn-accept{background:#d1fae5;color:#065f46;}.btn-accept:hover{background:#a7f3d0;}
     .btn-refuse{background:#fee2e2;color:#991b1b;}.btn-refuse:hover{background:#fecaca;}
-    .btn-primary-sm{background:var(--lp-green);color:#fff;}.btn-primary-sm:hover{background:#145530;}
-    .form-input,.form-select,.form-textarea{width:100%;padding:8px 12px;border:1.5px solid #d1d5db;border-radius:8px;font-size:14px;transition:border-color .15s;background:#fff;font-family:'DM Sans',sans-serif;}
+    .btn-primary-sm{background:var(--lp-green);color:#fff;}.btn-primary-sm:hover{background:#0a7c88;}
+    .form-input,.form-select,.form-textarea{width:100%;padding:8px 12px;border:1.5px solid #d1d5db;border-radius:8px;font-size:14px;transition:border-color .15s;background:#fff;font-family:'Hanken Grotesk',sans-serif;}
     .form-input:focus,.form-select:focus,.form-textarea:focus{outline:none;border-color:var(--lp-green);box-shadow:0 0 0 3px rgba(26,107,58,.1);}
     .table th{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:#6b7280;padding:10px 16px;border-bottom:2px solid #f3f4f6;background:#fafafa;}
     .table td{padding:11px 16px;font-size:13.5px;border-bottom:1px solid #f9fafb;vertical-align:middle;}
@@ -184,10 +184,10 @@
            style="filter:brightness(0) invert(1);"
            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
       <span class="hidden w-full h-full items-center justify-center text-white font-bold text-sm"
-            style="font-family:'Sora',sans-serif;">L</span>
+            style="font-family:'Zilla Slab',sans-serif;">L</span>
     </div>
     <div class="hidden sm:block">
-      <p class="font-bold leading-none text-gray-900" style="font-family:'Sora',sans-serif;font-size:14px;">LASPAD</p>
+      <p class="font-bold leading-none text-gray-900" style="font-family:'Zilla Slab',sans-serif;font-size:14px;">LASPAD</p>
       <p class="text-xs font-semibold leading-none mt-0.5" style="color:var(--lp-gold);">Event Platform</p>
     </div>
   </a>
@@ -197,7 +197,7 @@
   <!-- Titre de la page -->
   <div class="min-w-0 flex-1">
     <h1 class="text-base lg:text-lg font-bold text-gray-900 truncate leading-none"
-        style="font-family:'Sora',sans-serif;">
+        style="font-family:'Zilla Slab',sans-serif;">
       {% block page_title %}Dashboard{% endblock %}
     </h1>
     <p class="text-xs text-gray-400 mt-0.5 hidden sm:block truncate">
@@ -214,7 +214,7 @@
     <!-- Avatar utilisateur -->
     <div class="flex items-center gap-2 flex-shrink-0">
       <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-           style="background:var(--lp-gold);font-family:'Sora',sans-serif;">
+           style="background:var(--lp-gold);font-family:'Zilla Slab',sans-serif;">
         {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
       </div>
       <div class="hidden lg:block min-w-0">
@@ -409,7 +409,7 @@
     <div class="flex items-center gap-2">
       <img src="{% static 'img/logo.png' %}" class="w-4 h-4 object-contain opacity-40"
            onerror="this.style.display='none'">
-      <span class="text-xs text-gray-300" style="font-family:'Sora',sans-serif;">LASPAD</span>
+      <span class="text-xs text-gray-300" style="font-family:'Zilla Slab',sans-serif;">LASPAD</span>
     </div>
   </footer>
 

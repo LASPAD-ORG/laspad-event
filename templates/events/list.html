@@ -43,35 +43,35 @@
       white-space: nowrap;
     }
     .filter-tab.active {
-      background: #1a6b3a;
+      background: #00909e;
       color: #fff;
-      border-color: #1a6b3a;
+      border-color: #00909e;
     }
     .filter-tab:not(.active) {
       background: #fff;
       color: #6b7280;
       border-color: #e5e7eb;
     }
-    .filter-tab:not(.active):hover { border-color: #1a6b3a; color: #1a6b3a; }
+    .filter-tab:not(.active):hover { border-color: #00909e; color: #00909e; }
 
     /* ── Barre de progression ── */
     .progress-bar  { height: 4px; border-radius: 2px; background: #e5e7eb; overflow: hidden; }
-    .progress-fill { height: 100%; border-radius: 2px; background: #1a6b3a; }
+    .progress-fill { height: 100%; border-radius: 2px; background: #00909e; }
 
     /* ── Boutons hero ── */
     .btn-gold {
       display: inline-flex; align-items: center; gap: 8px;
-      background: #c9a227; color: #fff;
+      background: #e8a33d; color: #fff;
       padding: 10px 22px; border-radius: 10px;
       font-weight: 700; font-size: 14px;
       text-decoration: none;
       transition: all .15s;
     }
-    .btn-gold:hover { background: #a8841f; transform: translateY(-1px); }
+    .btn-gold:hover { background: #c9791f; transform: translateY(-1px); }
 
     .btn-primary {
       display: inline-flex; align-items: center; gap: 6px;
-      background: linear-gradient(135deg, #1a6b3a, #2d8a52);
+      background: linear-gradient(135deg, #00909e, #37a7b1);
       color: #fff;
       padding: 10px 20px; border-radius: 10px;
       font-weight: 700; font-size: 13px;
@@ -105,7 +105,7 @@
 <!-- ══════════════════════════════════════
      HERO
 ══════════════════════════════════════ -->
-<section class="relative overflow-hidden" style="background:#0f1f15;">
+<section class="relative overflow-hidden" style="background:#14343a;">
 
   <div class="absolute inset-0" style="opacity:.06;">
     <svg width="100%" height="100%">
@@ -128,14 +128,14 @@
       <div>
         <div class="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-6 border"
              style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);">
-          <span class="w-2 h-2 rounded-full animate-pulse" style="background:#c9a227;"></span>
+          <span class="w-2 h-2 rounded-full animate-pulse" style="background:#e8a33d;"></span>
           <span class="text-sm font-medium" style="color:rgba(255,255,255,.7);">Plateforme officielle LASPAD</span>
         </div>
 
         <h1 class="text-4xl sm:text-5xl font-bold leading-tight mb-5"
-            style="font-family:'Sora',sans-serif;color:#fff;">
+            style="font-family:'Zilla Slab',sans-serif;color:#fff;">
           Les événements<br>
-          <span style="color:#c9a227;">scientifiques</span><br>
+          <span style="color:#e8a33d;">scientifiques</span><br>
           du LASPAD
         </h1>
 
@@ -182,19 +182,19 @@
     <div class="mt-14 grid grid-cols-3 gap-px rounded-2xl overflow-hidden"
          style="background:rgba(255,255,255,.07);">
       <div class="px-6 py-5 text-center" style="background:rgba(255,255,255,.04);">
-        <p class="text-2xl font-bold" style="font-family:'Sora',sans-serif;color:#c9a227;">
+        <p class="text-2xl font-bold" style="font-family:'Zilla Slab',sans-serif;color:#e8a33d;">
           {{ upcoming_events.count }}
         </p>
         <p class="text-xs mt-0.5" style="color:rgba(255,255,255,.45);">À venir</p>
       </div>
       <div class="px-6 py-5 text-center" style="background:rgba(255,255,255,.04);">
-        <p class="text-2xl font-bold" style="font-family:'Sora',sans-serif;color:#c9a227;">
+        <p class="text-2xl font-bold" style="font-family:'Zilla Slab',sans-serif;color:#e8a33d;">
           {{ past_events.count }}
         </p>
         <p class="text-xs mt-0.5" style="color:rgba(255,255,255,.45);">Éditions passées</p>
       </div>
       <div class="px-6 py-5 text-center" style="background:rgba(255,255,255,.04);">
-        <p class="text-2xl font-bold" style="font-family:'Sora',sans-serif;color:#c9a227;">100%</p>
+        <p class="text-2xl font-bold" style="font-family:'Zilla Slab',sans-serif;color:#e8a33d;">100%</p>
         <p class="text-xs mt-0.5" style="color:rgba(255,255,255,.45);">Gratuit</p>
       </div>
     </div>
@@ -216,14 +216,14 @@
     <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
       <div class="flex items-center gap-4">
         <div class="w-1 h-9 rounded-full"
-             style="background:linear-gradient(to bottom,#1a6b3a,#c9a227);"></div>
+             style="background:linear-gradient(to bottom,#00909e,#e8a33d);"></div>
         <div>
-          <h2 class="text-2xl font-bold" style="font-family:'Sora',sans-serif;color:#0f1f15;">
+          <h2 class="text-2xl font-bold" style="font-family:'Zilla Slab',sans-serif;color:#14343a;">
             Événements à venir
           </h2>
           <p class="text-sm text-gray-400 mt-0.5">Inscrivez-vous dès maintenant</p>
         </div>
-        <span class="text-xs font-bold px-2.5 py-1 rounded-full text-white" style="background:#1a6b3a;">
+        <span class="text-xs font-bold px-2.5 py-1 rounded-full text-white" style="background:#00909e;">
           {{ upcoming_events.count }}
         </span>
       </div>
@@ -262,13 +262,13 @@
   {% if not upcoming_events %}
   <div class="text-center py-24">
     <div class="w-20 h-20 rounded-full mx-auto mb-5 flex items-center justify-center"
-         style="background:#f0fdf4;">
-      <svg class="w-10 h-10" style="color:#1a6b3a;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+         style="background:#e2f3f4;">
+      <svg class="w-10 h-10" style="color:#00909e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
               d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
       </svg>
     </div>
-    <h3 class="text-xl font-bold text-gray-800 mb-2" style="font-family:'Sora',sans-serif;">
+    <h3 class="text-xl font-bold text-gray-800 mb-2" style="font-family:'Zilla Slab',sans-serif;">
       Aucun événement à venir
     </h3>
     <p class="text-gray-400 text-sm max-w-xs mx-auto">
@@ -285,7 +285,7 @@
     <div class="flex items-center gap-4 mb-6">
       <div class="w-1 h-8 rounded-full bg-gray-200"></div>
       <div>
-        <h2 class="text-lg font-bold text-gray-400" style="font-family:'Sora',sans-serif;">
+        <h2 class="text-lg font-bold text-gray-400" style="font-family:'Zilla Slab',sans-serif;">
           Éditions passées
         </h2>
         <p class="text-xs text-gray-300 mt-0.5">
@@ -315,7 +315,7 @@
         </div>
         <div class="min-w-0 flex-1">
           <p class="font-semibold text-gray-700 text-sm truncate group-hover:text-gray-900"
-             style="font-family:'Sora',sans-serif;">{{ event.title }}</p>
+             style="font-family:'Zilla Slab',sans-serif;">{{ event.title }}</p>
           <div class="flex items-center gap-2 mt-0.5">
             <p class="text-xs text-gray-400">{{ event.start_datetime|date:"d F Y" }}</p>
             <span class="text-gray-200">·</span>
@@ -358,12 +358,12 @@
 <!-- ══════════════════════════════════════
      BANDEAU LASPAD
 ══════════════════════════════════════ -->
-<section style="background:#0f1f15;" class="mt-8">
+<section style="background:#14343a;" class="mt-8">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
       <div>
-        <p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#c9a227;">À propos</p>
-        <h2 class="text-3xl font-bold text-white mb-4" style="font-family:'Sora',sans-serif;">
+        <p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#e8a33d;">À propos</p>
+        <h2 class="text-3xl font-bold text-white mb-4" style="font-family:'Zilla Slab',sans-serif;">
           Le LASPAD, acteur de la recherche africaine
         </h2>
         <p class="leading-relaxed text-sm mb-6" style="color:rgba(255,255,255,.55);">

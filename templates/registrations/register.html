@@ -22,7 +22,7 @@
     .p-card:hover { border-color: #9ca3af; }
     .p-card.selected-onsite { border-color: #7c3aed; background: #f5f3ff; }
     .p-card.selected-online { border-color: #3b82f6; background: #eff6ff; }
-    .p-card.selected-both   { border-color: #c9a227; background: #fffbeb; }
+    .p-card.selected-both   { border-color: #e8a33d; background: #fffbeb; }
     .p-card-disabled {
       display: flex; align-items: center; gap: 16px;
       padding: 16px 20px; border-radius: 14px;
@@ -65,7 +65,7 @@
       <img src="{{ event.banner.url }}" class="w-20 h-16 rounded-xl object-cover flex-shrink-0">
     {% else %}
       <div class="w-20 h-16 rounded-xl flex-shrink-0 flex items-center justify-center"
-           style="background:linear-gradient(135deg,#0f1f15,#1a6b3a)">
+           style="background:linear-gradient(135deg,#14343a,#00909e)">
         <svg class="w-7 h-7 text-white opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -133,8 +133,8 @@
   <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
 
     <div class="px-8 py-5 border-b border-gray-100"
-         style="background:linear-gradient(135deg,#0f1f15,#1a6b3a);">
-      <h1 class="text-xl font-bold text-white" style="font-family:'Sora',sans-serif;">
+         style="background:linear-gradient(135deg,#14343a,#00909e);">
+      <h1 class="text-xl font-bold text-white" style="font-family:'Zilla Slab',sans-serif;">
         Formulaire d'inscription
       </h1>
       <p class="mt-0.5" style="color:rgba(255,255,255,.6);font-size:13px;">
@@ -161,7 +161,7 @@
       <fieldset>
         <legend class="flex items-center gap-2 text-sm font-bold text-gray-700 uppercase tracking-wider mb-4">
           <div class="w-6 h-6 rounded-lg flex items-center justify-center text-xs text-white font-bold flex-shrink-0"
-               style="background:#1a6b3a;">1</div>
+               style="background:#00909e;">1</div>
           Mode de participation <span class="text-red-500 ml-1">*</span>
         </legend>
 
@@ -197,7 +197,7 @@
                   Avec validation
                 </span>
               {% else %}
-                <span class="p-badge" style="background:#f0fdf4;color:#1a6b3a;">
+                <span class="p-badge" style="background:#e2f3f4;color:#00909e;">
                   Inscription directe
                 </span>
               {% endif %}
@@ -250,7 +250,7 @@
                   Avec validation
                 </span>
               {% else %}
-                <span class="p-badge" style="background:#f0fdf4;color:#1a6b3a;">
+                <span class="p-badge" style="background:#e2f3f4;color:#00909e;">
                   Inscription directe
                 </span>
               {% endif %}
@@ -280,7 +280,7 @@
             <input type="radio" name="participation_type" value="both" class="hidden"
                    {% if form.participation_type.value == 'both' %}checked{% endif %}>
             <div class="p-icon" style="background:#fffbeb;">
-              <svg class="w-6 h-6" style="color:#c9a227;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-6 h-6" style="color:#e8a33d;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
               </svg>
@@ -296,7 +296,7 @@
             </div>
             <div class="flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all"
                  id="radio-both" style="border-color:#d1d5db;">
-              <div class="w-2.5 h-2.5 rounded-full hidden" id="dot-both" style="background:#c9a227;"></div>
+              <div class="w-2.5 h-2.5 rounded-full hidden" id="dot-both" style="background:#e8a33d;"></div>
             </div>
           </label>
           {% endif %}
@@ -312,7 +312,7 @@
       <fieldset>
         <legend class="flex items-center gap-2 text-sm font-bold text-gray-700 uppercase tracking-wider mb-4">
           <div class="w-6 h-6 rounded-lg flex items-center justify-center text-xs text-white font-bold flex-shrink-0"
-               style="background:#1a6b3a;">{% if participation_mode == 'hybrid' %}2{% else %}1{% endif %}</div>
+               style="background:#00909e;">{% if participation_mode == 'hybrid' %}2{% else %}1{% endif %}</div>
           Identité
         </legend>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -341,7 +341,7 @@
       <fieldset>
         <legend class="flex items-center gap-2 text-sm font-bold text-gray-700 uppercase tracking-wider mb-4">
           <div class="w-6 h-6 rounded-lg flex items-center justify-center text-xs text-white font-bold flex-shrink-0"
-               style="background:#1a6b3a;">{% if participation_mode == 'hybrid' %}3{% else %}2{% endif %}</div>
+               style="background:#00909e;">{% if participation_mode == 'hybrid' %}3{% else %}2{% endif %}</div>
           Coordonnées
         </legend>
         <div class="space-y-4">
@@ -368,7 +368,7 @@
       <fieldset>
         <legend class="flex items-center gap-2 text-sm font-bold text-gray-700 uppercase tracking-wider mb-4">
           <div class="w-6 h-6 rounded-lg flex items-center justify-center text-xs text-white font-bold flex-shrink-0"
-               style="background:#1a6b3a;">{% if participation_mode == 'hybrid' %}4{% else %}3{% endif %}</div>
+               style="background:#00909e;">{% if participation_mode == 'hybrid' %}4{% else %}3{% endif %}</div>
           Profil professionnel
         </legend>
         <div class="space-y-4">
@@ -404,7 +404,7 @@
       <fieldset>
         <legend class="flex items-center gap-2 text-sm font-bold text-gray-700 uppercase tracking-wider mb-5">
           <div class="w-6 h-6 rounded-lg flex items-center justify-center text-xs text-white font-bold flex-shrink-0"
-               style="background:#c9a227;">{% if participation_mode == 'hybrid' %}5{% else %}4{% endif %}</div>
+               style="background:#e8a33d;">{% if participation_mode == 'hybrid' %}5{% else %}4{% endif %}</div>
           Préférences &amp; Consentements
         </legend>
         <div class="space-y-3">
@@ -414,7 +414,7 @@
                style="border-color:#fde68a;background:#fffbeb;">
             <label for="cb-newsletter" class="flex items-start gap-4 p-4 cursor-pointer select-none w-full">
               <input type="checkbox" id="cb-newsletter" name="newsletter" value="on" checked
-                     style="width:1rem;height:1rem;accent-color:#1a6b3a;cursor:pointer;margin-top:2px;flex-shrink:0;">
+                     style="width:1rem;height:1rem;accent-color:#00909e;cursor:pointer;margin-top:2px;flex-shrink:0;">
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 flex-wrap">
                   <span class="text-sm font-bold text-gray-800">
@@ -437,7 +437,7 @@
             <label for="cb-rgpd" class="flex items-start gap-4 p-4 cursor-pointer select-none w-full hover:bg-gray-50">
               <input type="checkbox" id="cb-rgpd" name="rgpd_consent"
                      {% if form.rgpd_consent.value %}checked{% endif %}
-                     style="width:1rem;height:1rem;accent-color:#1a6b3a;cursor:pointer;margin-top:2px;flex-shrink:0;">
+                     style="width:1rem;height:1rem;accent-color:#00909e;cursor:pointer;margin-top:2px;flex-shrink:0;">
               <div class="flex-1 min-w-0">
                 <p class="text-sm font-bold text-gray-800">
                   Consentement RGPD <span class="text-red-500">*</span>
@@ -467,7 +467,7 @@
         </a>
         <button type="submit" id="submit-btn"
                 class="btn-primary px-8 py-3 text-base font-bold"
-                style="background:linear-gradient(135deg,#1a6b3a,#2d8a52);">
+                style="background:linear-gradient(135deg,#00909e,#37a7b1);">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -493,7 +493,7 @@ const SUBMIT_LABELS = {
 const CARD_STYLES = {
   onsite: { border: '#7c3aed', bg: '#f5f3ff', dot: '#7c3aed' },
   online: { border: '#3b82f6', bg: '#eff6ff', dot: '#3b82f6' },
-  both:   { border: '#c9a227', bg: '#fffbeb', dot: '#c9a227' },
+  both:   { border: '#e8a33d', bg: '#fffbeb', dot: '#e8a33d' },
 };
 
 function selectParticipation(val) {
@@ -543,8 +543,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const cbN = document.getElementById('cb-newsletter');
   const bxN = document.getElementById('newsletter-wrapper');
   function styleN() {
-    bxN.style.borderColor = cbN.checked ? '#1a6b3a' : '#fde68a';
-    bxN.style.background  = cbN.checked ? '#f0fdf4' : '#fffbeb';
+    bxN.style.borderColor = cbN.checked ? '#00909e' : '#fde68a';
+    bxN.style.background  = cbN.checked ? '#e2f3f4' : '#fffbeb';
   }
   cbN?.addEventListener('change', styleN);
   styleN();
@@ -553,8 +553,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const cbR = document.getElementById('cb-rgpd');
   const bxR = document.getElementById('rgpd-wrapper');
   function styleR() {
-    bxR.style.borderColor = cbR.checked ? '#1a6b3a' : '#e5e7eb';
-    bxR.style.background  = cbR.checked ? '#f0fdf4' : '#fff';
+    bxR.style.borderColor = cbR.checked ? '#00909e' : '#e5e7eb';
+    bxR.style.background  = cbR.checked ? '#e2f3f4' : '#fff';
   }
   cbR?.addEventListener('change', styleR);
   styleR();

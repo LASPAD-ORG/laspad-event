@@ -39,7 +39,7 @@
       <!-- Bouton À venir : vert actif par défaut -->
       <button onclick="setFilter('status','upcoming')" id="fs-upcoming"
               class="ev-status-btn text-xs px-3 py-1.5 rounded-lg font-semibold transition-all"
-              style="background:#1a6b3a;color:#fff;">
+              style="background:#00909e;color:#fff;">
         À venir</button>
       <button onclick="setFilter('status','publie')" id="fs-publie"
               class="ev-status-btn text-xs px-3 py-1.5 rounded-lg font-semibold bg-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-700 transition-all">
@@ -235,7 +235,7 @@ function setFilter(type, val) {
       btn.style.background = '#f3f4f6'; btn.style.color = '#4b5563';
     });
     const b = document.getElementById(`fs-${val}`);
-    if (b) { b.style.background = '#1a6b3a'; b.style.color = '#fff'; }
+    if (b) { b.style.background = '#00909e'; b.style.color = '#fff'; }
   }
   // Boutons mode
   if (type === 'mode') {
@@ -322,9 +322,9 @@ function renderPagination(totalPages, total) {
     btn.textContent = i;
     btn.className   = 'px-3 py-1.5 text-xs rounded-lg border font-semibold transition-all';
     if (i === currentPage) {
-      btn.style.background  = '#1a6b3a';
+      btn.style.background  = '#00909e';
       btn.style.color       = '#fff';
-      btn.style.borderColor = '#1a6b3a';
+      btn.style.borderColor = '#00909e';
     } else {
       btn.style.borderColor = '#e5e7eb';
       btn.style.color       = '#6b7280';
@@ -351,7 +351,7 @@ function resetFilters() {
   document.querySelectorAll('.ev-mode-btn').forEach(b => { b.style.background='#f3f4f6'; b.style.color='#4b5563'; });
   const fs = document.getElementById('fs-all');
   const fm = document.getElementById('fm-all');
-  if (fs) { fs.style.background='#1a6b3a'; fs.style.color='#fff'; }
+  if (fs) { fs.style.background='#00909e'; fs.style.color='#fff'; }
   if (fm) { fm.style.background='#1f2937'; fm.style.color='#fff'; }
   applyFilters();
 }

@@ -11,7 +11,7 @@
 <div class="flex gap-2 mb-6">
   <button onclick="showTab('camera')" id="tab-camera"
           class="flex-1 py-3 rounded-xl text-sm font-bold transition-all"
-          style="background:#1a6b3a;color:#fff;">
+          style="background:#00909e;color:#fff;">
     📷 Scanner (caméra)
   </button>
   <button onclick="showTab('manual')" id="tab-manual"
@@ -24,7 +24,7 @@
 <div id="panel-camera">
   <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm mb-6">
     <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-3" style="background:#f8faf9;">
-      <div class="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold" style="background:#1a6b3a;">📷</div>
+      <div class="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold" style="background:#00909e;">📷</div>
       <h2 class="font-semibold text-gray-900">Scanner le QR code</h2>
     </div>
     <div class="p-6">
@@ -43,12 +43,12 @@
         <!-- Viseur -->
         <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div class="relative" style="width:65%;height:65%;">
-            <div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 rounded-tl-lg" style="border-color:#1a6b3a;"></div>
-            <div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 rounded-tr-lg" style="border-color:#1a6b3a;"></div>
-            <div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 rounded-bl-lg" style="border-color:#1a6b3a;"></div>
-            <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 rounded-br-lg" style="border-color:#1a6b3a;"></div>
+            <div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 rounded-tl-lg" style="border-color:#00909e;"></div>
+            <div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 rounded-tr-lg" style="border-color:#00909e;"></div>
+            <div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 rounded-bl-lg" style="border-color:#00909e;"></div>
+            <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 rounded-br-lg" style="border-color:#00909e;"></div>
             <div id="scan-line" class="absolute left-0 right-0 h-0.5 opacity-80"
-                 style="background:#1a6b3a;top:0;animation:scanLine 2s linear infinite;"></div>
+                 style="background:#00909e;top:0;animation:scanLine 2s linear infinite;"></div>
           </div>
         </div>
 
@@ -69,7 +69,7 @@
       <div class="flex gap-3 justify-center mb-4">
         <button id="btn-start-camera" onclick="startCamera()"
                 class="btn-sm px-5 py-2.5 font-semibold text-sm"
-                style="background:#1a6b3a;color:#fff;">
+                style="background:#00909e;color:#fff;">
           📷 Activer la caméra
         </button>
         <button id="btn-stop-camera" onclick="stopCamera()"
@@ -93,7 +93,7 @@
 <div id="panel-manual" class="hidden">
   <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm mb-6">
     <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-3" style="background:#f8faf9;">
-      <div class="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold" style="background:#1a6b3a;">⌨️</div>
+      <div class="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold" style="background:#00909e;">⌨️</div>
       <h2 class="font-semibold text-gray-900">Saisie manuelle</h2>
     </div>
     <div class="p-6">
@@ -107,7 +107,7 @@
                autocomplete="off">
         <button onclick="handleManualSubmit()"
                 class="btn-sm px-5 py-2.5 font-semibold text-sm flex-shrink-0"
-                style="background:#1a6b3a;color:#fff;">
+                style="background:#00909e;color:#fff;">
           Valider →
         </button>
       </div>
@@ -151,10 +151,10 @@ function showTab(tab) {
   document.getElementById('panel-camera').classList.toggle('hidden', tab !== 'camera');
   document.getElementById('panel-manual').classList.toggle('hidden', tab !== 'manual');
   document.getElementById('tab-camera').style.cssText = tab === 'camera'
-    ? 'background:#1a6b3a;color:#fff;flex:1;padding:12px;border-radius:12px;font-size:14px;font-weight:700;'
+    ? 'background:#00909e;color:#fff;flex:1;padding:12px;border-radius:12px;font-size:14px;font-weight:700;'
     : 'background:#f3f4f6;color:#6b7280;flex:1;padding:12px;border-radius:12px;font-size:14px;font-weight:700;';
   document.getElementById('tab-manual').style.cssText = tab === 'manual'
-    ? 'background:#1a6b3a;color:#fff;flex:1;padding:12px;border-radius:12px;font-size:14px;font-weight:700;'
+    ? 'background:#00909e;color:#fff;flex:1;padding:12px;border-radius:12px;font-size:14px;font-weight:700;'
     : 'background:#f3f4f6;color:#6b7280;flex:1;padding:12px;border-radius:12px;font-size:14px;font-weight:700;';
   if (tab !== 'camera') stopCamera();
 }
@@ -198,7 +198,7 @@ function setStatus(msg, color='#6b7280') {
 
 async function startCamera() {
   try {
-    setStatus('Démarrage de la caméra...', '#c9a227');
+    setStatus('Démarrage de la caméra...', '#e8a33d');
     const constraints = {
       video: {
         facingMode: useFrontCamera ? 'user' : 'environment',
@@ -216,7 +216,7 @@ async function startCamera() {
     document.getElementById('btn-stop-camera').classList.remove('hidden');
     document.getElementById('btn-flip-camera').classList.remove('hidden');
 
-    setStatus('✅ Caméra active — pointez vers le QR code', '#1a6b3a');
+    setStatus('✅ Caméra active — pointez vers le QR code', '#00909e');
 
     // Lancer la détection toutes les 150ms
     scanInterval = setInterval(detectQR, 150);
@@ -281,7 +281,7 @@ function detectQR() {
         onTokenFound(token);
       } else if (!token) {
         // QR code détecté mais pas un token LASPAD
-        setStatus('⚠️ QR code non reconnu : ' + code.data.substring(0, 30), '#c9a227');
+        setStatus('⚠️ QR code non reconnu : ' + code.data.substring(0, 30), '#e8a33d');
       }
     }
   } catch (err) {
@@ -293,7 +293,7 @@ function onTokenFound(token) {
   scanCooldown = true;
   clearInterval(scanInterval);
 
-  setStatus('🔄 Token trouvé ! Redirection...', '#1a6b3a');
+  setStatus('🔄 Token trouvé ! Redirection...', '#00909e');
   showScanOverlay('🔄', 'Chargement du ticket...');
 
   addToHistory('...', token.substring(0, 8) + '...', 'ok');
@@ -330,7 +330,7 @@ function handleManualSubmit() {
   }
 
   // Sinon chercher par numéro de ticket via API
-  setStatus('Recherche en cours...', '#c9a227');
+  setStatus('Recherche en cours...', '#e8a33d');
   fetch('/dashboard/scan/lookup/?q=' + encodeURIComponent(val))
     .then(r => r.json())
     .then(data => {

@@ -14,7 +14,7 @@
           </svg>
         </div>
         <div>
-          <p class="text-white font-bold text-lg" style="font-family:'Sora',sans-serif;">Supprimer l'intervenant</p>
+          <p class="text-white font-bold text-lg" style="font-family:'Zilla Slab',sans-serif;">Supprimer l'intervenant</p>
           <p class="text-red-200 text-sm mt-0.5">Cette action est irréversible.</p>
         </div>
       </div>
@@ -24,7 +24,7 @@
         {% if organizer.photo %}
           <img src="{{ organizer.photo.url }}" class="w-12 h-12 rounded-xl object-cover flex-shrink-0">
         {% else %}
-          <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold flex-shrink-0" style="background:#1a6b3a;">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold flex-shrink-0" style="background:#00909e;">
             {{ organizer.user.first_name|first|upper }}{{ organizer.user.last_name|first|upper }}
           </div>
         {% endif %}

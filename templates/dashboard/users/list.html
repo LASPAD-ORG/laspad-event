@@ -20,23 +20,23 @@
 <!-- Stats -->
 <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
   <div class="stat-card text-center">
-    <p class="text-2xl font-bold text-gray-900" style="font-family:'Sora',sans-serif;">{{ total }}</p>
+    <p class="text-2xl font-bold text-gray-900" style="font-family:'Zilla Slab',sans-serif;">{{ total }}</p>
     <p class="text-xs text-gray-500 mt-1">Total</p>
   </div>
   <div class="stat-card text-center">
-    <p class="text-2xl font-bold text-green-700" style="font-family:'Sora',sans-serif;">{{ active }}</p>
+    <p class="text-2xl font-bold text-green-700" style="font-family:'Zilla Slab',sans-serif;">{{ active }}</p>
     <p class="text-xs text-gray-500 mt-1">Actifs</p>
   </div>
   <div class="stat-card text-center">
-    <p class="text-2xl font-bold text-red-500" style="font-family:'Sora',sans-serif;">{{ suspended }}</p>
+    <p class="text-2xl font-bold text-red-500" style="font-family:'Zilla Slab',sans-serif;">{{ suspended }}</p>
     <p class="text-xs text-gray-500 mt-1">Suspendus</p>
   </div>
   <div class="stat-card text-center">
-    <p class="text-2xl font-bold" style="font-family:'Sora',sans-serif;color:#c9a227;">{{ admins }}</p>
+    <p class="text-2xl font-bold" style="font-family:'Zilla Slab',sans-serif;color:#e8a33d;">{{ admins }}</p>
     <p class="text-xs text-gray-500 mt-1">Administrateurs</p>
   </div>
   <div class="stat-card text-center">
-    <p class="text-2xl font-bold text-blue-600" style="font-family:'Sora',sans-serif;">{{ managers }}</p>
+    <p class="text-2xl font-bold text-blue-600" style="font-family:'Zilla Slab',sans-serif;">{{ managers }}</p>
     <p class="text-xs text-gray-500 mt-1">Gestionnaires</p>
   </div>
 </div>
@@ -66,14 +66,14 @@
                 {% if u.is_superuser %}bg-yellow-500
                 {% elif u.is_staff %}bg-blue-500
                 {% else %}bg-gray-400{% endif %}"
-                style="{% if u.is_superuser %}background:#c9a227{% elif u.is_staff %}background:#3b82f6{% endif %}">
+                style="{% if u.is_superuser %}background:#e8a33d{% elif u.is_staff %}background:#3b82f6{% endif %}">
                 {{ u.first_name|first|upper }}{{ u.last_name|first|upper }}
               </div>
               <div>
                 <p class="font-semibold text-gray-900 text-sm flex items-center gap-1.5">
                   {{ u.get_full_name|default:u.username }}
                   {% if u == request.user %}
-                    <span class="text-xs px-1.5 py-0.5 rounded" style="background:#f0fdf4;color:#1a6b3a;border:1px solid #bbf7d0;">Vous</span>
+                    <span class="text-xs px-1.5 py-0.5 rounded" style="background:#e2f3f4;color:#00909e;border:1px solid #bbf7d0;">Vous</span>
                   {% endif %}
                 </p>
                 <p class="text-xs text-gray-400">@{{ u.username }}</p>
@@ -174,7 +174,7 @@
   <div class="bg-white rounded-xl border border-gray-200 p-4">
     <div class="flex items-start gap-3">
       <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background:#fef9e7;">
-        <svg class="w-4 h-4" style="color:#c9a227;" fill="currentColor" viewBox="0 0 20 20">
+        <svg class="w-4 h-4" style="color:#e8a33d;" fill="currentColor" viewBox="0 0 20 20">
           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
         </svg>
       </div>

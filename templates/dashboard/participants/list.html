@@ -29,7 +29,7 @@
     <div class="flex gap-1">
       <button onclick="setFilter('newsletter','all')" id="fn-all"
               class="p-filter-btn text-xs px-3 py-1.5 rounded-lg font-semibold transition-all"
-              style="background:#1a6b3a;color:#fff;">Tous</button>
+              style="background:#00909e;color:#fff;">Tous</button>
       <button onclick="setFilter('newsletter','yes')" id="fn-yes"
               class="p-filter-btn text-xs px-3 py-1.5 rounded-lg font-semibold bg-gray-100 text-gray-600 hover:bg-green-50 hover:text-green-700 transition-all">
         ✓ Newsletter</button>
@@ -97,7 +97,7 @@
           <td>
             <div class="flex items-center gap-3">
               <div class="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
-                   style="background:linear-gradient(135deg,#1a6b3a,#2d8a52);">
+                   style="background:linear-gradient(135deg,#00909e,#37a7b1);">
                 {{ p.first_name|first|upper }}{{ p.last_name|first|upper }}
               </div>
               <div>
@@ -200,7 +200,7 @@ function setFilter(type, val) {
       b.style.background = '#f3f4f6'; b.style.color = '#4b5563';
     });
     const b = document.getElementById(`fn-${val}`);
-    if (b) { b.style.background = '#1a6b3a'; b.style.color = '#fff'; }
+    if (b) { b.style.background = '#00909e'; b.style.color = '#fff'; }
   }
   if (type === 'mode') {
     document.querySelectorAll('.m-filter-btn').forEach(b => {
@@ -291,9 +291,9 @@ function renderPagination(totalPages) {
     btn.textContent = i;
     btn.className   = 'px-3 py-1.5 text-xs rounded-lg border font-semibold transition-all';
     if (i === currentPage) {
-      btn.style.background  = '#1a6b3a';
+      btn.style.background  = '#00909e';
       btn.style.color       = '#fff';
-      btn.style.borderColor = '#1a6b3a';
+      btn.style.borderColor = '#00909e';
     } else {
       btn.style.borderColor = '#e5e7eb';
       btn.style.color       = '#6b7280';
@@ -321,7 +321,7 @@ function resetFilters() {
   document.querySelectorAll('.m-filter-btn').forEach(b => { b.style.background='#f3f4f6'; b.style.color='#4b5563'; });
   const fn = document.getElementById('fn-all');
   const fm = document.getElementById('fm-all');
-  if (fn) { fn.style.background='#1a6b3a'; fn.style.color='#fff'; }
+  if (fn) { fn.style.background='#00909e'; fn.style.color='#fff'; }
   if (fm) { fm.style.background='#1f2937'; fm.style.color='#fff'; }
   applyFilters();
 }

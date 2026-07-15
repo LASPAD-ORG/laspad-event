@@ -101,7 +101,7 @@
 <!-- Enregistrement vidéo -->
 <div class="bg-white rounded-2xl border border-gray-200 p-6 mt-4">
   <div class="flex items-center justify-between mb-4">
-    <h3 class="font-bold text-gray-900" style="font-family:'Sora',sans-serif;">
+    <h3 class="font-bold text-gray-900" style="font-family:'Zilla Slab',sans-serif;">
       🎬 Enregistrement vidéo
     </h3>
     {% if event.recording_url %}
@@ -299,7 +299,7 @@
         <tr>
           <th class="w-8">
             <input type="checkbox" id="select-all" onchange="toggleAll(this)"
-                   class="rounded" style="accent-color:#1a6b3a;">
+                   class="rounded" style="accent-color:#00909e;">
           </th>
           <th class="text-left">Participant</th>
           <th class="text-left">Institution</th>
@@ -319,7 +319,7 @@
           <td>
             {% if reg.status == 'en_attente' %}
             <input type="checkbox" class="reg-checkbox rounded" value="{{ reg.pk }}"
-                   onchange="updateSelection()" style="accent-color:#1a6b3a;">
+                   onchange="updateSelection()" style="accent-color:#00909e;">
             {% endif %}
           </td>
           <td>

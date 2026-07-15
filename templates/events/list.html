@@ -116,7 +116,7 @@
   <div class="absolute bottom-0 left-0 w-80 h-80 rounded-full pointer-events-none"
        style="background:radial-gradient(circle,rgba(0,144,158,.22),transparent 70%);transform:translate(-30%,30%)"></div>
 
-  <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+  <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-0">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
       <div>
@@ -172,9 +172,9 @@
       </div>
     </div>
 
-    <!-- Stats hero -->
-    <div class="mt-14 grid grid-cols-3 gap-px rounded-2xl overflow-hidden"
-         style="background:rgba(255,255,255,.07);">
+    <!-- Stats hero (chevauche la transition, comme la maquette) -->
+    <div class="mt-12 grid grid-cols-3 gap-px rounded-2xl overflow-hidden relative z-10"
+         style="background:#0d262b;margin-bottom:-40px;box-shadow:0 22px 44px rgba(0,0,0,.28);">
       <div class="px-6 py-5 text-center" style="background:rgba(255,255,255,.04);">
         <p class="text-2xl font-bold" style="font-family:'Zilla Slab',sans-serif;color:#e8a33d;">
           {{ upcoming_events.count }}
@@ -198,7 +198,7 @@
 <!-- ══════════════════════════════════════
      SECTION ÉVÉNEMENTS
 ══════════════════════════════════════ -->
-<div id="evenements" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+<div id="evenements" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-14">
 
   <!-- ── Événements à venir ──
        La vue Django (events/views.py) filtre déjà avec end_datetime__gte=now,

@@ -41,7 +41,7 @@
 
   <!-- Breadcrumb -->
   <nav class="flex items-center gap-2 text-sm text-gray-500 mb-8 flex-wrap">
-    <a href="{% url 'events:list' %}" class="hover:text-green-700 transition-colors">Événements</a>
+    <a href="{% url 'events:list' %}" class="hover:text-[#0a7c88] transition-colors">Événements</a>
     <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
     </svg>
@@ -70,7 +70,7 @@
         {% endif %}
         <div class="p-6">
           <div class="flex flex-wrap gap-2 mb-3">
-            <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-green-100 text-green-700">
+            <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#dff1f2] text-[#0a7c88]">
               {{ event.get_event_type_display }}
             </span>
             {% if participation_mode == 'hybrid' %}
@@ -335,7 +335,7 @@
             <div class="divide-y divide-gray-50">
               <div class="flex items-center justify-between px-4 py-2.5">
                 <span class="text-xs font-semibold text-purple-700">🏛️ Présentiel</span>
-                <span class="text-xs font-bold {% if event.is_full_onsite %}text-red-500{% else %}text-green-700{% endif %}">
+                <span class="text-xs font-bold {% if event.is_full_onsite %}text-red-500{% else %}text-[#0a7c88]{% endif %}">
                   {% if event.is_full_onsite %}Complet
                   {% elif event.max_onsite %}{{ event.spots_remaining_onsite }} place{{ event.spots_remaining_onsite|pluralize }}
                   {% else %}Illimité{% endif %}
@@ -354,7 +354,7 @@
           {% elif participation_mode == 'onsite_only' and event.max_onsite %}
           <div class="flex items-center justify-between px-4 py-2.5 rounded-xl border border-gray-100">
             <span class="text-xs font-semibold text-gray-600">Places disponibles</span>
-            <span class="text-xs font-bold {% if event.is_full_onsite %}text-red-500{% else %}text-green-700{% endif %}">
+            <span class="text-xs font-bold {% if event.is_full_onsite %}text-red-500{% else %}text-[#0a7c88]{% endif %}">
               {% if event.is_full_onsite %}Complet{% else %}{{ event.spots_remaining_onsite }} place{{ event.spots_remaining_onsite|pluralize }}{% endif %}
             </span>
           </div>
@@ -383,7 +383,7 @@
           {% if event.is_upcoming %}
           <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text={{ event.title|urlencode }}&dates={{ event.start_datetime|date:'Ymd\THis' }}/{{ event.end_datetime|date:'Ymd\THis' }}&details={{ event.description|truncatewords:20|urlencode }}"
              target="_blank"
-             class="flex items-center gap-2 text-xs text-gray-500 hover:text-green-700 transition-colors">
+             class="flex items-center gap-2 text-xs text-gray-500 hover:text-[#0a7c88] transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>

@@ -23,7 +23,7 @@
     </div>
     <p class="text-3xl font-bold text-gray-900" style="font-family:'Zilla Slab',sans-serif;">{{ total }}</p>
     {% if total > 0 %}
-    <p class="text-xs text-green-600 font-semibold mt-1">
+    <p class="text-xs text-[#00909e] font-semibold mt-1">
       ↗ {% widthratio registrations_by_status.accepte total 100 %}% taux d'acceptation
     </p>
     {% endif %}
@@ -33,12 +33,12 @@
     <div class="flex items-center justify-between mb-3">
       <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Acceptées</span>
       <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#d1fae5;">
-        <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-4 h-4 text-[#00909e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
         </svg>
       </div>
     </div>
-    <p class="text-3xl font-bold text-green-700" style="font-family:'Zilla Slab',sans-serif;">{{ registrations_by_status.accepte }}</p>
+    <p class="text-3xl font-bold text-[#0a7c88]" style="font-family:'Zilla Slab',sans-serif;">{{ registrations_by_status.accepte }}</p>
     {% if total > 0 %}
     <div class="w-full bg-gray-100 rounded-full h-1.5 mt-2">
       <div class="h-1.5 rounded-full" style="width:{% widthratio registrations_by_status.accepte total 100 %}%;background:#10b981;"></div>
@@ -129,7 +129,7 @@
           </div>
           <div class="flex items-center gap-2">
             <span class="text-xs text-gray-400">{% widthratio registrations_by_status.accepte total 100 %}%</span>
-            <span class="font-bold text-green-700 text-sm min-w-6 text-right">{{ registrations_by_status.accepte }}</span>
+            <span class="font-bold text-[#0a7c88] text-sm min-w-6 text-right">{{ registrations_by_status.accepte }}</span>
           </div>
         </div>
         <div class="w-full bg-gray-100 rounded-full h-2">
@@ -176,7 +176,7 @@
         <p class="text-xs text-gray-400 mt-0.5">Total inscriptions</p>
       </div>
       <div class="text-center">
-        <p class="text-2xl font-bold text-green-700" style="font-family:'Zilla Slab',sans-serif;">
+        <p class="text-2xl font-bold text-[#0a7c88]" style="font-family:'Zilla Slab',sans-serif;">
           {% widthratio registrations_by_status.accepte total 100 %}%
         </p>
         <p class="text-xs text-gray-400 mt-0.5">Taux d'acceptation</p>
@@ -214,7 +214,7 @@
         <div class="flex-1 min-w-0">
           <div class="flex justify-between items-center mb-1">
             <a href="{% url 'dashboard:event_detail' pk=event.pk %}"
-               class="text-sm font-medium text-gray-900 hover:text-green-700 truncate transition-colors"
+               class="text-sm font-medium text-gray-900 hover:text-[#0a7c88] truncate transition-colors"
                style="max-width:200px;" title="{{ event.title }}">
               {{ event.title|truncatechars:35 }}
             </a>
@@ -248,7 +248,7 @@
               d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
       </svg>
       <p class="text-gray-400 text-sm">Aucune donnée disponible.</p>
-      <a href="{% url 'dashboard:event_create' %}" class="text-green-700 hover:underline text-sm mt-1 inline-block">
+      <a href="{% url 'dashboard:event_create' %}" class="text-[#0a7c88] hover:underline text-sm mt-1 inline-block">
         Créer le premier événement →
       </a>
     </div>
@@ -320,11 +320,11 @@
             </svg>
           </div>
           <div>
-            <p class="text-sm font-semibold text-green-700">Présentiel</p>
+            <p class="text-sm font-semibold text-[#0a7c88]">Présentiel</p>
             <p class="text-xs text-gray-400">Présences scannées</p>
           </div>
         </div>
-        <p class="text-2xl font-bold text-green-700" style="font-family:'Zilla Slab',sans-serif;">
+        <p class="text-2xl font-bold text-[#0a7c88]" style="font-family:'Zilla Slab',sans-serif;">
           {{ attended_onsite|default:0 }}
         </p>
       </div>
@@ -366,7 +366,7 @@
     </h2>
     <div class="space-y-3">
       <a href="{% url 'dashboard:event_list' %}"
-         class="flex items-center gap-3 p-3 rounded-xl border border-gray-100 hover:border-green-200 hover:bg-green-50 transition-all group">
+         class="flex items-center gap-3 p-3 rounded-xl border border-gray-100 hover:border-green-200 hover:bg-[#eafcf9] transition-all group">
         <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style="background:#eafcf9;">
           <svg class="w-4 h-4" style="color:#00909e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -374,10 +374,10 @@
           </svg>
         </div>
         <div>
-          <p class="text-sm font-semibold text-gray-900 group-hover:text-green-700">Événements</p>
+          <p class="text-sm font-semibold text-gray-900 group-hover:text-[#0a7c88]">Événements</p>
           <p class="text-xs text-gray-400">Gérer et créer</p>
         </div>
-        <svg class="w-4 h-4 text-gray-300 ml-auto group-hover:text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-4 h-4 text-gray-300 ml-auto group-hover:text-[#00909e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
         </svg>
       </a>

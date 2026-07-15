@@ -11,7 +11,7 @@
   <a href="{% url 'dashboard:event_edit' pk=event.pk %}" class="btn-sm bg-blue-50 text-blue-700 hover:bg-blue-100">
     Modifier
   </a>
-  <a href="{% url 'dashboard:schedule_manage' pk=event.pk %}" class="btn-sm bg-green-50 text-green-700 hover:bg-green-100">
+  <a href="{% url 'dashboard:schedule_manage' pk=event.pk %}" class="btn-sm bg-green-50 text-[#0a7c88] hover:bg-[#dff1f2]">
     📅 Chronogramme
   </a>
   <a href="{% url 'dashboard:contact_participants' pk=event.pk %}" class="btn-sm bg-purple-50 text-purple-700 hover:bg-purple-100">
@@ -90,7 +90,7 @@
         ↓ Télécharger le QR code
       </a>
       <a href="{{ event.get_registration_url }}" target="_blank"
-         class="btn-sm bg-green-50 text-green-700 hover:bg-green-100 text-xs">
+         class="btn-sm bg-green-50 text-[#0a7c88] hover:bg-[#dff1f2] text-xs">
         Voir le formulaire ↗
       </a>
     </div>
@@ -233,7 +233,7 @@
     <input type="hidden" name="mode" value="all">
     <input type="number" name="limit" placeholder="Limiter à N" min="1" max="{{ pending.count }}"
            class="w-28 text-xs border border-yellow-300 rounded-lg px-2 py-1.5 text-center">
-    <button type="submit" class="btn-sm text-xs bg-green-600 text-white hover:bg-green-700">
+    <button type="submit" class="btn-sm text-xs bg-[#00909e] text-white hover:bg-[#0a7c88]">
       ✓ Accepter
     </button>
   </form>
@@ -251,12 +251,12 @@
 <div class="bg-green-50 border border-green-200 rounded-xl p-4 mb-6 flex items-center justify-between gap-4">
   <div>
     <p class="text-sm font-semibold text-green-800">Lien public d'inscription</p>
-    <p class="text-green-700 text-sm font-mono mt-0.5">
+    <p class="text-[#0a7c88] text-sm font-mono mt-0.5">
       {{ request.scheme }}://{{ request.get_host }}{{ event.get_registration_url }}
     </p>
   </div>
   <button onclick="navigator.clipboard.writeText('{{ request.scheme }}://{{ request.get_host }}{{ event.get_registration_url }}').then(()=>alert('Lien copié !'))"
-          class="btn-sm bg-green-600 text-white hover:bg-green-700 flex-shrink-0">
+          class="btn-sm bg-[#00909e] text-white hover:bg-[#0a7c88] flex-shrink-0">
     Copier
   </button>
 </div>
@@ -283,7 +283,7 @@
     <form method="post" action="{% url 'dashboard:registration_accept_bulk' pk=event.pk %}" id="bulk-accept-form">
       {% csrf_token %}
       <div id="bulk-ids-accept"></div>
-      <button type="submit" class="btn-sm text-xs bg-green-600 text-white hover:bg-green-700">✓ Accepter la sélection</button>
+      <button type="submit" class="btn-sm text-xs bg-[#00909e] text-white hover:bg-[#0a7c88]">✓ Accepter la sélection</button>
     </form>
     <form method="post" action="{% url 'dashboard:registration_refuse_bulk' pk=event.pk %}" id="bulk-refuse-form">
       {% csrf_token %}
@@ -349,7 +349,7 @@
               <span class="badge-pending">En attente</span>
             {% elif reg.status == 'accepte' %}
               <span class="badge-accepted">Accepté</span>
-              {% if reg.ticket_sent %}<span class="ml-1 text-xs text-green-600" title="Ticket envoyé">🎫</span>{% endif %}
+              {% if reg.ticket_sent %}<span class="ml-1 text-xs text-[#00909e]" title="Ticket envoyé">🎫</span>{% endif %}
               {% if reg.attended_onsite or reg.attended_online %}
                 <span class="ml-1 text-xs text-blue-600" title="Présence confirmée">✓</span>
               {% endif %}

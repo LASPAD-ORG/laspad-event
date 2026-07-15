@@ -126,7 +126,7 @@
       {% else %}
         <form method="post" action="{% url 'dashboard:user_activate' pk=target.pk %}" class="inline">
           {% csrf_token %}
-          <button type="submit" class="btn-sm bg-green-100 text-green-800 hover:bg-green-200 text-sm">
+          <button type="submit" class="btn-sm bg-[#dff1f2] text-green-800 hover:bg-green-200 text-sm">
             Réactiver le compte
           </button>
         </form>

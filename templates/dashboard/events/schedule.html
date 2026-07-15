@@ -22,7 +22,7 @@
 <div class="bg-white rounded-2xl border border-gray-200 p-5 mb-6 flex items-center gap-4">
   <div class="flex-1 min-w-0">
     <div class="flex items-center gap-2 flex-wrap">
-      <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-green-100 text-green-700">
+      <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#dff1f2] text-[#0a7c88]">
         {{ event.get_event_type_display }}
       </span>
       {% if event.is_multiday %}
@@ -120,7 +120,7 @@
                placeholder="Ex: Jour 1 — Ouverture">
       </div>
       <div class="flex items-end">
-        <button type="submit" class="btn-sm text-xs bg-green-600 text-white hover:bg-green-700 w-full justify-center">
+        <button type="submit" class="btn-sm text-xs bg-[#00909e] text-white hover:bg-[#0a7c88] w-full justify-center">
           ✓ Sauvegarder
         </button>
       </div>
@@ -160,7 +160,7 @@
             {% endif %}
             <div class="flex flex-wrap items-center gap-2 mt-1.5">
               {% if session.speaker %}
-                <span class="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-semibold">
+                <span class="text-xs px-2 py-0.5 rounded-full bg-[#dff1f2] text-[#0a7c88] font-semibold">
                   👤 {{ session.speaker.user.get_full_name }}
                 </span>
               {% endif %}
@@ -249,7 +249,7 @@
             </div>
             <input type="hidden" name="order" value="{{ session.order }}">
             <div class="flex gap-2">
-              <button type="submit" class="btn-sm text-xs bg-green-600 text-white hover:bg-green-700">
+              <button type="submit" class="btn-sm text-xs bg-[#00909e] text-white hover:bg-[#0a7c88]">
                 ✓ Sauvegarder
               </button>
               <button type="button" onclick="toggleSessionEdit({{ session.pk }})"
@@ -271,7 +271,7 @@
   <!-- Ajouter une session -->
   <div class="border-t border-gray-100">
     <button onclick="toggleAddSession({{ day.pk }})"
-            class="w-full flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold transition-colors hover:bg-green-50"
+            class="w-full flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold transition-colors hover:bg-[#eafcf9]"
             style="color:#00909e;" id="btn-add-session-{{ day.pk }}">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -340,7 +340,7 @@
         <input type="hidden" name="order" value="{{ day.sessions.count|add:1 }}">
 
         <div class="flex gap-2">
-          <button type="submit" class="btn-sm text-sm bg-green-600 text-white hover:bg-green-700">
+          <button type="submit" class="btn-sm text-sm bg-[#00909e] text-white hover:bg-[#0a7c88]">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
             </svg>

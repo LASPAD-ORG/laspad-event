@@ -24,7 +24,7 @@
     <p class="text-xs text-gray-500 mt-1">Total</p>
   </div>
   <div class="stat-card text-center">
-    <p class="text-2xl font-bold text-green-700" style="font-family:'Zilla Slab',sans-serif;">{{ active }}</p>
+    <p class="text-2xl font-bold text-[#0a7c88]" style="font-family:'Zilla Slab',sans-serif;">{{ active }}</p>
     <p class="text-xs text-gray-500 mt-1">Actifs</p>
   </div>
   <div class="stat-card text-center">
@@ -142,7 +142,7 @@
               {% else %}
                 <form method="post" action="{% url 'dashboard:user_activate' pk=u.pk %}" class="inline">
                   {% csrf_token %}
-                  <button type="submit" class="btn-sm bg-green-50 text-green-700 hover:bg-green-100 text-xs">
+                  <button type="submit" class="btn-sm bg-green-50 text-[#0a7c88] hover:bg-[#dff1f2] text-xs">
                     Réactiver
                   </button>
                 </form>

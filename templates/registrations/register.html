@@ -46,11 +46,11 @@
 
   <!-- Breadcrumb -->
   <nav class="flex items-center gap-2 text-sm text-gray-500 mb-8 flex-wrap">
-    <a href="{% url 'events:list' %}" class="hover:text-green-700 transition-colors">Événements</a>
+    <a href="{% url 'events:list' %}" class="hover:text-[#0a7c88] transition-colors">Événements</a>
     <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
     </svg>
-    <a href="{{ event.get_absolute_url }}" class="hover:text-green-700 transition-colors truncate max-w-xs">
+    <a href="{{ event.get_absolute_url }}" class="hover:text-[#0a7c88] transition-colors truncate max-w-xs">
       {{ event.title }}
     </a>
     <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -73,7 +73,7 @@
       </div>
     {% endif %}
     <div class="min-w-0 flex-1">
-      <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-green-100 text-green-700">
+      <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#dff1f2] text-[#0a7c88]">
         {{ event.get_event_type_display }}
       </span>
       <h2 class="font-bold text-gray-900 text-lg mt-1 leading-snug">{{ event.title }}</h2>
@@ -444,7 +444,7 @@
                 </p>
                 <p class="text-xs text-gray-500 mt-1 leading-relaxed">
                   J'accepte que mes données soient utilisées pour la gestion de cet événement.
-                  <a href="#" class="text-green-700 hover:underline ml-1">En savoir plus</a>
+                  <a href="#" class="text-[#0a7c88] hover:underline ml-1">En savoir plus</a>
                 </p>
                 {% if form.rgpd_consent.errors %}
                   <p class="text-red-500 text-xs mt-2 font-medium">{{ form.rgpd_consent.errors.0 }}</p>

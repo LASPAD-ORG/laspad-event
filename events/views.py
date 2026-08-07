@@ -1,5 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 from .models import Event
 from registrations.models import Participant  # ← ajouter cette ligne
 
@@ -87,3 +89,44 @@ def newsletter_unsubscribe(request, pk):
         'participant': participant,
         'already_done': not participant.newsletter,
     })
+
+
+def newsletter_subscribe(request):
+    """Abonnement direct à la newsletter (sans inscription à un événement).
+    Crée/retrouve un Participant par email et met newsletter=True."""
+    ctx = {'subscribed': False, 'already': False, 'error': None, 'email': ''}
+
+    if request.method == 'POST':
+        email      = (request.POST.get('email') or '').strip()
+        first_name = (request.POST.get('first_name') or '').strip()
+        last_name  = (request.POST.get('last_name') or '').strip()
+        ctx['email'] = email
+
+        # Validation de l'email
+        try:
+            validate_email(email)
+        except ValidationError:
+            ctx['error'] = "Merci d'indiquer une adresse e-mail valide."
+            return render(request, 'events/newsletter_subscribe.html', ctx)
+
+        # Retrouver (insensible à la casse) ou créer le Participant
+        participant = Participant.objects.filter(email__iexact=email).first()
+        if participant is None:
+            participant = Participant(
+                email=email, first_name=first_name, last_name=last_name,
+                institution='', role='',
+            )
+        else:
+            if first_name:
+                participant.first_name = first_name
+            if last_name:
+                participant.last_name = last_name
+
+        if participant.pk and participant.newsletter:
+            ctx['already'] = True
+        else:
+            participant.newsletter = True
+        participant.save()
+        ctx['subscribed'] = True
+
+    return render(request, 'events/newsletter_subscribe.html', ctx)

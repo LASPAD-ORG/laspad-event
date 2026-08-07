@@ -1,0 +1,86 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Newsletter — LASPAD Event{% endblock %}
+
+{% block content %}
+
+<!-- ══ Hero navy ══ -->
+<section style="background:linear-gradient(160deg,#14343a,#0d262b);">
+  <div class="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+    <p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#e8a33d;">Newsletter</p>
+    <h1 class="text-3xl sm:text-4xl font-bold text-white mb-4" style="font-family:'Zilla Slab',serif;">
+      Restez informé des événements du LASPAD
+    </h1>
+    <p class="text-sm sm:text-base max-w-2xl mx-auto" style="color:rgba(255,255,255,.6);">
+      Recevez par e-mail nos prochains webinaires, conférences, ateliers et séminaires scientifiques.
+    </p>
+  </div>
+</section>
+
+<!-- ══ Contenu ══ -->
+<div class="max-w-lg mx-auto px-4 sm:px-6 py-14">
+
+  {% if subscribed %}
+    <!-- ── Confirmation ── -->
+    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 text-center">
+      <div class="w-16 h-16 rounded-full mx-auto mb-5 flex items-center justify-center" style="background:#dff1f2;">
+        <svg class="w-8 h-8" style="color:#00909e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      </div>
+      {% if already %}
+        <h2 class="text-2xl font-bold mb-2" style="font-family:'Zilla Slab',serif;color:#14343a;">Vous êtes déjà abonné(e) ✅</h2>
+        <p class="text-gray-500 text-sm mb-6">Votre adresse e-mail est déjà dans nos abonnés — rien à faire de plus.</p>
+      {% else %}
+        <h2 class="text-2xl font-bold mb-2" style="font-family:'Zilla Slab',serif;color:#14343a;">Merci, c'est fait !</h2>
+        <p class="text-gray-500 text-sm mb-6">Vous recevrez désormais nos actualités et invitations aux prochains événements.</p>
+      {% endif %}
+      <a href="{% url 'events:list' %}" class="btn-primary inline-flex">← Voir les événements</a>
+    </div>
+
+  {% else %}
+    <!-- ── Formulaire ── -->
+    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 sm:p-8">
+      <h2 class="text-xl font-bold mb-1" style="font-family:'Zilla Slab',serif;color:#14343a;">S'inscrire à la newsletter</h2>
+      <p class="text-gray-500 text-sm mb-6">Laissez votre e-mail pour recevoir nos prochains événements scientifiques.</p>
+
+      {% if error %}
+        <div class="rounded-xl px-4 py-3 text-sm font-medium mb-4 bg-red-50 text-red-800 border border-red-200">
+          {{ error }}
+        </div>
+      {% endif %}
+
+      <form method="post" class="space-y-4">
+        {% csrf_token %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Prénom</label>
+            <input type="text" name="first_name" class="form-input" placeholder="Votre prénom">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Nom</label>
+            <input type="text" name="last_name" class="form-input" placeholder="Votre nom">
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1">Adresse e-mail <span class="text-red-500">*</span></label>
+          <input type="email" name="email" required value="{{ email }}" class="form-input" placeholder="vous@email.com">
+        </div>
+        <button type="submit" class="btn-primary w-full justify-center">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+          S'inscrire
+        </button>
+      </form>
+
+      <p class="text-xs text-gray-400 mt-4 text-center">
+        Gratuit · Vous pourrez vous désabonner à tout moment via le lien en bas de chaque e-mail.
+      </p>
+    </div>
+  {% endif %}
+
+</div>
+
+{% endblock %}

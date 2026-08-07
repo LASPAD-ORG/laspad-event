@@ -6,6 +6,8 @@
   .ih-espace{background:#fff;color:var(--lp-dark);border-bottom:1px solid #e7e4dc;}
   .ih-espace .wrap{max-width:1300px;margin:0 auto;padding:0 1rem;display:flex;justify-content:space-between;align-items:center;min-height:36px;gap:16px;font-size:12.5px;flex-wrap:wrap;}
   .ih-espace .nl{color:var(--lp-dark);}
+  .ih-espace .nl a{color:var(--lp-dark);text-decoration:none;transition:color .15s;}
+  .ih-espace .nl a:hover{color:#0a7c88;}
   .ih-espace .nl b{color:#0a7c88;font-weight:700;}
   .ih-espace .ihe-right{display:flex;align-items:center;gap:14px;}
   .ih-espace .soc{display:flex;align-items:center;gap:12px;}
@@ -46,7 +48,7 @@
   <!-- Niveau 1 : bandeau utilitaire -->
   <div class="ih-espace">
     <div class="wrap">
-      <div class="nl">📩 <b>S'inscrire à la newsletter</b></div>
+      <div class="nl">📩 <a href="{% url 'events:newsletter_subscribe' %}"><b>S'inscrire à la newsletter</b></a></div>
       <div class="ihe-right">
         <div class="soc">
           <a href="https://www.linkedin.com/company/laspad-ugb/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14zM8.34 17V10.5H6.2V17h2.14zM7.27 9.4a1.24 1.24 0 100-2.48 1.24 1.24 0 000 2.48zM18 17v-3.57c0-1.9-.41-3.36-2.63-3.36a2.3 2.3 0 00-2.07 1.14h-.03V10.5h-2.05V17h2.14v-3.2c0-.85.16-1.67 1.21-1.67 1.04 0 1.05.97 1.05 1.73V17H18z"/></svg></a>

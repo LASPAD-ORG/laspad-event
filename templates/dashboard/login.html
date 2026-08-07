@@ -7,12 +7,12 @@
   <title>Connexion — LASPAD Event</title>
   <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root{--lp-green:#1a6b3a;--lp-gold:#c9a227;--lp-dark:#0f1f15;}
-    body{font-family:'DM Sans',sans-serif;margin:0;}
-    .form-input{width:100%;padding:11px 14px;border:1.5px solid #e5e7eb;border-radius:10px;font-size:15px;transition:all .2s;font-family:'DM Sans',sans-serif;background:#fafafa;color:#1f2937;}
-    .form-input:focus{outline:none;border-color:var(--lp-green);box-shadow:0 0 0 3px rgba(26,107,58,.1);background:#fff;}
+    :root{--lp-green:#00909e;--lp-gold:#e8a33d;--lp-dark:#14343a;}
+    body{font-family:'Hanken Grotesk',sans-serif;margin:0;}
+    .form-input{width:100%;padding:11px 14px;border:1.5px solid #e5e7eb;border-radius:10px;font-size:15px;transition:all .2s;font-family:'Hanken Grotesk',sans-serif;background:#fafafa;color:#1f2937;}
+    .form-input:focus{outline:none;border-color:var(--lp-green);box-shadow:0 0 0 3px rgba(0,144,158,.1);background:#fff;}
     .form-input::placeholder{color:#9ca3af;}
     @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
     .fade-up{animation:fadeUp .5s ease forwards;}
@@ -24,7 +24,7 @@
 <div class="min-h-screen flex" style="background:#f8faf9;">
 
   <!-- ── PANNEAU GAUCHE — Visuel LASPAD ── -->
-  <div class="hidden lg:flex lg:w-1/2 relative flex-col items-center justify-center p-12 overflow-hidden" style="background:#0f1f15;">
+  <div class="hidden lg:flex lg:w-1/2 relative flex-col items-center justify-center p-12 overflow-hidden" style="background:#14343a;">
 
     <!-- Grille de fond -->
     <div class="absolute inset-0 opacity-10">
@@ -37,8 +37,8 @@
     </div>
 
     <!-- Cercles décoratifs -->
-    <div class="absolute top-0 right-0 w-64 h-64 rounded-full" style="background:radial-gradient(circle,rgba(201,162,39,.2) 0%,transparent 65%);transform:translate(40%,-40%)"></div>
-    <div class="absolute bottom-0 left-0 w-80 h-80 rounded-full" style="background:radial-gradient(circle,rgba(26,107,58,.35) 0%,transparent 65%);transform:translate(-40%,40%)"></div>
+    <div class="absolute top-0 right-0 w-64 h-64 rounded-full" style="background:radial-gradient(circle,rgba(232,163,61,.2) 0%,transparent 65%);transform:translate(40%,-40%)"></div>
+    <div class="absolute bottom-0 left-0 w-80 h-80 rounded-full" style="background:radial-gradient(circle,rgba(0,144,158,.35) 0%,transparent 65%);transform:translate(-40%,40%)"></div>
 
     <!-- Contenu -->
     <div class="relative z-10 text-center max-w-md">
@@ -46,19 +46,19 @@
       <!-- Logo -->
       <div class="mb-10 flex justify-center">
         <div class="rounded-2xl p-5" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);">
-          <img src="{% static 'img/logo.png' %}" alt="LASPAD" class="h-24 w-auto object-contain" style="filter:brightness(0) invert(1);">
+     <img src="{% static 'img/laspad-logo-blanc.png' %}" alt="LASPAD" class="h-24 w-auto object-contain" >
         </div>
       </div>
 
-      <h1 class="text-3xl font-bold text-white mb-4" style="font-family:'Sora',sans-serif;">LASPAD Event</h1>
+      <h1 class="text-3xl font-bold text-white mb-4" style="font-family:'Zilla Slab',sans-serif;">LASPAD Event</h1>
       <p style="color:rgba(255,255,255,.55);line-height:1.7;" class="text-base mb-10">
         Plateforme de gestion d'événements scientifiques du Laboratoire d’Analyse des Sociétés et Pouvoirs / Afrique – Diasporas.
       </p>
 
       <!-- Barre colorée LASPAD -->
       <div class="flex gap-2 justify-center mb-12">
-        <div class="h-1 w-16 rounded-full" style="background:#1a6b3a;"></div>
-        <div class="h-1 w-16 rounded-full" style="background:#c9a227;"></div>
+        <div class="h-1 w-16 rounded-full" style="background:#00909e;"></div>
+        <div class="h-1 w-16 rounded-full" style="background:#e8a33d;"></div>
         <div class="h-1 w-16 rounded-full" style="background:rgba(255,255,255,.25);"></div>
       </div>
 
@@ -66,8 +66,8 @@
       <div class="space-y-4 text-left">
 
         <div class="flex items-center gap-3">
-          <div class="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center" style="background:rgba(201,162,39,.2);">
-            <svg class="w-3 h-3" style="color:#c9a227;" fill="currentColor" viewBox="0 0 20 20">
+          <div class="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center" style="background:rgba(232,163,61,.2);">
+            <svg class="w-3 h-3" style="color:#e8a33d;" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
             </svg>
           </div>
@@ -75,8 +75,8 @@
         </div>
 
         <div class="flex items-center gap-3">
-          <div class="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center" style="background:rgba(201,162,39,.2);">
-            <svg class="w-3 h-3" style="color:#c9a227;" fill="currentColor" viewBox="0 0 20 20">
+          <div class="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center" style="background:rgba(232,163,61,.2);">
+            <svg class="w-3 h-3" style="color:#e8a33d;" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
             </svg>
           </div>
@@ -84,8 +84,8 @@
         </div>
 
         <div class="flex items-center gap-3">
-          <div class="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center" style="background:rgba(201,162,39,.2);">
-            <svg class="w-3 h-3" style="color:#c9a227;" fill="currentColor" viewBox="0 0 20 20">
+          <div class="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center" style="background:rgba(232,163,61,.2);">
+            <svg class="w-3 h-3" style="color:#e8a33d;" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
             </svg>
           </div>
@@ -93,8 +93,8 @@
         </div>
 
         <div class="flex items-center gap-3">
-          <div class="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center" style="background:rgba(201,162,39,.2);">
-            <svg class="w-3 h-3" style="color:#c9a227;" fill="currentColor" viewBox="0 0 20 20">
+          <div class="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center" style="background:rgba(232,163,61,.2);">
+            <svg class="w-3 h-3" style="color:#e8a33d;" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
             </svg>
           </div>
@@ -102,8 +102,8 @@
         </div>
 
         <div class="flex items-center gap-3">
-          <div class="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center" style="background:rgba(201,162,39,.2);">
-            <svg class="w-3 h-3" style="color:#c9a227;" fill="currentColor" viewBox="0 0 20 20">
+          <div class="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center" style="background:rgba(232,163,61,.2);">
+            <svg class="w-3 h-3" style="color:#e8a33d;" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
             </svg>
           </div>
@@ -127,12 +127,12 @@
 
       <!-- En-tête -->
       <div class="mb-8 fade-up">
-        <h2 class="text-3xl font-bold" style="font-family:'Sora',sans-serif;color:#0f1f15;">Connexion</h2>
+        <h2 class="text-3xl font-bold" style="font-family:'Zilla Slab',sans-serif;color:#14343a;">Connexion</h2>
         <p class="text-gray-500 mt-2 text-sm">Accédez à l'espace d'administration LASPAD Event.</p>
       </div>
 
       <!-- Ligne or décorative -->
-      <div class="w-12 h-1 rounded-full mb-8 fade-up" style="background:#c9a227;"></div>
+      <div class="w-12 h-1 rounded-full mb-8 fade-up" style="background:#e8a33d;"></div>
 
       <!-- Erreur -->
       {% if form.non_field_errors %}
@@ -188,21 +188,21 @@
         </div>
 
         <!-- Bouton -->
-        <button type="submit" class="mt-8 w-full py-3.5 rounded-xl text-white font-bold text-base transition-all hover:shadow-lg hover:-translate-y-0.5 active:scale-95" style="background:linear-gradient(135deg,#1a6b3a,#2d8a52);font-family:'Sora',sans-serif;">
+        <button type="submit" class="mt-8 w-full py-3.5 rounded-xl text-white font-bold text-base transition-all hover:shadow-lg hover:-translate-y-0.5 active:scale-95" style="background:linear-gradient(135deg,#00909e,#37a7b1);font-family:'Zilla Slab',sans-serif;">
           Se connecter
         </button>
       </form>
         <div class="text-center mt-4">
           <a href="{% url 'password_reset' %}"
              class="text-sm font-medium transition-colors hover:underline"
-             style="color:#1a6b3a;">
+             style="color:#00909e;">
             Mot de passe oublié ?
           </a>
         </div>
 
       <!-- Retour site -->
       <p class="text-center text-sm text-gray-400 mt-8 fade-up-3">
-        <a href="{% url 'events:list' %}" class="inline-flex items-center gap-1.5 hover:text-green-700 transition-colors">
+        <a href="{% url 'events:list' %}" class="inline-flex items-center gap-1.5 hover:text-[#0a7c88] transition-colors">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
           </svg>

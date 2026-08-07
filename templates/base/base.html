@@ -13,37 +13,37 @@
       theme: {
         extend: {
           colors: {
-            laspad: { green:'#1a6b3a', gold:'#c9a227', dark:'#0f1f15', light:'#e8f5ef' }
+            laspad: { green:'#00909e', gold:'#e8a33d', dark:'#14343a', light:'#eafcf9' }
           },
-          fontFamily: { sora:['Sora','sans-serif'], dm:['DM Sans','sans-serif'] }
+          fontFamily: { sora:['Zilla Slab','sans-serif'], dm:['Hanken Grotesk','sans-serif'] }
         }
       }
     }
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root{--lp-green:#1a6b3a;--lp-gold:#c9a227;--lp-dark:#0f1f15;--lp-light:#e8f5ef;}
-    body{font-family:'DM Sans',sans-serif;}
-    h1,h2,h3,h4{font-family:'Sora',sans-serif;}
+    :root{--lp-green:#00909e;--lp-gold:#e8a33d;--lp-dark:#14343a;--lp-light:#eafcf9;}
+    body{font-family:'Hanken Grotesk',sans-serif;}
+    h1,h2,h3,h4{font-family:'Zilla Slab',sans-serif;}
     .btn-primary{background:var(--lp-green);color:#fff;padding:.55rem 1.4rem;border-radius:9px;font-weight:500;font-size:.9rem;transition:all .2s;display:inline-flex;align-items:center;gap:6px;text-decoration:none;}
-    .btn-primary:hover{background:#145530;transform:translateY(-1px);box-shadow:0 4px 12px rgba(26,107,58,.25);}
+    .btn-primary:hover{background:#0a7c88;transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,144,158,.25);}
     .btn-white{background:#fff;color:var(--lp-green);border:2px solid var(--lp-green);padding:.55rem 1.4rem;border-radius:9px;font-weight:600;font-size:.9rem;transition:all .2s;display:inline-flex;align-items:center;gap:6px;text-decoration:none;}
     .btn-white:hover{background:var(--lp-light);}
     .btn-gold{background:var(--lp-gold);color:#fff;padding:.55rem 1.4rem;border-radius:9px;font-weight:500;transition:all .2s;display:inline-flex;align-items:center;gap:6px;text-decoration:none;}
-    .btn-gold:hover{background:#b8911e;}
-    .form-input,.form-select,.form-textarea{width:100%;padding:.6rem .9rem;border:1.5px solid #d1d5db;border-radius:8px;font-size:.95rem;font-family:'DM Sans',sans-serif;transition:border-color .15s,box-shadow .15s;background:#fff;color:#1f2937;}
-    .form-input:focus,.form-select:focus,.form-textarea:focus{outline:none;border-color:var(--lp-green);box-shadow:0 0 0 3px rgba(26,107,58,.12);}
+    .btn-gold:hover{background:#c9791f;}
+    .form-input,.form-select,.form-textarea{width:100%;padding:.6rem .9rem;border:1.5px solid #d1d5db;border-radius:8px;font-size:.95rem;font-family:'Hanken Grotesk',sans-serif;transition:border-color .15s,box-shadow .15s;background:#fff;color:#1f2937;}
+    .form-input:focus,.form-select:focus,.form-textarea:focus{outline:none;border-color:var(--lp-green);box-shadow:0 0 0 3px rgba(0,144,158,.12);}
     .form-checkbox{accent-color:var(--lp-green);width:1rem;height:1rem;cursor:pointer;}
     .badge-pending{background:#fef3c7;color:#92400e;padding:2px 10px;border-radius:20px;font-size:12px;font-weight:600;}
     .badge-accepted{background:#d1fae5;color:#065f46;padding:2px 10px;border-radius:20px;font-size:12px;font-weight:600;}
     .badge-refused{background:#fee2e2;color:#991b1b;padding:2px 10px;border-radius:20px;font-size:12px;font-weight:600;}
     .event-card{transition:transform .2s,box-shadow .2s;}
-    .event-card:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(26,107,58,.12);}
+    .event-card:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,144,158,.12);}
   </style>
   {% block extra_head %}{% endblock %}
 </head>
-<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
+<body class="bg-[#f7f6f2] text-gray-800 min-h-screen flex flex-col">
   {% include 'base/navbar.html' %}
   <main class="flex-grow">
     {% if messages %}

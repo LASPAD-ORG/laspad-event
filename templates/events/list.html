@@ -43,35 +43,35 @@
       white-space: nowrap;
     }
     .filter-tab.active {
-      background: #1a6b3a;
+      background: #00909e;
       color: #fff;
-      border-color: #1a6b3a;
+      border-color: #00909e;
     }
     .filter-tab:not(.active) {
       background: #fff;
       color: #6b7280;
       border-color: #e5e7eb;
     }
-    .filter-tab:not(.active):hover { border-color: #1a6b3a; color: #1a6b3a; }
+    .filter-tab:not(.active):hover { border-color: #00909e; color: #00909e; }
 
     /* ── Barre de progression ── */
     .progress-bar  { height: 4px; border-radius: 2px; background: #e5e7eb; overflow: hidden; }
-    .progress-fill { height: 100%; border-radius: 2px; background: #1a6b3a; }
+    .progress-fill { height: 100%; border-radius: 2px; background: #00909e; }
 
     /* ── Boutons hero ── */
     .btn-gold {
       display: inline-flex; align-items: center; gap: 8px;
-      background: #c9a227; color: #fff;
+      background: #e8a33d; color: #fff;
       padding: 10px 22px; border-radius: 10px;
       font-weight: 700; font-size: 14px;
       text-decoration: none;
       transition: all .15s;
     }
-    .btn-gold:hover { background: #a8841f; transform: translateY(-1px); }
+    .btn-gold:hover { background: #c9791f; transform: translateY(-1px); }
 
     .btn-primary {
       display: inline-flex; align-items: center; gap: 6px;
-      background: linear-gradient(135deg, #1a6b3a, #2d8a52);
+      background: linear-gradient(135deg, #00909e, #37a7b1);
       color: #fff;
       padding: 10px 20px; border-radius: 10px;
       font-weight: 700; font-size: 13px;
@@ -105,37 +105,31 @@
 <!-- ══════════════════════════════════════
      HERO
 ══════════════════════════════════════ -->
-<section class="relative overflow-hidden" style="background:#0f1f15;">
+<section class="relative overflow-hidden" style="background:#14343a;">
 
-  <div class="absolute inset-0" style="opacity:.06;">
-    <svg width="100%" height="100%">
-      <defs>
-        <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
-          <path d="M60 0L0 0 0 60" fill="none" stroke="white" stroke-width=".8"/>
-        </pattern>
-      </defs>
-      <rect width="100%" height="100%" fill="url(#grid)"/>
-    </svg>
-  </div>
+  <!-- Photo d'événement LASPAD -->
+  <div class="absolute inset-0" style="background-image:url('{% static 'img/hero-events.jpg' %}');background-size:cover;background-position:center;"></div>
+  <!-- Voile teal dégradé (lisibilité du texte à gauche, photo visible à droite) -->
+  <div class="absolute inset-0" style="background:linear-gradient(102deg,rgba(15,33,37,.92) 0%,rgba(16,44,52,.78) 40%,rgba(18,49,56,.42) 74%,rgba(0,144,158,.22) 100%);"></div>
   <div class="absolute top-0 right-0 w-96 h-96 rounded-full pointer-events-none"
-       style="background:radial-gradient(circle,rgba(201,162,39,.15),transparent 70%);transform:translate(30%,-30%)"></div>
+       style="background:radial-gradient(circle,rgba(232,163,61,.15),transparent 70%);transform:translate(30%,-30%)"></div>
   <div class="absolute bottom-0 left-0 w-80 h-80 rounded-full pointer-events-none"
-       style="background:radial-gradient(circle,rgba(26,107,58,.25),transparent 70%);transform:translate(-30%,30%)"></div>
+       style="background:radial-gradient(circle,rgba(0,144,158,.22),transparent 70%);transform:translate(-30%,30%)"></div>
 
-  <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+  <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-0">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
       <div>
         <div class="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-6 border"
              style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);">
-          <span class="w-2 h-2 rounded-full animate-pulse" style="background:#c9a227;"></span>
+          <span class="w-2 h-2 rounded-full animate-pulse" style="background:#e8a33d;"></span>
           <span class="text-sm font-medium" style="color:rgba(255,255,255,.7);">Plateforme officielle LASPAD</span>
         </div>
 
         <h1 class="text-4xl sm:text-5xl font-bold leading-tight mb-5"
-            style="font-family:'Sora',sans-serif;color:#fff;">
+            style="font-family:'Zilla Slab',sans-serif;color:#fff;">
           Les événements<br>
-          <span style="color:#c9a227;">scientifiques</span><br>
+          <span style="color:#e8a33d;">scientifiques</span><br>
           du LASPAD
         </h1>
 
@@ -165,36 +159,25 @@
         </div>
       </div>
 
-      <div class="hidden lg:flex justify-center">
-        <div class="relative">
-          <div class="absolute inset-0 rounded-2xl"
-               style="background:radial-gradient(circle,rgba(201,162,39,.15),transparent 65%);transform:scale(1.4);"></div>
-          <div class="relative rounded-2xl p-8 flex items-center justify-center"
-               style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(8px);">
-            <img src="{% static 'img/logo.png' %}" alt="LASPAD" class="w-64 h-auto object-contain"
-                 style="filter:brightness(0) invert(1);">
-          </div>
-        </div>
-      </div>
     </div>
 
-    <!-- Stats hero -->
-    <div class="mt-14 grid grid-cols-3 gap-px rounded-2xl overflow-hidden"
-         style="background:rgba(255,255,255,.07);">
-      <div class="px-6 py-5 text-center" style="background:rgba(255,255,255,.04);">
-        <p class="text-2xl font-bold" style="font-family:'Sora',sans-serif;color:#c9a227;">
+    <!-- Stats hero (translucide, sur la photo, comme la maquette) -->
+    <div class="mt-12 grid grid-cols-3 gap-px rounded-2xl overflow-hidden"
+         style="background:rgba(255,255,255,.08);backdrop-filter:blur(2px);">
+      <div class="px-6 py-4 text-center" style="background:rgba(255,255,255,.04);">
+        <p class="text-3xl font-bold" style="font-family:'Zilla Slab',sans-serif;color:#e8a33d;">
           {{ upcoming_events.count }}
         </p>
         <p class="text-xs mt-0.5" style="color:rgba(255,255,255,.45);">À venir</p>
       </div>
-      <div class="px-6 py-5 text-center" style="background:rgba(255,255,255,.04);">
-        <p class="text-2xl font-bold" style="font-family:'Sora',sans-serif;color:#c9a227;">
+      <div class="px-6 py-4 text-center" style="background:rgba(255,255,255,.04);">
+        <p class="text-3xl font-bold" style="font-family:'Zilla Slab',sans-serif;color:#e8a33d;">
           {{ past_events.count }}
         </p>
         <p class="text-xs mt-0.5" style="color:rgba(255,255,255,.45);">Éditions passées</p>
       </div>
-      <div class="px-6 py-5 text-center" style="background:rgba(255,255,255,.04);">
-        <p class="text-2xl font-bold" style="font-family:'Sora',sans-serif;color:#c9a227;">100%</p>
+      <div class="px-6 py-4 text-center" style="background:rgba(255,255,255,.04);">
+        <p class="text-3xl font-bold" style="font-family:'Zilla Slab',sans-serif;color:#e8a33d;">100%</p>
         <p class="text-xs mt-0.5" style="color:rgba(255,255,255,.45);">Gratuit</p>
       </div>
     </div>
@@ -216,14 +199,14 @@
     <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
       <div class="flex items-center gap-4">
         <div class="w-1 h-9 rounded-full"
-             style="background:linear-gradient(to bottom,#1a6b3a,#c9a227);"></div>
+             style="background:linear-gradient(to bottom,#00909e,#e8a33d);"></div>
         <div>
-          <h2 class="text-2xl font-bold" style="font-family:'Sora',sans-serif;color:#0f1f15;">
+          <h2 class="text-2xl font-bold" style="font-family:'Zilla Slab',sans-serif;color:#14343a;">
             Événements à venir
           </h2>
           <p class="text-sm text-gray-400 mt-0.5">Inscrivez-vous dès maintenant</p>
         </div>
-        <span class="text-xs font-bold px-2.5 py-1 rounded-full text-white" style="background:#1a6b3a;">
+        <span class="text-xs font-bold px-2.5 py-1 rounded-full text-white" style="background:#00909e;">
           {{ upcoming_events.count }}
         </span>
       </div>
@@ -250,7 +233,7 @@
     <div id="no-filter-msg" class="hidden text-center py-12 text-gray-400">
       <p class="text-sm">Aucun événement de ce type pour le moment.</p>
       <button onclick="filterType('all', document.querySelector('.filter-tab'))"
-              class="text-green-700 hover:underline text-xs mt-1">
+              class="text-[#0a7c88] hover:underline text-xs mt-1">
         Voir tous les événements
       </button>
     </div>
@@ -262,13 +245,13 @@
   {% if not upcoming_events %}
   <div class="text-center py-24">
     <div class="w-20 h-20 rounded-full mx-auto mb-5 flex items-center justify-center"
-         style="background:#f0fdf4;">
-      <svg class="w-10 h-10" style="color:#1a6b3a;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+         style="background:#e2f3f4;">
+      <svg class="w-10 h-10" style="color:#00909e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
               d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
       </svg>
     </div>
-    <h3 class="text-xl font-bold text-gray-800 mb-2" style="font-family:'Sora',sans-serif;">
+    <h3 class="text-xl font-bold text-gray-800 mb-2" style="font-family:'Zilla Slab',sans-serif;">
       Aucun événement à venir
     </h3>
     <p class="text-gray-400 text-sm max-w-xs mx-auto">
@@ -285,7 +268,7 @@
     <div class="flex items-center gap-4 mb-6">
       <div class="w-1 h-8 rounded-full bg-gray-200"></div>
       <div>
-        <h2 class="text-lg font-bold text-gray-400" style="font-family:'Sora',sans-serif;">
+        <h2 class="text-lg font-bold text-gray-400" style="font-family:'Zilla Slab',sans-serif;">
           Éditions passées
         </h2>
         <p class="text-xs text-gray-300 mt-0.5">
@@ -315,14 +298,14 @@
         </div>
         <div class="min-w-0 flex-1">
           <p class="font-semibold text-gray-700 text-sm truncate group-hover:text-gray-900"
-             style="font-family:'Sora',sans-serif;">{{ event.title }}</p>
+             style="font-family:'Zilla Slab',sans-serif;">{{ event.title }}</p>
           <div class="flex items-center gap-2 mt-0.5">
             <p class="text-xs text-gray-400">{{ event.start_datetime|date:"d F Y" }}</p>
             <span class="text-gray-200">·</span>
             <p class="text-xs text-gray-400">{{ event.get_event_type_display }}</p>
           </div>
         </div>
-        <svg class="w-4 h-4 text-gray-300 group-hover:text-green-600 flex-shrink-0"
+        <svg class="w-4 h-4 text-gray-300 group-hover:text-[#00909e] flex-shrink-0"
              fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
         </svg>
@@ -335,7 +318,7 @@
     <div class="flex justify-center mt-5" id="past-toggle-wrap">
       <button onclick="togglePastEvents()" id="btn-toggle-past"
               class="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold
-                     text-gray-500 border border-gray-200 hover:border-green-600 hover:text-green-700
+                     text-gray-500 border border-gray-200 hover:border-[#00909e] hover:text-[#0a7c88]
                      transition-all bg-white">
         <span id="btn-past-label">Voir les {{ past_events.count|add:"-3" }} autres éditions</span>
         <svg id="btn-past-icon" class="w-4 h-4 transition-transform duration-200"
@@ -358,24 +341,19 @@
 <!-- ══════════════════════════════════════
      BANDEAU LASPAD
 ══════════════════════════════════════ -->
-<section style="background:#0f1f15;" class="mt-8">
+<section style="background:#14343a;" class="mt-8">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+    <div class="max-w-3xl">
       <div>
-        <p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#c9a227;">À propos</p>
-        <h2 class="text-3xl font-bold text-white mb-4" style="font-family:'Sora',sans-serif;">
+        <p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#e8a33d;">À propos</p>
+        <h2 class="text-3xl font-bold text-white mb-4" style="font-family:'Zilla Slab',sans-serif;">
           Le LASPAD, acteur de la recherche africaine
         </h2>
         <p class="leading-relaxed text-sm mb-6" style="color:rgba(255,255,255,.55);">
           Le Laboratoire d'Analyse des Sociétés et Pouvoirs / Afrique – Diasporas organise
           régulièrement des événements scientifiques pour renforcer les capacités analytiques en Afrique.
         </p>
-        <a href="mailto:communication@laspad.sn" class="btn-gold">Nous contacter</a>
-      </div>
-      <div class="flex justify-center">
-        <img src="{% static 'img/logo.png' %}" alt="LASPAD"
-             class="h-28 w-auto object-contain opacity-75"
-             style="filter:brightness(0) invert(1);">
+        <a href="mailto:communication@laspad.org" class="btn-gold">Nous contacter</a>
       </div>
     </div>
   </div>

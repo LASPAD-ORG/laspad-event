@@ -16,7 +16,7 @@
           </svg>
         </div>
         <div>
-          <p class="text-white font-bold text-lg" style="font-family:'Sora',sans-serif;">Action irréversible</p>
+          <p class="text-white font-bold text-lg" style="font-family:'Zilla Slab',sans-serif;">Action irréversible</p>
           <p class="text-red-200 text-sm mt-0.5">Cette suppression est définitive.</p>
         </div>
       </div>
@@ -26,7 +26,7 @@
       <!-- Info utilisateur -->
       <div class="flex items-center gap-4 p-4 rounded-xl mb-6" style="background:#f9fafb;border:1px solid #e5e7eb;">
         <div class="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0"
-             style="background:{% if target.is_superuser %}#c9a227{% else %}#3b82f6{% endif %};">
+             style="background:{% if target.is_superuser %}#e8a33d{% else %}#3b82f6{% endif %};">
           {{ target.first_name|first|upper }}{{ target.last_name|first|upper }}
         </div>
         <div>
@@ -34,7 +34,7 @@
           <p class="text-sm text-gray-500">@{{ target.username }} · {{ target.email }}</p>
           <p class="text-xs mt-1">
             {% if target.is_superuser %}
-              <span style="color:#c9a227;font-weight:600;">Administrateur</span>
+              <span style="color:#e8a33d;font-weight:600;">Administrateur</span>
             {% else %}
               <span class="text-blue-600 font-semibold">Gestionnaire</span>
             {% endif %}

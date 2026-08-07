@@ -25,7 +25,7 @@
   <div class="stat-card">
     <div class="flex items-center justify-between mb-3">
       <span class="text-xs text-gray-400 font-medium uppercase tracking-wide">Événements</span>
-      <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#e8f5ef">
+      <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#eafcf9">
         <svg class="w-4 h-4" style="color:var(--lp-green)" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
         </svg>
@@ -107,7 +107,7 @@
       </div>
       <div>
         <p class="text-xs text-gray-400">Acceptées</p>
-        <p class="text-sm font-bold text-green-600">{{ accepted_registrations }}</p>
+        <p class="text-sm font-bold text-[#00909e]">{{ accepted_registrations }}</p>
       </div>
     </div>
   </div>
@@ -119,7 +119,7 @@
         <h2 class="font-semibold text-gray-800 text-sm">Événements créés</h2>
         <p class="text-xs text-gray-400 mt-0.5">30 derniers jours</p>
       </div>
-      <span class="text-xs font-semibold px-2 py-1 rounded-lg bg-green-50 text-green-700">
+      <span class="text-xs font-semibold px-2 py-1 rounded-lg bg-green-50 text-[#0a7c88]">
         {{ total_events }} total
       </span>
     </div>
@@ -134,7 +134,7 @@
       </div>
       <div>
         <p class="text-xs text-gray-400">À venir</p>
-        <p class="text-sm font-bold text-green-600">{{ upcoming_events }}</p>
+        <p class="text-sm font-bold text-[#00909e]">{{ upcoming_events }}</p>
       </div>
       <div>
         <p class="text-xs text-gray-400">Publiés</p>
@@ -162,12 +162,12 @@
       <div class="flex gap-1">
         <button onclick="filterReg('all')" id="rf-all"
                 class="reg-filter-btn text-xs px-2.5 py-1 rounded-lg font-semibold transition-all"
-                style="background:#1a6b3a;color:#fff;">Tout</button>
+                style="background:#00909e;color:#fff;">Tout</button>
         <button onclick="filterReg('en_attente')" id="rf-en_attente"
                 class="reg-filter-btn text-xs px-2.5 py-1 rounded-lg font-semibold bg-gray-100 text-gray-500 hover:bg-yellow-50 hover:text-yellow-700 transition-all">
                 ⏳ Attente</button>
         <button onclick="filterReg('accepte')" id="rf-accepte"
-                class="reg-filter-btn text-xs px-2.5 py-1 rounded-lg font-semibold bg-gray-100 text-gray-500 hover:bg-green-50 hover:text-green-700 transition-all">
+                class="reg-filter-btn text-xs px-2.5 py-1 rounded-lg font-semibold bg-gray-100 text-gray-500 hover:bg-[#eafcf9] hover:text-[#0a7c88] transition-all">
                 ✅ Accepté</button>
         <button onclick="filterReg('refuse')" id="rf-refuse"
                 class="reg-filter-btn text-xs px-2.5 py-1 rounded-lg font-semibold bg-gray-100 text-gray-500 hover:bg-red-50 hover:text-red-700 transition-all">
@@ -186,7 +186,7 @@
     <!-- Recherche -->
     <div class="px-5 py-2 border-b border-gray-100">
       <input type="text" id="reg-search" placeholder="Rechercher par nom, email ou événement..."
-             class="w-full text-xs px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:border-green-400"
+             class="w-full text-xs px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:border-[#37a7b1]"
              oninput="applyFilters()">
     </div>
 
@@ -212,7 +212,7 @@
             <td>
               <div class="flex items-center gap-2">
                 <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-                     style="background:#1a6b3a;">
+                     style="background:#00909e;">
                   {{ reg.participant.first_name|first|upper }}{{ reg.participant.last_name|first|upper }}
                 </div>
                 <div>
@@ -260,20 +260,20 @@
   <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
     <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
       <h2 class="font-semibold text-gray-800 text-sm">Événements</h2>
-      <a href="{% url 'dashboard:event_list' %}" class="text-xs text-green-700 hover:underline">Voir tout</a>
+      <a href="{% url 'dashboard:event_list' %}" class="text-xs text-[#0a7c88] hover:underline">Voir tout</a>
     </div>
 
     <!-- Filtres -->
     <div class="px-4 py-2 border-b border-gray-100 flex gap-1 flex-wrap" style="background:#fafafa;">
       <button onclick="filterEvents('all')" id="ef-all"
               class="ev-filter-btn text-xs px-2.5 py-1 rounded-lg font-semibold transition-all"
-              style="background:#1a6b3a;color:#fff;">Tous</button>
+              style="background:#00909e;color:#fff;">Tous</button>
       <button onclick="filterEvents('publie')" id="ef-publie"
               class="ev-filter-btn text-xs px-2.5 py-1 rounded-lg font-semibold bg-gray-100 text-gray-500 hover:bg-blue-50 hover:text-blue-700 transition-all">Publié</button>
       <button onclick="filterEvents('brouillon')" id="ef-brouillon"
               class="ev-filter-btn text-xs px-2.5 py-1 rounded-lg font-semibold bg-gray-100 text-gray-500 hover:bg-gray-200 transition-all">Brouillon</button>
       <button onclick="filterEvents('upcoming')" id="ef-upcoming"
-              class="ev-filter-btn text-xs px-2.5 py-1 rounded-lg font-semibold bg-gray-100 text-gray-500 hover:bg-green-50 hover:text-green-700 transition-all">À venir</button>
+              class="ev-filter-btn text-xs px-2.5 py-1 rounded-lg font-semibold bg-gray-100 text-gray-500 hover:bg-[#eafcf9] hover:text-[#0a7c88] transition-all">À venir</button>
     </div>
 
     <!-- Liste -->
@@ -306,7 +306,7 @@
             {% elif event.is_finished %}
               <span class="text-xs px-1.5 py-0.5 rounded bg-gray-100 text-gray-400 font-semibold">Terminé</span>
             {% else %}
-              <span class="text-xs px-1.5 py-0.5 rounded bg-green-100 text-green-700 font-semibold">À venir</span>
+              <span class="text-xs px-1.5 py-0.5 rounded bg-[#dff1f2] text-[#0a7c88] font-semibold">À venir</span>
             {% endif %}
           </div>
         </div>
@@ -437,7 +437,7 @@
   }
 
   makeChart('chart-registrations', toSeries(regData), '#3b82f6', 'rgba(59,130,246,.08)');
-  makeChart('chart-events',        toSeries(evData),  '#1a6b3a', 'rgba(26,107,58,.08)');
+  makeChart('chart-events',        toSeries(evData),  '#00909e', 'rgba(0,144,158,.08)');
 })();
 
 // ═══════════════════════════════════════════
@@ -455,7 +455,7 @@ function filterReg(status) {
     btn.style.background = '#f3f4f6'; btn.style.color = '#6b7280';
   });
   const a = document.getElementById(`rf-${status}`);
-  if (a) { a.style.background = '#1a6b3a'; a.style.color = '#fff'; }
+  if (a) { a.style.background = '#00909e'; a.style.color = '#fff'; }
   applyFilters();
 }
 
@@ -517,7 +517,7 @@ function renderPagination(totalPages) {
     btn.textContent = i;
     btn.className   = 'px-2.5 py-1 text-xs rounded-lg border transition-all font-semibold';
     if (i === currentPage) {
-      btn.style.background = '#1a6b3a'; btn.style.color = '#fff'; btn.style.borderColor = '#1a6b3a';
+      btn.style.background = '#00909e'; btn.style.color = '#fff'; btn.style.borderColor = '#00909e';
     } else {
       btn.style.borderColor = '#e5e7eb'; btn.style.color = '#6b7280';
       btn.onmouseover = () => { btn.style.background = '#f3f4f6'; };
@@ -544,7 +544,7 @@ function filterEvents(filter) {
     btn.style.background = '#f3f4f6'; btn.style.color = '#6b7280';
   });
   const a = document.getElementById(`ef-${filter}`);
-  if (a) { a.style.background = '#1a6b3a'; a.style.color = '#fff'; }
+  if (a) { a.style.background = '#00909e'; a.style.color = '#fff'; }
 
   const rows = document.querySelectorAll('.event-row');
   let visible = 0;

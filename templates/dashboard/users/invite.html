@@ -18,18 +18,18 @@
   <!-- Rôle -->
   <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
     <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-3" style="background:#f8faf9;">
-      <div class="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold" style="background:#1a6b3a;">1</div>
-      <h2 class="font-semibold text-gray-900" style="font-family:'Sora',sans-serif;">Rôle et permissions</h2>
+      <div class="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold" style="background:#00909e;">1</div>
+      <h2 class="font-semibold text-gray-900" style="font-family:'Zilla Slab',sans-serif;">Rôle et permissions</h2>
     </div>
     <div class="p-6">
       <div class="grid grid-cols-2 gap-4">
 
         <label class="role-card flex items-start gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all"
-               style="border-color:#c9a227;background:#fef9e7;" id="card-admin">
+               style="border-color:#e8a33d;background:#fef9e7;" id="card-admin">
           <input type="radio" name="role" value="admin" class="hidden"
                  {% if post.role == 'admin' or not post %}checked{% endif %}
                  onchange="selectRole('admin')">
-          <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style="background:#c9a227;">
+          <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style="background:#e8a33d;">
             <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
               <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
             </svg>
@@ -71,8 +71,8 @@
   <!-- Infos personnelles -->
   <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
     <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-3" style="background:#f8faf9;">
-      <div class="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold" style="background:#1a6b3a;">2</div>
-      <h2 class="font-semibold text-gray-900" style="font-family:'Sora',sans-serif;">Informations personnelles</h2>
+      <div class="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold" style="background:#00909e;">2</div>
+      <h2 class="font-semibold text-gray-900" style="font-family:'Zilla Slab',sans-serif;">Informations personnelles</h2>
     </div>
     <div class="p-6 space-y-4">
       <div class="grid grid-cols-2 gap-4">
@@ -98,8 +98,8 @@
   <!-- Identifiants de connexion -->
   <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
     <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-3" style="background:#f8faf9;">
-      <div class="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold" style="background:#1a6b3a;">3</div>
-      <h2 class="font-semibold text-gray-900" style="font-family:'Sora',sans-serif;">Identifiants de connexion</h2>
+      <div class="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold" style="background:#00909e;">3</div>
+      <h2 class="font-semibold text-gray-900" style="font-family:'Zilla Slab',sans-serif;">Identifiants de connexion</h2>
     </div>
     <div class="p-6 space-y-4">
       <div>
@@ -157,7 +157,7 @@
     <a href="{% url 'dashboard:user_list' %}" class="text-sm text-gray-500 hover:text-gray-700 transition-colors">← Annuler</a>
     <button type="submit"
             class="py-3 px-8 rounded-xl text-white font-bold text-sm transition-all hover:shadow-lg hover:-translate-y-0.5"
-            style="background:linear-gradient(135deg,#1a6b3a,#2d8a52);font-family:'Sora',sans-serif;">
+            style="background:linear-gradient(135deg,#00909e,#37a7b1);font-family:'Zilla Slab',sans-serif;">
       <span class="flex items-center gap-2">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
@@ -177,7 +177,7 @@ function selectRole(val) {
   const cardAdmin   = document.getElementById('card-admin');
   const cardManager = document.getElementById('card-manager');
   if (val === 'admin') {
-    cardAdmin.style.borderColor = '#c9a227'; cardAdmin.style.background = '#fef9e7';
+    cardAdmin.style.borderColor = '#e8a33d'; cardAdmin.style.background = '#fef9e7';
     cardManager.style.borderColor = '#e5e7eb'; cardManager.style.background = '#fff';
   } else {
     cardManager.style.borderColor = '#3b82f6'; cardManager.style.background = '#eff6ff';

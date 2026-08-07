@@ -25,12 +25,12 @@
           <img src="{{ o.photo.url }}" class="w-14 h-14 rounded-xl object-cover flex-shrink-0 border border-gray-100">
         {% else %}
           <div class="w-14 h-14 rounded-xl flex items-center justify-center text-white font-bold text-lg flex-shrink-0"
-               style="background:linear-gradient(135deg,#1a6b3a,#2d8a52);">
+               style="background:linear-gradient(135deg,#00909e,#37a7b1);">
             {{ o.user.first_name|first|upper }}{{ o.user.last_name|first|upper }}
           </div>
         {% endif %}
         <div class="min-w-0 flex-1">
-          <h3 class="font-bold text-gray-900 text-sm" style="font-family:'Sora',sans-serif;">
+          <h3 class="font-bold text-gray-900 text-sm" style="font-family:'Zilla Slab',sans-serif;">
             {{ o.user.get_full_name }}
           </h3>
           {% if o.institution %}
@@ -56,7 +56,7 @@
       {% endif %}
 
       <!-- Combien d'événements -->
-      <div class="mt-3 flex items-center gap-1.5 text-xs" style="color:#1a6b3a;">
+      <div class="mt-3 flex items-center gap-1.5 text-xs" style="color:#00909e;">
         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
         </svg>
@@ -78,12 +78,12 @@
 </div>
 {% else %}
 <div class="text-center py-20">
-  <div class="w-20 h-20 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="background:#f0fdf4;">
-    <svg class="w-10 h-10" style="color:#1a6b3a;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <div class="w-20 h-20 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="background:#e2f3f4;">
+    <svg class="w-10 h-10" style="color:#00909e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
     </svg>
   </div>
-  <h3 class="text-lg font-bold text-gray-900 mb-2" style="font-family:'Sora',sans-serif;">Aucun intervenant</h3>
+  <h3 class="text-lg font-bold text-gray-900 mb-2" style="font-family:'Zilla Slab',sans-serif;">Aucun intervenant</h3>
   <p class="text-gray-500 text-sm mb-5">Ajoutez des intervenants pour les associer à vos événements.</p>
   <a href="{% url 'dashboard:organizer_create' %}" class="btn-primary inline-flex">
     + Ajouter le premier intervenant

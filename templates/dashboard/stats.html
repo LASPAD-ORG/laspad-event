@@ -21,9 +21,9 @@
         </svg>
       </div>
     </div>
-    <p class="text-3xl font-bold text-gray-900" style="font-family:'Sora',sans-serif;">{{ total }}</p>
+    <p class="text-3xl font-bold text-gray-900" style="font-family:'Zilla Slab',sans-serif;">{{ total }}</p>
     {% if total > 0 %}
-    <p class="text-xs text-green-600 font-semibold mt-1">
+    <p class="text-xs text-[#00909e] font-semibold mt-1">
       ↗ {% widthratio registrations_by_status.accepte total 100 %}% taux d'acceptation
     </p>
     {% endif %}
@@ -33,12 +33,12 @@
     <div class="flex items-center justify-between mb-3">
       <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Acceptées</span>
       <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#d1fae5;">
-        <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-4 h-4 text-[#00909e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
         </svg>
       </div>
     </div>
-    <p class="text-3xl font-bold text-green-700" style="font-family:'Sora',sans-serif;">{{ registrations_by_status.accepte }}</p>
+    <p class="text-3xl font-bold text-[#0a7c88]" style="font-family:'Zilla Slab',sans-serif;">{{ registrations_by_status.accepte }}</p>
     {% if total > 0 %}
     <div class="w-full bg-gray-100 rounded-full h-1.5 mt-2">
       <div class="h-1.5 rounded-full" style="width:{% widthratio registrations_by_status.accepte total 100 %}%;background:#10b981;"></div>
@@ -56,7 +56,7 @@
       </div>
     </div>
     <p class="text-3xl font-bold {% if registrations_by_status.en_attente > 0 %}text-yellow-600{% else %}text-gray-900{% endif %}"
-       style="font-family:'Sora',sans-serif;">{{ registrations_by_status.en_attente }}</p>
+       style="font-family:'Zilla Slab',sans-serif;">{{ registrations_by_status.en_attente }}</p>
     {% if registrations_by_status.en_attente > 0 %}
     <p class="text-xs text-yellow-600 font-semibold mt-1">À valider</p>
     {% endif %}
@@ -71,7 +71,7 @@
         </svg>
       </div>
     </div>
-    <p class="text-3xl font-bold text-red-500" style="font-family:'Sora',sans-serif;">{{ registrations_by_status.refuse }}</p>
+    <p class="text-3xl font-bold text-red-500" style="font-family:'Zilla Slab',sans-serif;">{{ registrations_by_status.refuse }}</p>
     {% if total > 0 %}
     <div class="w-full bg-gray-100 rounded-full h-1.5 mt-2">
       <div class="h-1.5 rounded-full" style="width:{% widthratio registrations_by_status.refuse total 100 %}%;background:#ef4444;"></div>
@@ -87,7 +87,7 @@
 
   <!-- Inscriptions par statut — graphique visuel -->
   <div class="bg-white rounded-2xl border border-gray-200 p-6">
-    <h2 class="font-semibold text-gray-800 mb-5" style="font-family:'Sora',sans-serif;">
+    <h2 class="font-semibold text-gray-800 mb-5" style="font-family:'Zilla Slab',sans-serif;">
       Répartition des inscriptions
     </h2>
 
@@ -129,7 +129,7 @@
           </div>
           <div class="flex items-center gap-2">
             <span class="text-xs text-gray-400">{% widthratio registrations_by_status.accepte total 100 %}%</span>
-            <span class="font-bold text-green-700 text-sm min-w-6 text-right">{{ registrations_by_status.accepte }}</span>
+            <span class="font-bold text-[#0a7c88] text-sm min-w-6 text-right">{{ registrations_by_status.accepte }}</span>
           </div>
         </div>
         <div class="w-full bg-gray-100 rounded-full h-2">
@@ -172,11 +172,11 @@
 
     <div class="mt-6 pt-4 border-t border-gray-100 grid grid-cols-2 gap-4">
       <div class="text-center">
-        <p class="text-2xl font-bold text-gray-900" style="font-family:'Sora',sans-serif;">{{ total }}</p>
+        <p class="text-2xl font-bold text-gray-900" style="font-family:'Zilla Slab',sans-serif;">{{ total }}</p>
         <p class="text-xs text-gray-400 mt-0.5">Total inscriptions</p>
       </div>
       <div class="text-center">
-        <p class="text-2xl font-bold text-green-700" style="font-family:'Sora',sans-serif;">
+        <p class="text-2xl font-bold text-[#0a7c88]" style="font-family:'Zilla Slab',sans-serif;">
           {% widthratio registrations_by_status.accepte total 100 %}%
         </p>
         <p class="text-xs text-gray-400 mt-0.5">Taux d'acceptation</p>
@@ -197,7 +197,7 @@
 
   <!-- Top événements -->
   <div class="bg-white rounded-2xl border border-gray-200 p-6">
-    <h2 class="font-semibold text-gray-800 mb-5" style="font-family:'Sora',sans-serif;">
+    <h2 class="font-semibold text-gray-800 mb-5" style="font-family:'Zilla Slab',sans-serif;">
       Top événements par inscriptions
     </h2>
 
@@ -207,14 +207,14 @@
       <div class="flex items-center gap-3 group">
         <!-- Rang -->
         <div class="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0"
-             style="{% if forloop.counter == 1 %}background:#c9a227;color:#fff;{% elif forloop.counter == 2 %}background:#9ca3af;color:#fff;{% elif forloop.counter == 3 %}background:#cd7f32;color:#fff;{% else %}background:#f3f4f6;color:#6b7280;{% endif %}">
+             style="{% if forloop.counter == 1 %}background:#e8a33d;color:#fff;{% elif forloop.counter == 2 %}background:#9ca3af;color:#fff;{% elif forloop.counter == 3 %}background:#cd7f32;color:#fff;{% else %}background:#f3f4f6;color:#6b7280;{% endif %}">
           {{ forloop.counter }}
         </div>
         <!-- Barre + titre -->
         <div class="flex-1 min-w-0">
           <div class="flex justify-between items-center mb-1">
             <a href="{% url 'dashboard:event_detail' pk=event.pk %}"
-               class="text-sm font-medium text-gray-900 hover:text-green-700 truncate transition-colors"
+               class="text-sm font-medium text-gray-900 hover:text-[#0a7c88] truncate transition-colors"
                style="max-width:200px;" title="{{ event.title }}">
               {{ event.title|truncatechars:35 }}
             </a>
@@ -223,7 +223,7 @@
           <div class="w-full bg-gray-100 rounded-full h-2">
             {% if top_events.0.reg_count > 0 %}
             <div class="h-2 rounded-full transition-all"
-                 style="width:{% widthratio event.reg_count top_events.0.reg_count 100 %}%;background:#1a6b3a;"></div>
+                 style="width:{% widthratio event.reg_count top_events.0.reg_count 100 %}%;background:#00909e;"></div>
             {% endif %}
           </div>
           <!-- Mode de l'événement -->
@@ -248,7 +248,7 @@
               d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
       </svg>
       <p class="text-gray-400 text-sm">Aucune donnée disponible.</p>
-      <a href="{% url 'dashboard:event_create' %}" class="text-green-700 hover:underline text-sm mt-1 inline-block">
+      <a href="{% url 'dashboard:event_create' %}" class="text-[#0a7c88] hover:underline text-sm mt-1 inline-block">
         Créer le premier événement →
       </a>
     </div>
@@ -261,7 +261,7 @@
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
 
   <div class="bg-white rounded-2xl border border-gray-200 p-6">
-    <h2 class="font-semibold text-gray-800 mb-4" style="font-family:'Sora',sans-serif;">
+    <h2 class="font-semibold text-gray-800 mb-4" style="font-family:'Zilla Slab',sans-serif;">
       Modes de participation
     </h2>
     {% with total=registrations_by_status.en_attente|add:registrations_by_status.accepte|add:registrations_by_status.refuse %}
@@ -274,7 +274,7 @@
             <p class="text-xs text-gray-400">Inscriptions onsite</p>
           </div>
         </div>
-        <p class="text-2xl font-bold text-purple-700" style="font-family:'Sora',sans-serif;">
+        <p class="text-2xl font-bold text-purple-700" style="font-family:'Zilla Slab',sans-serif;">
           {{ onsite_count|default:0 }}
         </p>
       </div>
@@ -286,7 +286,7 @@
             <p class="text-xs text-gray-400">Inscriptions online</p>
           </div>
         </div>
-        <p class="text-2xl font-bold text-blue-700" style="font-family:'Sora',sans-serif;">
+        <p class="text-2xl font-bold text-blue-700" style="font-family:'Zilla Slab',sans-serif;">
           {{ online_count|default:0 }}
         </p>
       </div>
@@ -298,7 +298,7 @@
             <p class="text-xs text-gray-400">Présentiel + en ligne</p>
           </div>
         </div>
-        <p class="text-2xl font-bold text-amber-700" style="font-family:'Sora',sans-serif;">
+        <p class="text-2xl font-bold text-amber-700" style="font-family:'Zilla Slab',sans-serif;">
           {{ both_count|default:0 }}
         </p>
       </div>
@@ -308,23 +308,23 @@
 
   <!-- Présences -->
   <div class="bg-white rounded-2xl border border-gray-200 p-6">
-    <h2 class="font-semibold text-gray-800 mb-4" style="font-family:'Sora',sans-serif;">
+    <h2 class="font-semibold text-gray-800 mb-4" style="font-family:'Zilla Slab',sans-serif;">
       Présences confirmées
     </h2>
     <div class="space-y-4">
-      <div class="flex items-center justify-between p-3 rounded-xl" style="background:#f0fdf4;">
+      <div class="flex items-center justify-between p-3 rounded-xl" style="background:#e2f3f4;">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:#1a6b3a;">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:#00909e;">
             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
           </div>
           <div>
-            <p class="text-sm font-semibold text-green-700">Présentiel</p>
+            <p class="text-sm font-semibold text-[#0a7c88]">Présentiel</p>
             <p class="text-xs text-gray-400">Présences scannées</p>
           </div>
         </div>
-        <p class="text-2xl font-bold text-green-700" style="font-family:'Sora',sans-serif;">
+        <p class="text-2xl font-bold text-[#0a7c88]" style="font-family:'Zilla Slab',sans-serif;">
           {{ attended_onsite|default:0 }}
         </p>
       </div>
@@ -341,14 +341,14 @@
             <p class="text-xs text-gray-400">Connexions confirmées</p>
           </div>
         </div>
-        <p class="text-2xl font-bold text-blue-700" style="font-family:'Sora',sans-serif;">
+        <p class="text-2xl font-bold text-blue-700" style="font-family:'Zilla Slab',sans-serif;">
           {{ attended_online|default:0 }}
         </p>
       </div>
       <div class="mt-2 pt-3 border-t border-gray-100">
         <a href="{% url 'dashboard:scan_home' %}"
            class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-white text-sm font-semibold transition-all hover:shadow-md"
-           style="background:linear-gradient(135deg,#0f1f15,#1a6b3a);">
+           style="background:linear-gradient(135deg,#14343a,#00909e);">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8H3m2 0h-.01M9 4H7"/>
@@ -361,23 +361,23 @@
 
   <!-- Accès rapides -->
   <div class="bg-white rounded-2xl border border-gray-200 p-6">
-    <h2 class="font-semibold text-gray-800 mb-4" style="font-family:'Sora',sans-serif;">
+    <h2 class="font-semibold text-gray-800 mb-4" style="font-family:'Zilla Slab',sans-serif;">
       Accès rapides
     </h2>
     <div class="space-y-3">
       <a href="{% url 'dashboard:event_list' %}"
-         class="flex items-center gap-3 p-3 rounded-xl border border-gray-100 hover:border-green-200 hover:bg-green-50 transition-all group">
-        <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style="background:#e8f5ef;">
-          <svg class="w-4 h-4" style="color:#1a6b3a;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+         class="flex items-center gap-3 p-3 rounded-xl border border-gray-100 hover:border-green-200 hover:bg-[#eafcf9] transition-all group">
+        <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style="background:#eafcf9;">
+          <svg class="w-4 h-4" style="color:#00909e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
           </svg>
         </div>
         <div>
-          <p class="text-sm font-semibold text-gray-900 group-hover:text-green-700">Événements</p>
+          <p class="text-sm font-semibold text-gray-900 group-hover:text-[#0a7c88]">Événements</p>
           <p class="text-xs text-gray-400">Gérer et créer</p>
         </div>
-        <svg class="w-4 h-4 text-gray-300 ml-auto group-hover:text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-4 h-4 text-gray-300 ml-auto group-hover:text-[#00909e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
         </svg>
       </a>
@@ -401,7 +401,7 @@
 
       <a href="{% url 'dashboard:scan_home' %}"
          class="flex items-center gap-3 p-3 rounded-xl border border-gray-100 hover:border-gray-300 hover:bg-gray-50 transition-all group">
-        <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style="background:#0f1f15;">
+        <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style="background:#14343a;">
           <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8H3m2 0h-.01M9 4H7"/>
@@ -418,17 +418,17 @@
 
       <a href="{% url 'dashboard:event_create' %}"
          class="flex items-center gap-3 p-3 rounded-xl border transition-all group"
-         style="border-color:#1a6b3a;background:#f0fdf4;">
-        <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style="background:#1a6b3a;">
+         style="border-color:#00909e;background:#e2f3f4;">
+        <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style="background:#00909e;">
           <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
           </svg>
         </div>
         <div>
-          <p class="text-sm font-semibold" style="color:#1a6b3a;">Nouvel événement</p>
+          <p class="text-sm font-semibold" style="color:#00909e;">Nouvel événement</p>
           <p class="text-xs text-gray-400">Créer maintenant</p>
         </div>
-        <svg class="w-4 h-4 ml-auto" style="color:#1a6b3a;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-4 h-4 ml-auto" style="color:#00909e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
         </svg>
       </a>

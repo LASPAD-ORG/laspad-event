@@ -67,7 +67,7 @@
     border: 2px solid #e5e7eb; cursor: pointer;
     transition: all .2s; text-align: left; background: #fff;
   }
-  .access-btn.selected { border-color: #1a6b3a; background: #f0fdf4; }
+  .access-btn.selected { border-color: #00909e; background: #e2f3f4; }
 
   /* Upload zone */
   .upload-zone {
@@ -75,8 +75,8 @@
     padding: 24px; text-align: center; cursor: pointer;
     transition: all .2s; background: #fafafa;
   }
-  .upload-zone:hover { border-color: #1a6b3a; background: #f0fdf4; }
-  .upload-zone.has-file { border-color: #1a6b3a; background: #f0fdf4; border-style: solid; }
+  .upload-zone:hover { border-color: #00909e; background: #e2f3f4; }
+  .upload-zone.has-file { border-color: #00909e; background: #e2f3f4; border-style: solid; }
 
   /* Toggle switch */
   .toggle-wrap { display: flex; align-items: center; gap: 12px; cursor: pointer; }
@@ -122,9 +122,9 @@
       <!-- ── 1. Informations générales ── -->
       <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-3" style="background:#f8faf9;">
-          <div class="step-badge" style="background:#1a6b3a;">1</div>
+          <div class="step-badge" style="background:#00909e;">1</div>
           <div>
-            <h2 class="font-semibold text-gray-900" style="font-family:'Sora',sans-serif;">Informations générales</h2>
+            <h2 class="font-semibold text-gray-900" style="font-family:'Zilla Slab',sans-serif;">Informations générales</h2>
             <p class="text-xs text-gray-400 mt-0.5">Titre, type et description de l'événement</p>
           </div>
         </div>
@@ -177,9 +177,9 @@
       <!-- ── 2. Dates et horaires ── -->
       <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-3" style="background:#f8faf9;">
-          <div class="step-badge" style="background:#1a6b3a;">2</div>
+          <div class="step-badge" style="background:#00909e;">2</div>
           <div>
-            <h2 class="font-semibold text-gray-900" style="font-family:'Sora',sans-serif;">Dates et horaires</h2>
+            <h2 class="font-semibold text-gray-900" style="font-family:'Zilla Slab',sans-serif;">Dates et horaires</h2>
             <p class="text-xs text-gray-400 mt-0.5">Début, fin et durée de l'événement</p>
           </div>
         </div>
@@ -208,12 +208,12 @@
           <!-- Durée calculée -->
           <div id="duration-display" class="mt-4 bloc-hidden">
             <div class="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm"
-                 style="background:#f0fdf4;border:1px solid #bbf7d0;">
-              <svg class="w-4 h-4" style="color:#1a6b3a;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 style="background:#e2f3f4;border:1px solid #bbf7d0;">
+              <svg class="w-4 h-4" style="color:#00909e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
               </svg>
-              <span style="color:#1a6b3a;font-weight:600;" id="duration-text"></span>
+              <span style="color:#00909e;font-weight:600;" id="duration-text"></span>
             </div>
           </div>
         </div>
@@ -222,9 +222,9 @@
       <!-- ── 3. Format et lieu ── -->
       <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-3" style="background:#f8faf9;">
-          <div class="step-badge" style="background:#1a6b3a;">3</div>
+          <div class="step-badge" style="background:#00909e;">3</div>
           <div>
-            <h2 class="font-semibold text-gray-900" style="font-family:'Sora',sans-serif;">Format et lieu</h2>
+            <h2 class="font-semibold text-gray-900" style="font-family:'Zilla Slab',sans-serif;">Format et lieu</h2>
             <p class="text-xs text-gray-400 mt-0.5">Mode de diffusion et informations de localisation</p>
           </div>
         </div>
@@ -245,19 +245,19 @@
 
               <!-- En ligne -->
               <button type="button" onclick="setFormat('online')" id="btn-fmt-online" class="fmt-btn selected"
-                      style="border-color:#1a6b3a;background:#f0fdf4;">
-                <div class="fmt-check" style="background:#1a6b3a;" id="check-online">
+                      style="border-color:#00909e;background:#e2f3f4;">
+                <div class="fmt-check" style="background:#00909e;" id="check-online">
                   <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
                   </svg>
                 </div>
                 <div class="fmt-icon" id="icon-fmt-online" style="background:#dcfce7;">
-                  <svg class="w-5 h-5" style="color:#1a6b3a;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="w-5 h-5" style="color:#00909e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                   </svg>
                 </div>
-                <span class="fmt-label" id="label-fmt-online" style="color:#1a6b3a;">En ligne</span>
+                <span class="fmt-label" id="label-fmt-online" style="color:#00909e;">En ligne</span>
                 <span class="fmt-sub">Meet, Zoom, YouTube</span>
               </button>
 
@@ -304,7 +304,7 @@
           <div id="bloc-online">
             <div class="section-divider">
               <div class="divider-line"></div>
-              <span class="divider-label" style="color:#1a6b3a;">🌐 Diffusion en ligne</span>
+              <span class="divider-label" style="color:#00909e;">🌐 Diffusion en ligne</span>
               <div class="divider-line"></div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
@@ -359,7 +359,7 @@
                     {{ location_form.google_maps_url }}
                     <button type="button" onclick="generateMapLink()"
                             class="flex-shrink-0 px-3 py-2 rounded-lg text-xs font-bold whitespace-nowrap"
-                            style="background:#f0fdf4;color:#1a6b3a;border:1.5px solid #bbf7d0;">
+                            style="background:#e2f3f4;color:#00909e;border:1.5px solid #bbf7d0;">
                       📍 Auto
                     </button>
                   </div>
@@ -385,9 +385,9 @@
       <!-- ── 4. Capacité & Accès ── -->
       <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-3" style="background:#f8faf9;">
-          <div class="step-badge" style="background:#1a6b3a;">4</div>
+          <div class="step-badge" style="background:#00909e;">4</div>
           <div>
-            <h2 class="font-semibold text-gray-900" style="font-family:'Sora',sans-serif;">Capacité et accès</h2>
+            <h2 class="font-semibold text-gray-900" style="font-family:'Zilla Slab',sans-serif;">Capacité et accès</h2>
             <p class="text-xs text-gray-400 mt-0.5">Mode d'inscription et nombre de places</p>
           </div>
         </div>
@@ -403,13 +403,13 @@
               <button type="button" onclick="setAccess('direct')" id="btn-direct" class="access-btn selected">
                 <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
                      id="icon-access-direct" style="background:#dcfce7;">
-                  <svg class="w-5 h-5" style="color:#1a6b3a;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="w-5 h-5" style="color:#00909e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                   </svg>
                 </div>
                 <div>
-                  <p class="text-sm font-bold" style="color:#1a6b3a;" id="label-access-direct">
+                  <p class="text-sm font-bold" style="color:#00909e;" id="label-access-direct">
                     Inscription directe
                   </p>
                   <p class="text-xs text-gray-500 mt-0.5">Acceptée automatiquement dès soumission</p>
@@ -531,7 +531,7 @@
         <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-3" style="background:#f8faf9;">
           <div class="step-badge" style="background:#6366f1;">5</div>
           <div>
-            <h2 class="font-semibold text-gray-900" style="font-family:'Sora',sans-serif;">
+            <h2 class="font-semibold text-gray-900" style="font-family:'Zilla Slab',sans-serif;">
               Programme PDF
               <span class="ml-2 text-xs font-normal text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
                 Optionnel
@@ -566,7 +566,7 @@
               <div class="text-left min-w-0">
                 <p class="text-sm font-semibold text-gray-900 truncate" id="pdf-filename">programme.pdf</p>
                 <p class="text-xs text-gray-400 mt-0.5" id="pdf-filesize"></p>
-                <p class="text-xs font-semibold mt-1" style="color:#1a6b3a;">✓ Prêt à être téléchargé</p>
+                <p class="text-xs font-semibold mt-1" style="color:#00909e;">✓ Prêt à être téléchargé</p>
               </div>
               <button type="button" onclick="clearPdf(event)"
                       class="ml-auto flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50">
@@ -612,22 +612,22 @@
       <!-- ── 6. Newsletter ── -->
       <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-3" style="background:#f8faf9;">
-          <div class="step-badge" style="background:#c9a227;">6</div>
+          <div class="step-badge" style="background:#e8a33d;">6</div>
           <div>
-            <h2 class="font-semibold text-gray-900" style="font-family:'Sora',sans-serif;">Newsletter</h2>
+            <h2 class="font-semibold text-gray-900" style="font-family:'Zilla Slab',sans-serif;">Newsletter</h2>
             <p class="text-xs text-gray-400 mt-0.5">Informer les abonnés LASPAD de cet événement</p>
           </div>
         </div>
         <div class="p-6">
-          <div class="flex items-center gap-4 p-4 rounded-xl mb-4" style="background:#f0fdf4;border:1px solid #bbf7d0;">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:#1a6b3a;">
+          <div class="flex items-center gap-4 p-4 rounded-xl mb-4" style="background:#e2f3f4;border:1px solid #bbf7d0;">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:#00909e;">
               <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
               </svg>
             </div>
             <div>
-              <p class="text-sm font-bold" style="color:#1a6b3a;">
+              <p class="text-sm font-bold" style="color:#00909e;">
                 {{ newsletter_count }} abonné{{ newsletter_count|pluralize }} à la newsletter
               </p>
               <p class="text-xs text-gray-500 mt-0.5">
@@ -639,10 +639,10 @@
           {% if newsletter_count > 0 %}
           <div class="toggle-wrap p-4 rounded-xl border-2 transition-all"
                id="notify-label"
-               style="border-color:#c9a227;background:#fef9e7;"
+               style="border-color:#e8a33d;background:#fef9e7;"
                onclick="toggleNotify()">
             <div class="flex-shrink-0">
-              <div id="notify-toggle" class="toggle-track" style="background:#c9a227;">
+              <div id="notify-toggle" class="toggle-track" style="background:#e8a33d;">
                 <div id="notify-thumb" class="toggle-thumb" style="transform:translateX(22px);"></div>
               </div>
               <input type="hidden" name="notify_newsletter" id="notify-newsletter-input" value="1">
@@ -668,13 +668,13 @@
       <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between" style="background:#f8faf9;">
           <div class="flex items-center gap-3">
-            <div class="step-badge" style="background:#1a6b3a;">7</div>
-            <h2 class="font-semibold text-gray-900" style="font-family:'Sora',sans-serif;">Intervenants</h2>
+            <div class="step-badge" style="background:#00909e;">7</div>
+            <h2 class="font-semibold text-gray-900" style="font-family:'Zilla Slab',sans-serif;">Intervenants</h2>
           </div>
           <a href="{% url 'dashboard:organizer_create' %}?next={% url 'dashboard:event_create' %}"
              target="_blank"
              class="text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors"
-             style="background:#f0fdf4;color:#1a6b3a;border:1px solid #bbf7d0;">
+             style="background:#e2f3f4;color:#00909e;border:1px solid #bbf7d0;">
             + Ajouter un intervenant
           </a>
         </div>
@@ -682,14 +682,14 @@
           {% if form.speakers %}
           <div class="space-y-2">
             {% for checkbox in form.speakers %}
-            <label class="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:border-green-300 hover:bg-green-50 cursor-pointer transition-all group">
+            <label class="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:border-[#7fd0d6] hover:bg-[#eafcf9] cursor-pointer transition-all group">
               {{ checkbox.tag }}
               <div class="flex items-center gap-3 flex-1">
                 <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-                     style="background:linear-gradient(135deg,#1a6b3a,#2d8a52);">
+                     style="background:linear-gradient(135deg,#00909e,#37a7b1);">
                   {{ checkbox.choice_label|first|upper }}
                 </div>
-                <span class="text-sm font-medium text-gray-800 group-hover:text-green-700">
+                <span class="text-sm font-medium text-gray-800 group-hover:text-[#0a7c88]">
                   {{ checkbox.choice_label }}
                 </span>
               </div>
@@ -715,9 +715,9 @@
       <!-- ── 8. Participants pré-inscrits ── -->
       <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-3" style="background:#f8faf9;">
-          <div class="step-badge" style="background:#c9a227;">8</div>
+          <div class="step-badge" style="background:#e8a33d;">8</div>
           <div>
-            <h2 class="font-semibold text-gray-900" style="font-family:'Sora',sans-serif;">
+            <h2 class="font-semibold text-gray-900" style="font-family:'Zilla Slab',sans-serif;">
               Participants pré-inscrits
               <span class="ml-2 text-xs font-normal text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
                 Optionnel
@@ -741,7 +741,7 @@
             <div class="flex items-center gap-3">
               <button type="button" onclick="addParticipant()"
                       class="btn-sm px-4 py-2 font-semibold text-sm"
-                      style="background:#c9a227;color:#fff;">
+                      style="background:#e8a33d;color:#fff;">
                 + Ajouter à la liste
               </button>
               <p id="add-participant-error" class="text-xs text-red-500 hidden"></p>
@@ -754,7 +754,7 @@
                 Participants à inscrire
                 <span id="participants-count"
                       class="ml-2 text-xs font-bold px-2 py-0.5 rounded-full text-white"
-                      style="background:#c9a227;">0</span>
+                      style="background:#e8a33d;">0</span>
               </p>
               <button type="button" onclick="clearParticipants()"
                       class="text-xs text-gray-400 hover:text-red-500 transition-colors">
@@ -786,14 +786,14 @@
         <!-- Bannière -->
         <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
           <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between" style="background:#f8faf9;">
-            <h3 class="font-semibold text-gray-900 text-sm" style="font-family:'Sora',sans-serif;">
+            <h3 class="font-semibold text-gray-900 text-sm" style="font-family:'Zilla Slab',sans-serif;">
               Affiche / Bannière
             </h3>
             <span class="text-xs text-gray-400">1200×630px recommandé</span>
           </div>
           <div class="p-5">
             <div id="banner-preview-container"
-                 class="mb-4 rounded-xl overflow-hidden border-2 border-dashed border-gray-200 flex items-center justify-center cursor-pointer hover:border-green-300 transition-colors"
+                 class="mb-4 rounded-xl overflow-hidden border-2 border-dashed border-gray-200 flex items-center justify-center cursor-pointer hover:border-[#7fd0d6] transition-colors"
                  style="height:150px;background:#f9fafb;"
                  onclick="document.getElementById('{{ form.banner.id_for_label }}').click()">
               {% if event and event.banner %}
@@ -830,7 +830,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
             </svg>
-            <h3 class="font-semibold text-gray-900 text-sm" style="font-family:'Sora',sans-serif;">
+            <h3 class="font-semibold text-gray-900 text-sm" style="font-family:'Zilla Slab',sans-serif;">
               Récapitulatif
             </h3>
           </div>
@@ -845,7 +845,7 @@
             </div>
             <div class="recap-row">
               <span class="text-xs text-gray-500">Format</span>
-              <span id="recap-format" class="text-xs font-bold" style="color:#1a6b3a;">En ligne</span>
+              <span id="recap-format" class="text-xs font-bold" style="color:#00909e;">En ligne</span>
             </div>
             <div class="recap-row">
               <span class="text-xs text-gray-500">Accès</span>
@@ -857,11 +857,11 @@
             </div>
             <div class="recap-row">
               <span class="text-xs text-gray-500">Newsletter</span>
-              <span id="recap-newsletter" class="text-xs font-bold" style="color:#c9a227;">Oui</span>
+              <span id="recap-newsletter" class="text-xs font-bold" style="color:#e8a33d;">Oui</span>
             </div>
             <div class="recap-row">
               <span class="text-xs text-gray-500">Pré-inscrits</span>
-              <span id="recap-participants" class="text-xs font-bold" style="color:#c9a227;">0</span>
+              <span id="recap-participants" class="text-xs font-bold" style="color:#e8a33d;">0</span>
             </div>
           </div>
         </div>
@@ -870,7 +870,7 @@
         <div class="bg-white rounded-2xl border border-gray-200 p-5 space-y-3">
           <button type="submit"
                   class="w-full py-4 rounded-xl text-white font-bold text-sm transition-all hover:shadow-lg hover:-translate-y-0.5"
-                  style="background:linear-gradient(135deg,#1a6b3a,#2d8a52);font-family:'Sora',sans-serif;">
+                  style="background:linear-gradient(135deg,#00909e,#37a7b1);font-family:'Zilla Slab',sans-serif;">
             <span class="flex items-center justify-center gap-2">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
@@ -938,7 +938,7 @@ function hide(id) {
 // ═══════════════════════════════════════════════════
 const FMT = {
   online: {
-    color: '#1a6b3a', bg: '#f0fdf4', iconBg: '#dcfce7',
+    color: '#00909e', bg: '#e2f3f4', iconBg: '#dcfce7',
     label: 'En ligne', partMode: 'online_only', locMode: 'online'
   },
   onsite: {
@@ -1018,14 +1018,14 @@ function setAccess(val) {
     const lbl  = document.getElementById(`label-access-${a}`);
     if (!btn) return;
     const active = (a === val);
-    btn.style.borderColor = active ? '#1a6b3a' : '#e5e7eb';
-    btn.style.background  = active ? '#f0fdf4' : '#fff';
+    btn.style.borderColor = active ? '#00909e' : '#e5e7eb';
+    btn.style.background  = active ? '#e2f3f4' : '#fff';
     btn.classList.toggle('selected', active);
     if (icon) {
       icon.style.background = active ? '#dcfce7' : '#f3f4f6';
-      icon.querySelector('svg').style.color = active ? '#1a6b3a' : '#9ca3af';
+      icon.querySelector('svg').style.color = active ? '#00909e' : '#9ca3af';
     }
-    if (lbl) lbl.style.color = active ? '#1a6b3a' : '#374151';
+    if (lbl) lbl.style.color = active ? '#00909e' : '#374151';
   });
 
   const labels = { direct: 'Direct', validation: 'Avec validation' };
@@ -1098,7 +1098,7 @@ function handlePdfUpload(input) {
   document.getElementById('pdf-filesize').textContent      = (file.size / 1024).toFixed(0) + ' Ko';
 
   const rp = document.getElementById('recap-pdf');
-  if (rp) { rp.textContent = '✓ ' + file.name; rp.style.color = '#1a6b3a'; }
+  if (rp) { rp.textContent = '✓ ' + file.name; rp.style.color = '#00909e'; }
 }
 
 function clearPdf(e) {
@@ -1117,7 +1117,7 @@ function clearPdf(e) {
 const pdfZone = document.getElementById('pdf-upload-zone');
 if (pdfZone) {
   pdfZone.addEventListener('dragover', e => {
-    e.preventDefault(); pdfZone.style.borderColor = '#1a6b3a';
+    e.preventDefault(); pdfZone.style.borderColor = '#00909e';
   });
   pdfZone.addEventListener('dragleave', () => {
     pdfZone.style.borderColor = '';
@@ -1149,12 +1149,12 @@ function toggleNotify() {
   const input  = document.getElementById('notify-newsletter-input');
   const recap  = document.getElementById('recap-newsletter');
   if (notifyOn) {
-    toggle.style.background  = '#c9a227';
+    toggle.style.background  = '#e8a33d';
     thumb.style.transform    = 'translateX(22px)';
-    label.style.borderColor  = '#c9a227';
+    label.style.borderColor  = '#e8a33d';
     label.style.background   = '#fef9e7';
     if (input) input.value   = '1';
-    if (recap) { recap.textContent = 'Oui'; recap.style.color = '#c9a227'; }
+    if (recap) { recap.textContent = 'Oui'; recap.style.color = '#e8a33d'; }
   } else {
     toggle.style.background  = '#d1d5db';
     thumb.style.transform    = 'translateX(2px)';
@@ -1276,7 +1276,7 @@ function renderParticipants() {
       <div class="flex items-center justify-between p-3 rounded-xl border border-gray-100" style="background:#fafafa;">
         <div class="flex items-center gap-3 min-w-0">
           <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-               style="background:#1a6b3a;">
+               style="background:#00909e;">
             ${p.fn[0].toUpperCase()}${p.ln[0].toUpperCase()}
           </div>
           <div class="min-w-0">

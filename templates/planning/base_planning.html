@@ -17,7 +17,7 @@
        On utilise un calque position:fixed (fiable sur mobile, contrairement à
        background-attachment:fixed). */
     body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
-      background:url("{% static 'img/planning-bg.jpg' %}") center center / cover no-repeat;}
+      background:linear-gradient(180deg,rgba(13,38,43,.55) 0,rgba(13,38,43,.14) 170px,rgba(13,38,43,0) 340px),url("{% static 'img/planning-bg.jpg' %}") center center / cover no-repeat;}
     .p-head, main{position:relative;z-index:1;}
     h1,h2,h3{font-family:'Zilla Slab',Georgia,serif;}
     .wrap{max-width:1100px;margin:0 auto;padding:0 16px;}

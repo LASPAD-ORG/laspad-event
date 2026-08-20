@@ -13,6 +13,12 @@
   <a href="{% url 'planning:add' %}" class="btn btn-ochre">＋ Ajouter un événement</a>
 </div>
 
+{% if auto_passes %}
+<div class="card" style="padding:11px 15px;margin-bottom:14px;background:#eef6ff;border-color:#cfe2fb;color:#1d4ed8;font-size:13.5px;">
+  ℹ️ Aucun événement à venir pour le moment — voici les <strong>événements passés</strong> enregistrés par l'équipe. Utilisez le filtre pour changer d'affichage.
+</div>
+{% endif %}
+
 <!-- Filtres -->
 <form method="get" class="card" style="padding:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:20px;">
   <select name="when" class="f-input" onchange="this.form.submit()">

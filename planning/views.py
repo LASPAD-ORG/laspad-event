@@ -97,9 +97,21 @@ def agenda_view(request):
     f_statut = request.GET.get('statut', '')
     f_projet = request.GET.get('projet', '')
     f_resp   = request.GET.get('responsable', '')
-    f_when   = request.GET.get('when', 'a_venir')  # a_venir | passes | tous
+    f_when   = request.GET.get('when', '')  # a_venir | passes | tous
 
     today = timezone.localdate()
+
+    # Par défaut : « À venir ». Mais si rien n'est à venir et qu'il existe des
+    # événements passés, on bascule automatiquement sur « Passés » pour ne jamais
+    # afficher un écran vide (utile tant que l'agenda est surtout historique).
+    auto_passes = False
+    if not f_when:
+        f_when = 'a_venir'
+        has_upcoming = LabEvent.objects.filter(date_debut__gte=today).exists()
+        if not has_upcoming and LabEvent.objects.exists():
+            f_when = 'passes'
+            auto_passes = True
+
     if f_when == 'a_venir':
         qs = qs.filter(date_debut__gte=today)
     elif f_when == 'passes':
@@ -129,7 +141,10 @@ def agenda_view(request):
         'projets':     sorted({e.projet for e in all_events if e.projet}),
         'responsables': sorted({e.responsable for e in all_events if e.responsable}),
         'f_statut': f_statut, 'f_projet': f_projet, 'f_resp': f_resp, 'f_when': f_when,
+        'auto_passes': auto_passes,
         'today': today,
+        'total_all':   all_events.count(),
+        'total_avenir': all_events.filter(date_debut__gte=today).count(),
     }
     return render(request, 'planning/agenda.html', context)
 

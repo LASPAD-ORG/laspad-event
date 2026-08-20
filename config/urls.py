@@ -10,6 +10,7 @@ from django.urls import re_path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('planning/', include('planning.urls', namespace='planning')),
     path('', include('events.urls', namespace='events')),
     path('inscription/', include('registrations.urls', namespace='registrations')),
     path('dashboard/', include('dashboard.urls', namespace='dashboard')),

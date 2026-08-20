@@ -1,0 +1,70 @@
+{% extends 'planning/base_planning.html' %}
+
+{% block title %}{% if editing %}Modifier{% else %}Ajouter{% endif %} un événement — Planning{% endblock %}
+
+{% block content %}
+<div style="max-width:720px;margin:0 auto;">
+
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+    <a href="{% url 'planning:agenda' %}" style="font-size:20px;text-decoration:none;color:#6b7280;">←</a>
+    <h1 style="font-size:22px;color:#14343a;margin:0;">{% if editing %}Modifier l'événement{% else %}Ajouter un événement{% endif %}</h1>
+  </div>
+
+  <form method="post" class="card" style="padding:20px;">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}<div style="color:#b91c1c;font-size:13px;margin-bottom:12px;">{{ form.non_field_errors }}</div>{% endif %}
+
+    <div style="margin-bottom:14px;">
+      <label>Titre de l'événement *</label>
+      {{ form.titre }}
+      {% if form.titre.errors %}<span style="color:#b91c1c;font-size:12px;">{{ form.titre.errors.0 }}</span>{% endif %}
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+      <div><label>Projet</label>{{ form.projet }}</div>
+      <div><label>Type *</label>{{ form.type_event }}</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px;">
+      <div><label>Date de début *</label>{{ form.date_debut }}{% if form.date_debut.errors %}<span style="color:#b91c1c;font-size:12px;">{{ form.date_debut.errors.0 }}</span>{% endif %}</div>
+      <div><label>Heure</label>{{ form.heure }}</div>
+      <div><label>Date de fin</label>{{ form.date_fin }}</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+      <div><label>Responsable</label>{{ form.responsable }}</div>
+      <div><label>Lieu</label>{{ form.lieu }}</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+      <div><label>Statut *</label>{{ form.statut }}</div>
+      <div><label>Budget validé</label>{{ form.budget }}</div>
+    </div>
+
+    <div style="margin-bottom:14px;">
+      <label>Invités</label>{{ form.invites }}
+    </div>
+
+    <div style="margin-bottom:14px;">
+      <label>Description</label>{{ form.description }}
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
+      <div><label>Besoins de communication</label>{{ form.besoins_com }}</div>
+      <div><label>Besoins de production</label>{{ form.besoins_prod }}</div>
+    </div>
+
+    <div style="display:flex;gap:10px;">
+      <button type="submit" class="btn btn-teal" style="flex:1;">{% if editing %}Enregistrer les modifications{% else %}Ajouter au planning{% endif %}</button>
+      <a href="{% url 'planning:agenda' %}" class="btn btn-ghost">Annuler</a>
+    </div>
+  </form>
+</div>
+
+<!-- Suggestions (datalists) -->
+<datalist id="projets">{% for p in projets %}<option value="{{ p }}">{% endfor %}</datalist>
+<datalist id="responsables">{% for r in responsables %}<option value="{{ r }}">{% endfor %}</datalist>
+<datalist id="lieux">{% for l in lieux %}<option value="{{ l }}">{% endfor %}</datalist>
+<datalist id="types">{% for t in types %}<option value="{{ t }}">{% endfor %}</datalist>
+{% endblock %}

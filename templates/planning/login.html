@@ -1,0 +1,45 @@
+{% extends 'planning/base_planning.html' %}
+
+{% block title %}Connexion — Planning du labo{% endblock %}
+
+{% block content %}
+<div style="max-width:440px;margin:40px auto 0;">
+
+  {% if sent %}
+    <div class="card" style="padding:32px 28px;text-align:center;">
+      <div style="width:64px;height:64px;border-radius:50%;background:#dff1f2;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;">
+        <svg width="30" height="30" fill="none" stroke="#00909e" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+      </div>
+      <h1 style="font-size:22px;color:#14343a;margin:0 0 8px;">Vérifiez votre e-mail 📬</h1>
+      <p style="color:#6b7280;font-size:14.5px;line-height:1.6;margin:0;">
+        Nous avons envoyé un <strong>lien de connexion</strong> à<br><strong style="color:#0a7c88;">{{ email }}</strong>.<br>
+        Ouvrez-le pour accéder au planning. Le lien est valable 45 minutes.
+      </p>
+    </div>
+
+  {% else %}
+    <div style="text-align:center;margin-bottom:22px;">
+      <h1 style="font-size:26px;color:#14343a;margin:0 0 6px;">Planning du labo</h1>
+      <p style="color:#6b7280;font-size:14.5px;margin:0;">Réservé aux membres du LASPAD. Connectez-vous avec votre e-mail.</p>
+    </div>
+
+    <div class="card" style="padding:26px 24px;">
+      {% if error %}
+        <div style="background:#fef2f2;border:1px solid #fecaca;color:#b91c1c;border-radius:10px;padding:11px 13px;font-size:13.5px;font-weight:500;margin-bottom:16px;">{{ error }}</div>
+      {% endif %}
+      <form method="post">
+        {% csrf_token %}
+        <label>Votre adresse e-mail</label>
+        <input type="email" name="email" required value="{{ email }}" class="f-input" placeholder="vous@exemple.com" autofocus>
+        <button type="submit" class="btn btn-teal" style="width:100%;margin-top:16px;">
+          Recevoir mon lien de connexion →
+        </button>
+      </form>
+      <p style="font-size:12px;color:#9ca3af;text-align:center;margin:14px 0 0;">
+        Pas de mot de passe : on vous envoie un lien sécurisé par e-mail.
+      </p>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

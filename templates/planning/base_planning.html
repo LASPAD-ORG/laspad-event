@@ -12,7 +12,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root{--teal:#00909e;--teal-d:#0a7c88;--navy:#14343a;--navy2:#0d262b;--ochre:#e8a33d;--line:#e7e4dc;--sand:#f4f2ec;}
-    body{font-family:'Hanken Grotesk',system-ui,sans-serif;background:#f7f6f2;color:#21242c;margin:0;min-height:100vh;}
+    html{min-height:100%;}
+    /* Dégradé teal -> sable couvrant toute la page (méthode fiable sur mobile) */
+    body{font-family:'Hanken Grotesk',system-ui,sans-serif;color:#21242c;margin:0;position:relative;min-height:100vh;
+      background:linear-gradient(180deg,#35635f 0%,#4c7064 18%,#6b8370 38%,#93927d 58%,#c1a88b 80%,#e3ba9c 100%) no-repeat;
+      background-size:cover;background-attachment:scroll;}
+    /* Grain léger par-dessus (comme l'image d'origine) */
+    body::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.10;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+    .p-head, main{position:relative;z-index:1;}
     h1,h2,h3{font-family:'Zilla Slab',Georgia,serif;}
     .wrap{max-width:1100px;margin:0 auto;padding:0 16px;}
     /* Header */

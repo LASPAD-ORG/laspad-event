@@ -6,8 +6,8 @@
 <div style="max-width:720px;margin:0 auto;">
 
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-    <a href="{% url 'planning:agenda' %}" style="font-size:20px;text-decoration:none;color:#6b7280;">←</a>
-    <h1 style="font-size:22px;color:#14343a;margin:0;">{% if editing %}Modifier l'événement{% else %}Ajouter un événement{% endif %}</h1>
+    <a href="{% url 'planning:agenda' %}" style="font-size:20px;text-decoration:none;color:#fff;">←</a>
+    <h1 style="font-size:22px;color:#fff;margin:0;text-shadow:0 1px 8px rgba(10,30,34,.35);">{% if editing %}Modifier l'événement{% else %}Ajouter un événement{% endif %}</h1>
   </div>
 
   <form method="post" class="card" style="padding:20px;">

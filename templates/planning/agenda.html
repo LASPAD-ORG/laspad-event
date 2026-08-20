@@ -7,8 +7,8 @@
 <!-- En-tête section -->
 <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px;">
   <div>
-    <h1 style="font-size:24px;color:#14343a;margin:0;">Agenda du labo</h1>
-    <p style="color:#6b7280;font-size:13.5px;margin:2px 0 0;">{{ count }} événement{{ count|pluralize }}</p>
+    <h1 style="font-size:24px;color:#fff;margin:0;text-shadow:0 1px 8px rgba(10,30,34,.35);">Agenda du labo</h1>
+    <p style="color:rgba(255,255,255,.9);font-size:13.5px;margin:2px 0 0;text-shadow:0 1px 6px rgba(10,30,34,.3);">{{ count }} événement{{ count|pluralize }}</p>
   </div>
   <a href="{% url 'planning:add' %}" class="btn btn-ochre">＋ Ajouter un événement</a>
 </div>
@@ -42,9 +42,11 @@
 
 <!-- Liste par jour -->
 {% for g in groups %}
-  <div style="display:flex;align-items:center;gap:10px;margin:22px 0 10px;">
-    <div style="width:6px;height:22px;border-radius:6px;background:{% if g.date == today %}#e8a33d{% else %}#00909e{% endif %};"></div>
-    <h2 style="font-size:16px;color:#14343a;margin:0;text-transform:capitalize;">{{ g.date|date:"l j F Y" }}{% if g.date == today %} <span style="font-size:12px;color:#e8a33d;font-family:'Hanken Grotesk';font-weight:700;">· aujourd'hui</span>{% endif %}</h2>
+  <div style="margin:22px 0 10px;">
+    <span style="display:inline-flex;align-items:center;gap:8px;background:rgba(13,38,43,.55);color:#fff;padding:6px 14px;border-radius:22px;font-family:'Zilla Slab',serif;font-weight:600;font-size:15px;text-transform:capitalize;box-shadow:0 2px 10px rgba(10,30,34,.18);">
+      <span style="width:8px;height:8px;border-radius:50%;background:{% if g.date == today %}#e8a33d{% else %}#7fd6dd{% endif %};"></span>
+      {{ g.date|date:"l j F Y" }}{% if g.date == today %} <span style="font-size:12px;color:#ffce7a;font-family:'Hanken Grotesk';font-weight:700;">· aujourd'hui</span>{% endif %}
+    </span>
   </div>
 
   {% for ev in g.events %}

@@ -54,7 +54,7 @@
       <div style="display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;">
         <div style="flex:1;min-width:0;">
           <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px;">
-            <span class="badge st-{{ ev.statut }}">{{ ev.get_statut_display }}</span>
+            {% if ev.statut == 'a_venir' and ev.date_debut < today %}<span class="badge st-passe">Passé</span>{% else %}<span class="badge st-{{ ev.statut }}">{{ ev.get_statut_display }}</span>{% endif %}
             <span style="font-size:12px;font-weight:700;color:#5d655f;background:#eef0ee;padding:2px 9px;border-radius:20px;">{{ ev.type_event }}</span>
             {% if ev.projet %}<span style="font-size:12px;font-weight:600;color:#0a7c88;">· {{ ev.projet }}</span>{% endif %}
           </div>

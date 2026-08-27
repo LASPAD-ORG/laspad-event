@@ -10,7 +10,10 @@
     <h1 style="font-size:24px;color:#fff;margin:0;text-shadow:0 1px 8px rgba(10,30,34,.35);">Agenda du labo</h1>
     <p style="color:rgba(255,255,255,.9);font-size:13.5px;margin:2px 0 0;text-shadow:0 1px 6px rgba(10,30,34,.3);">{{ count }} événement{{ count|pluralize }}</p>
   </div>
-  <a href="{% url 'planning:add' %}" class="btn btn-ochre">＋ Ajouter un événement</a>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+    <a href="{% url 'planning:calendrier' %}" class="btn btn-ghost">📅 Calendrier</a>
+    <a href="{% url 'planning:add' %}" class="btn btn-ochre">＋ Ajouter un événement</a>
+  </div>
 </div>
 
 {% if auto_passes %}

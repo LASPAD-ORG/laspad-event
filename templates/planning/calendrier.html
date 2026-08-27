@@ -1,0 +1,95 @@
+{% extends 'planning/base_planning.html' %}
+
+{% block title %}Calendrier — Planning du labo{% endblock %}
+
+{% block content %}
+
+<!-- En-tête -->
+<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px;">
+  <div>
+    <h1 style="font-size:24px;color:#fff;margin:0;text-shadow:0 1px 8px rgba(10,30,34,.35);">Calendrier du labo</h1>
+    <p style="color:rgba(255,255,255,.9);font-size:13.5px;margin:2px 0 0;text-shadow:0 1px 6px rgba(10,30,34,.3);">{{ count }} événement{{ count|pluralize }} en {{ mois_label }}</p>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+    <a href="{% url 'planning:agenda' %}" class="btn btn-ghost">☰ Liste</a>
+    <a href="{% url 'planning:add' %}" class="btn btn-ochre">＋ Ajouter un événement</a>
+  </div>
+</div>
+
+<!-- Navigation mois -->
+<div class="card" style="padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;">
+  <a href="?mois={{ prev }}" class="btn btn-ghost" style="padding:8px 14px;">‹ Précédent</a>
+  <div style="text-align:center;">
+    <div style="font-family:'Zilla Slab',serif;font-weight:700;font-size:18px;color:#14343a;text-transform:capitalize;">{{ mois_label }}</div>
+    {% if not is_current %}<a href="?mois={{ cur }}" style="font-size:12px;color:#0a7c88;font-weight:600;text-decoration:none;">↩ Revenir à aujourd'hui</a>{% endif %}
+  </div>
+  <a href="?mois={{ next }}" class="btn btn-ghost" style="padding:8px 14px;">Suivant ›</a>
+</div>
+
+<!-- Légende -->
+<div class="cal-legend" style="margin-bottom:12px;">
+  <span><i style="background:#0a7c88;"></i>À venir</span>
+  <span><i style="background:#5d655f;"></i>Passé</span>
+  <span><i style="background:#15803d;"></i>Fait</span>
+  <span><i style="background:#a9761a;"></i>Reporté</span>
+  <span><i style="background:#b91c1c;"></i>Annulé</span>
+</div>
+
+<!-- Grille -->
+<div class="cal" style="margin-bottom:8px;">
+  {% for wd in weekdays %}<div class="cal-hd">{{ wd }}</div>{% endfor %}
+</div>
+<div class="cal">
+  {% for week in weeks %}{% for c in week %}
+    <div class="cal-cell{% if not c.in_month %} out{% endif %}{% if c.is_today %} today{% endif %}">
+      <div class="cal-num">{{ c.date.day }}</div>
+      {% if c.events %}
+        <div class="cal-evrow">
+          {% for ev in c.events|slice:":3" %}
+            <a class="cal-ev st-{{ ev.eff }}" href="{% url 'planning:edit' ev.pk %}" title="{{ ev.titre }}{% if ev.heure %} · {{ ev.heure|time:'H\hi' }}{% endif %}">{{ ev.titre }}</a>
+          {% endfor %}
+          {% if c.events|length > 3 %}<span class="cal-more">+{{ c.events|length|add:"-3" }} autre{{ c.events|length|add:"-3"|pluralize }}</span>{% endif %}
+        </div>
+      {% endif %}
+    </div>
+  {% endfor %}{% endfor %}
+</div>
+
+<!-- Détail du mois (liste) -->
+{% if day_groups %}
+  <h2 style="font-size:16px;color:#fff;margin:26px 0 12px;text-shadow:0 1px 8px rgba(10,30,34,.35);">Détail de {{ mois_label }}</h2>
+  {% for g in day_groups %}
+    <div style="margin:16px 0 8px;">
+      <span style="display:inline-flex;align-items:center;gap:8px;background:rgba(13,38,43,.55);color:#fff;padding:5px 13px;border-radius:22px;font-family:'Zilla Slab',serif;font-weight:600;font-size:14px;text-transform:capitalize;box-shadow:0 2px 10px rgba(10,30,34,.18);">
+        <span style="width:8px;height:8px;border-radius:50%;background:{% if g.date == today %}#e8a33d{% else %}#7fd6dd{% endif %};"></span>
+        {{ g.date|date:"l j F" }}{% if g.date == today %} <span style="font-size:11px;color:#ffce7a;font-family:'Hanken Grotesk';font-weight:700;">· aujourd'hui</span>{% endif %}
+      </span>
+    </div>
+    {% for ev in g.events %}
+      <div class="card" style="padding:13px 15px;margin-bottom:8px;">
+        <div style="display:flex;align-items:flex-start;gap:10px;">
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:4px;">
+              <span class="badge st-{{ ev.eff }}">{% if ev.eff == 'passe' %}Passé{% else %}{{ ev.get_statut_display }}{% endif %}</span>
+              <span style="font-size:11.5px;font-weight:700;color:#5d655f;background:#eef0ee;padding:2px 8px;border-radius:20px;">{{ ev.type_event }}</span>
+              {% if ev.projet %}<span style="font-size:11.5px;font-weight:600;color:#0a7c88;">· {{ ev.projet }}</span>{% endif %}
+            </div>
+            <h3 style="font-size:15px;color:#14343a;margin:0 0 4px;line-height:1.3;">{{ ev.titre }}</h3>
+            <div style="font-size:12.5px;color:#4a524d;display:flex;flex-wrap:wrap;column-gap:12px;row-gap:2px;">
+              {% if ev.heure %}<span>🕐 {{ ev.heure|time:"H\hi" }}</span>{% endif %}
+              {% if ev.responsable %}<span>👤 {{ ev.responsable }}</span>{% endif %}
+              {% if ev.lieu %}<span>📍 {{ ev.lieu }}</span>{% endif %}
+            </div>
+          </div>
+          <a href="{% url 'planning:edit' ev.pk %}" style="font-size:12px;color:#9ca3af;text-decoration:none;white-space:nowrap;">✏️</a>
+        </div>
+      </div>
+    {% endfor %}
+  {% endfor %}
+{% else %}
+  <div class="card" style="padding:30px 20px;text-align:center;margin-top:10px;">
+    <p style="font-size:14.5px;color:#6b7280;margin:0;">Aucun événement en {{ mois_label }}.</p>
+  </div>
+{% endif %}
+
+{% endblock %}

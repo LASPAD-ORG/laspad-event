@@ -8,6 +8,7 @@ urlpatterns = [
     path('entrer/<str:token>/', views.auth_view, name='auth'),
     path('deconnexion/', views.logout_view, name='logout'),
     path('agenda/', views.agenda_view, name='agenda'),
+    path('calendrier/', views.calendar_view, name='calendrier'),
     path('ajouter/', views.add_view, name='add'),
     path('modifier/<uuid:pk>/', views.edit_view, name='edit'),
 ]

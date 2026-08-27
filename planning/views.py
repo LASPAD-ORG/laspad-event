@@ -1,4 +1,6 @@
+import calendar as _cal
 import secrets
+from datetime import date as _date
 from functools import wraps
 
 from django.shortcuts import render, redirect, get_object_or_404
@@ -147,6 +149,63 @@ def agenda_view(request):
         'total_avenir': all_events.filter(date_debut__gte=today).count(),
     }
     return render(request, 'planning/agenda.html', context)
+
+
+MOIS_FR = ['', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet',
+           'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']
+
+
+@planning_required
+def calendar_view(request):
+    """Vue calendrier mensuelle des événements."""
+    today = timezone.localdate()
+
+    # Mois affiché (par défaut : mois courant)
+    year, month = today.year, today.month
+    mstr = request.GET.get('mois', '')
+    if mstr:
+        try:
+            y, m = mstr.split('-')
+            _date(int(y), int(m), 1)  # valide la date
+            year, month = int(y), int(m)
+        except (ValueError, TypeError):
+            pass
+
+    evs = list(LabEvent.objects.filter(date_debut__year=year, date_debut__month=month)
+               .order_by('date_debut', 'heure'))
+    by_date = {}
+    for e in evs:
+        # statut « effectif » pour la couleur (comme dans l'agenda)
+        e.eff = 'passe' if (e.statut == 'a_venir' and e.date_debut < today) else e.statut
+        by_date.setdefault(e.date_debut, []).append(e)
+
+    cal = _cal.Calendar(firstweekday=0)  # semaine commençant le lundi
+    weeks = []
+    for wk in cal.monthdatescalendar(year, month):
+        weeks.append([{
+            'date': d,
+            'in_month': d.month == month,
+            'is_today': d == today,
+            'events': by_date.get(d, []),
+        } for d in wk])
+
+    prev_y, prev_m = (year - 1, 12) if month == 1 else (year, month - 1)
+    next_y, next_m = (year + 1, 1) if month == 12 else (year, month + 1)
+
+    context = {
+        'member':      _current_member(request),
+        'weeks':       weeks,
+        'day_groups':  [{'date': d, 'events': by_date[d]} for d in sorted(by_date)],
+        'mois_label':  f"{MOIS_FR[month]} {year}",
+        'is_current':  (year == today.year and month == today.month),
+        'prev':        f"{prev_y}-{prev_m:02d}",
+        'next':        f"{next_y}-{next_m:02d}",
+        'cur':         f"{today.year}-{today.month:02d}",
+        'count':       len(evs),
+        'today':       today,
+        'weekdays':    ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+    }
+    return render(request, 'planning/calendrier.html', context)
 
 
 @planning_required

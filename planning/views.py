@@ -155,9 +155,14 @@ MOIS_FR = ['', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet',
            'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']
 
 
-@planning_required
 def calendar_view(request):
-    """Vue calendrier mensuelle des événements."""
+    """Vue calendrier mensuelle des événements.
+
+    PUBLIQUE : accessible à tout le monde (membres connectés ET visiteurs
+    externes), pour que le planning du labo soit consultable de l'extérieur.
+    Les visiteurs non-membres ont une version en lecture seule et sans les
+    informations internes (nom du responsable masqué, pas de modification).
+    """
     today = timezone.localdate()
 
     # Mois affiché (par défaut : mois courant)
@@ -192,8 +197,10 @@ def calendar_view(request):
     prev_y, prev_m = (year - 1, 12) if month == 1 else (year, month - 1)
     next_y, next_m = (year + 1, 1) if month == 12 else (year, month + 1)
 
+    member = _current_member(request)
     context = {
-        'member':      _current_member(request),
+        'member':      member,
+        'is_member':   member is not None,
         'weeks':       weeks,
         'day_groups':  [{'date': d, 'events': by_date[d]} for d in sorted(by_date)],
         'mois_label':  f"{MOIS_FR[month]} {year}",

@@ -7,12 +7,16 @@
 <!-- En-tête -->
 <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px;">
   <div>
-    <h1 style="font-size:24px;color:#fff;margin:0;text-shadow:0 1px 8px rgba(10,30,34,.35);">Calendrier du labo</h1>
+    <h1 style="font-size:24px;color:#fff;margin:0;text-shadow:0 1px 8px rgba(10,30,34,.35);">Calendrier des événements du LASPAD</h1>
     <p style="color:rgba(255,255,255,.9);font-size:13.5px;margin:2px 0 0;text-shadow:0 1px 6px rgba(10,30,34,.3);">{{ count }} événement{{ count|pluralize }} en {{ mois_label }}</p>
   </div>
   <div style="display:flex;gap:8px;flex-wrap:wrap;">
-    <a href="{% url 'planning:agenda' %}" class="btn btn-ghost">☰ Liste</a>
-    <a href="{% url 'planning:add' %}" class="btn btn-ochre">＋ Ajouter un événement</a>
+    {% if is_member %}
+      <a href="{% url 'planning:agenda' %}" class="btn btn-ghost">☰ Liste</a>
+      <a href="{% url 'planning:add' %}" class="btn btn-ochre">＋ Ajouter un événement</a>
+    {% else %}
+      <a href="{% url 'planning:login' %}" class="btn btn-ghost">🔒 Espace membres</a>
+    {% endif %}
   </div>
 </div>
 
@@ -46,7 +50,7 @@
       {% if c.events %}
         <div class="cal-evrow">
           {% for ev in c.events|slice:":3" %}
-            <a class="cal-ev st-{{ ev.eff }}" href="{% url 'planning:edit' ev.pk %}" title="{{ ev.titre }}{% if ev.heure %} · {{ ev.heure|time:'H\hi' }}{% endif %}">{{ ev.titre }}</a>
+            {% if is_member %}<a class="cal-ev st-{{ ev.eff }}" href="{% url 'planning:edit' ev.pk %}" title="{{ ev.titre }}{% if ev.heure %} · {{ ev.heure|time:'H\hi' }}{% endif %}">{{ ev.titre }}</a>{% else %}<span class="cal-ev st-{{ ev.eff }}" title="{{ ev.titre }}{% if ev.heure %} · {{ ev.heure|time:'H\hi' }}{% endif %}">{{ ev.titre }}</span>{% endif %}
           {% endfor %}
           {% if c.events|length > 3 %}<span class="cal-more">+{{ c.events|length|add:"-3" }} autre{{ c.events|length|add:"-3"|pluralize }}</span>{% endif %}
         </div>
@@ -77,11 +81,11 @@
             <h3 style="font-size:15px;color:#14343a;margin:0 0 4px;line-height:1.3;">{{ ev.titre }}</h3>
             <div style="font-size:12.5px;color:#4a524d;display:flex;flex-wrap:wrap;column-gap:12px;row-gap:2px;">
               {% if ev.heure %}<span>🕐 {{ ev.heure|time:"H\hi" }}</span>{% endif %}
-              {% if ev.responsable %}<span>👤 {{ ev.responsable }}</span>{% endif %}
+              {% if is_member and ev.responsable %}<span>👤 {{ ev.responsable }}</span>{% endif %}
               {% if ev.lieu %}<span>📍 {{ ev.lieu }}</span>{% endif %}
             </div>
           </div>
-          <a href="{% url 'planning:edit' ev.pk %}" style="font-size:12px;color:#9ca3af;text-decoration:none;white-space:nowrap;">✏️</a>
+          {% if is_member %}<a href="{% url 'planning:edit' ev.pk %}" style="font-size:12px;color:#9ca3af;text-decoration:none;white-space:nowrap;">✏️</a>{% endif %}
         </div>
       </div>
     {% endfor %}

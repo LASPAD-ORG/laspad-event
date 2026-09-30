@@ -2,6 +2,7 @@ import calendar as _cal
 import secrets
 from datetime import date as _date
 from functools import wraps
+from urllib.parse import quote as _urlquote
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
@@ -23,6 +24,11 @@ def _current_member(request):
     if not email:
         return None
     return AuthorizedMember.objects.filter(email__iexact=email, is_active=True).first()
+
+
+def _current_admin(request):
+    m = _current_member(request)
+    return m if (m and m.is_admin) else None
 
 
 def planning_required(view):
@@ -213,6 +219,38 @@ def calendar_view(request):
         'weekdays':    ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
     }
     return render(request, 'planning/calendrier.html', context)
+
+
+@planning_required
+def invite_view(request):
+    """Réservé aux admins : génère un lien de connexion pour un membre,
+    à envoyer par WhatsApp (ou copier-coller). Utile quand l'e-mail ne
+    passe pas (spam / désinscription Brevo). Lien valable 48 h, usage unique."""
+    admin = _current_admin(request)
+    if not admin:
+        return redirect('planning:agenda')
+
+    members = AuthorizedMember.objects.filter(is_active=True).order_by('name', 'email')
+    ctx = {'member': admin, 'members': members, 'link': None, 'target': None,
+           'wa': None, 'msg': None, 'error': None, 'email': ''}
+
+    if request.method == 'POST':
+        email = (request.POST.get('email') or '').strip()
+        ctx['email'] = email
+        target = AuthorizedMember.objects.filter(email__iexact=email, is_active=True).first()
+        if not target:
+            ctx['error'] = "Cet e-mail n'est pas dans la liste des membres autorisés."
+        else:
+            token = LoginToken.objects.create(
+                token=secrets.token_urlsafe(32), email=target.email, ttl_minutes=2880)  # 48 h
+            link = request.build_absolute_uri(reverse('planning:auth', args=[token.token]))
+            msg = (f"Bonjour {target.name or ''}, voici ton lien de connexion au "
+                   f"planning du labo LASPAD (valable 48 h, à usage unique) : {link}").replace('  ', ' ')
+            ctx.update({
+                'link': link, 'target': target, 'msg': msg,
+                'wa': "https://wa.me/?text=" + _urlquote(msg),
+            })
+    return render(request, 'planning/inviter.html', ctx)
 
 
 @planning_required

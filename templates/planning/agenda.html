@@ -12,6 +12,7 @@
   </div>
   <div style="display:flex;gap:8px;flex-wrap:wrap;">
     <a href="{% url 'planning:calendrier' %}" class="btn btn-ghost">📅 Calendrier</a>
+    {% if member.is_admin %}<a href="{% url 'planning:invite' %}" class="btn btn-ghost">🔗 Lien WhatsApp</a>{% endif %}
     <a href="{% url 'planning:add' %}" class="btn btn-ochre">＋ Ajouter un événement</a>
   </div>
 </div>

@@ -8,6 +8,7 @@ class AuthorizedMember(models.Model):
     email      = models.EmailField(unique=True, verbose_name='E-mail')
     name       = models.CharField(max_length=150, blank=True, verbose_name='Nom')
     is_active  = models.BooleanField(default=True, verbose_name='Actif')
+    is_admin   = models.BooleanField(default=False, verbose_name='Admin (peut générer des liens de connexion)')
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -21,16 +22,17 @@ class AuthorizedMember(models.Model):
 
 class LoginToken(models.Model):
     """Jeton de connexion à usage unique (lien magique envoyé par e-mail)."""
-    token      = models.CharField(max_length=64, unique=True, db_index=True)
-    email      = models.EmailField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    used_at    = models.DateTimeField(null=True, blank=True)
+    token       = models.CharField(max_length=64, unique=True, db_index=True)
+    email       = models.EmailField()
+    created_at  = models.DateTimeField(auto_now_add=True)
+    used_at     = models.DateTimeField(null=True, blank=True)
+    ttl_minutes = models.PositiveIntegerField(default=45)  # durée de validité (min)
 
     def is_valid(self):
         if self.used_at:
             return False
-        # expire après 45 minutes
-        return timezone.now() <= self.created_at + timezone.timedelta(minutes=45)
+        ttl = self.ttl_minutes or 45
+        return timezone.now() <= self.created_at + timezone.timedelta(minutes=ttl)
 
     def __str__(self):
         return f"{self.email} ({'utilisé' if self.used_at else 'actif'})"

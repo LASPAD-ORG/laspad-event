@@ -4,10 +4,10 @@ from .models import AuthorizedMember, LabEvent, LoginToken
 
 @admin.register(AuthorizedMember)
 class AuthorizedMemberAdmin(admin.ModelAdmin):
-    list_display  = ('name', 'email', 'is_active', 'created_at')
-    list_filter   = ('is_active',)
+    list_display  = ('name', 'email', 'is_active', 'is_admin', 'created_at')
+    list_filter   = ('is_active', 'is_admin')
     search_fields = ('name', 'email')
-    list_editable = ('is_active',)
+    list_editable = ('is_active', 'is_admin')
 
 
 @admin.register(LabEvent)

@@ -1,0 +1,70 @@
+{% extends 'planning/base_planning.html' %}
+
+{% block title %}Lien de connexion — Planning du labo{% endblock %}
+
+{% block content %}
+<div style="max-width:620px;margin:0 auto;">
+
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+    <a href="{% url 'planning:agenda' %}" style="font-size:20px;text-decoration:none;color:#fff;">←</a>
+    <h1 style="font-size:22px;color:#fff;margin:0;text-shadow:0 1px 8px rgba(10,30,34,.35);">Lien de connexion (WhatsApp)</h1>
+  </div>
+
+  <div class="card" style="padding:20px;margin-bottom:16px;">
+    <p style="font-size:14px;color:#4a524d;line-height:1.6;margin:0 0 16px;">
+      Générez un lien de connexion pour un membre et envoyez‑le‑lui par <strong>WhatsApp</strong> (ou copier‑coller).
+      Pratique quand l'e‑mail ne passe pas. Le lien est <strong>valable 48 h</strong> et à usage unique.
+    </p>
+
+    {% if error %}
+      <div style="background:#fef2f2;border:1px solid #fecaca;color:#b91c1c;border-radius:10px;padding:11px 13px;font-size:13.5px;font-weight:500;margin-bottom:16px;">{{ error }}</div>
+    {% endif %}
+
+    <form method="post">
+      {% csrf_token %}
+      <label>Membre (adresse e‑mail autorisée)</label>
+      <input type="email" name="email" list="membres" required value="{{ email }}" class="f-input" placeholder="prenom@exemple.com" autofocus>
+      <datalist id="membres">
+        {% for m in members %}<option value="{{ m.email }}">{{ m.name }}</option>{% endfor %}
+      </datalist>
+      <button type="submit" class="btn btn-teal" style="width:100%;margin-top:16px;">Générer le lien →</button>
+    </form>
+  </div>
+
+  {% if link %}
+    <div class="card" style="padding:20px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+        <span style="width:36px;height:36px;border-radius:50%;background:#dff1f2;display:inline-flex;align-items:center;justify-content:center;font-size:18px;">🔗</span>
+        <div>
+          <div style="font-weight:700;color:#14343a;">Lien prêt pour {{ target.name|default:target.email }}</div>
+          <div style="font-size:12.5px;color:#6b7280;">Valable 48 h · à usage unique</div>
+        </div>
+      </div>
+
+      <input id="lienConnexion" type="text" readonly value="{{ link }}" class="f-input" style="font-size:12.5px;color:#0a7c88;background:#f7f9f8;" onclick="this.select()">
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;">
+        <a href="{{ wa }}" target="_blank" rel="noopener" class="btn" style="background:#25D366;color:#fff;flex:1;min-width:180px;">🟢 Envoyer par WhatsApp</a>
+        <button type="button" class="btn btn-ghost" onclick="copierLien()">📋 Copier le lien</button>
+      </div>
+      <p id="copieOk" style="display:none;font-size:12.5px;color:#15803d;font-weight:600;margin:10px 0 0;">✅ Lien copié dans le presse‑papier.</p>
+
+      <details style="margin-top:14px;">
+        <summary style="font-size:12.5px;color:#6b7280;cursor:pointer;">Voir le message pré‑rempli</summary>
+        <p style="font-size:12.5px;color:#4a524d;background:#f7f9f8;border:1px solid var(--line);border-radius:8px;padding:10px;margin:8px 0 0;line-height:1.5;">{{ msg }}</p>
+      </details>
+    </div>
+  {% endif %}
+
+</div>
+
+<script>
+  function copierLien(){
+    var i=document.getElementById('lienConnexion');
+    i.select(); i.setSelectionRange(0,99999);
+    (navigator.clipboard ? navigator.clipboard.writeText(i.value) : Promise.reject())
+      .catch(function(){ try{document.execCommand('copy');}catch(e){} })
+      .finally(function(){ document.getElementById('copieOk').style.display='block'; });
+  }
+</script>
+{% endblock %}
